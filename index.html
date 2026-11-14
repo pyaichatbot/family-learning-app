@@ -302,7 +302,7 @@ function webSpeak(ss,parts){try{
     const vs=deviceVoices(de?'de':'en'),v=(de&&vs.find(x=>x.name===deVoice))||vs.find(x=>vtag(x)===(de?'de-de':'en-gb'))||vs[0];if(v){u.voice=v;u.lang=v.lang.replace('_','-');}ss.speak(u);});}catch(e){}}
 /* Recorded clips (audio/*.mp3, made by tools/make_audio.py) play on every device, including TVs without a speech engine. Anything not recorded falls back to the device voice. */
 let AUD=null,clipEl=null,clipRun=0;
-try{fetch('audio/index.json').then(r=>r.ok?r.json():null).then(a=>{if(Array.isArray(a))AUD=new Set(a);}).catch(()=>{});}catch(e){}
+try{fetch('audio/index.json').then(r=>r.ok?r.json():null).then(a=>{if(Array.isArray(a)){AUD=new Set(a);if(!cur&&last)reshow();}}).catch(()=>{});}catch(e){}
 const anorm=x=>String(x).replace(/^[\s.!?,…]+|[\s.!?,…]+$/g,'');
 function ahash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619);}return ('0000000'+(h>>>0).toString(16)).slice(-8);}
 console.assert(ahash('de|Katze')==='27e07373','ahash self-check');

@@ -1,0 +1,3374 @@
+[
+[
+"en",
+"A is for apple."
+],
+[
+"en",
+"apple"
+],
+[
+"en",
+"The letter A."
+],
+[
+"en",
+"B is for ball."
+],
+[
+"en",
+"ball"
+],
+[
+"en",
+"The letter B."
+],
+[
+"en",
+"C is for cat."
+],
+[
+"en",
+"cat"
+],
+[
+"en",
+"The letter C."
+],
+[
+"en",
+"D is for dog."
+],
+[
+"en",
+"dog"
+],
+[
+"en",
+"The letter D."
+],
+[
+"en",
+"E is for egg."
+],
+[
+"en",
+"egg"
+],
+[
+"en",
+"The letter E."
+],
+[
+"en",
+"F is for fish."
+],
+[
+"en",
+"fish"
+],
+[
+"en",
+"The letter F."
+],
+[
+"en",
+"G is for goat."
+],
+[
+"en",
+"goat"
+],
+[
+"en",
+"The letter G."
+],
+[
+"en",
+"H is for hat."
+],
+[
+"en",
+"hat"
+],
+[
+"en",
+"The letter H."
+],
+[
+"en",
+"I is for iguana."
+],
+[
+"en",
+"iguana"
+],
+[
+"en",
+"The letter I."
+],
+[
+"en",
+"J is for juice."
+],
+[
+"en",
+"juice"
+],
+[
+"en",
+"The letter J."
+],
+[
+"en",
+"K is for kite."
+],
+[
+"en",
+"kite"
+],
+[
+"en",
+"The letter K."
+],
+[
+"en",
+"L is for lion."
+],
+[
+"en",
+"lion"
+],
+[
+"en",
+"The letter L."
+],
+[
+"en",
+"M is for moon."
+],
+[
+"en",
+"moon"
+],
+[
+"en",
+"The letter M."
+],
+[
+"en",
+"N is for nose."
+],
+[
+"en",
+"nose"
+],
+[
+"en",
+"The letter N."
+],
+[
+"en",
+"O is for octopus."
+],
+[
+"en",
+"octopus"
+],
+[
+"en",
+"The letter O."
+],
+[
+"en",
+"P is for pig."
+],
+[
+"en",
+"pig"
+],
+[
+"en",
+"The letter P."
+],
+[
+"en",
+"Q is for queen."
+],
+[
+"en",
+"queen"
+],
+[
+"en",
+"The letter Q."
+],
+[
+"en",
+"R is for rabbit."
+],
+[
+"en",
+"rabbit"
+],
+[
+"en",
+"The letter R."
+],
+[
+"en",
+"S is for sun."
+],
+[
+"en",
+"sun"
+],
+[
+"en",
+"The letter S."
+],
+[
+"en",
+"T is for tree."
+],
+[
+"en",
+"tree"
+],
+[
+"en",
+"The letter T."
+],
+[
+"en",
+"U is for umbrella."
+],
+[
+"en",
+"umbrella"
+],
+[
+"en",
+"The letter U."
+],
+[
+"en",
+"V is for van."
+],
+[
+"en",
+"van"
+],
+[
+"en",
+"The letter V."
+],
+[
+"en",
+"W is for whale."
+],
+[
+"en",
+"whale"
+],
+[
+"en",
+"The letter W."
+],
+[
+"en",
+"X, as in box."
+],
+[
+"en",
+"box"
+],
+[
+"en",
+"The letter X."
+],
+[
+"en",
+"Y is for yo-yo."
+],
+[
+"en",
+"yo-yo"
+],
+[
+"en",
+"The letter Y."
+],
+[
+"en",
+"Z is for zebra."
+],
+[
+"en",
+"zebra"
+],
+[
+"en",
+"The letter Z."
+],
+[
+"en",
+"ship"
+],
+[
+"en",
+"cheese"
+],
+[
+"en",
+"three"
+],
+[
+"en",
+"moon"
+],
+[
+"en",
+"bee"
+],
+[
+"en",
+"rain"
+],
+[
+"en",
+"boat"
+],
+[
+"en",
+"car"
+],
+[
+"en",
+"The number 0."
+],
+[
+"en",
+"The number 1."
+],
+[
+"en",
+"The number 2."
+],
+[
+"en",
+"The number 3."
+],
+[
+"en",
+"The number 4."
+],
+[
+"en",
+"The number 5."
+],
+[
+"en",
+"The number 6."
+],
+[
+"en",
+"The number 7."
+],
+[
+"en",
+"The number 8."
+],
+[
+"en",
+"The number 9."
+],
+[
+"en",
+"cat"
+],
+[
+"en",
+"dog"
+],
+[
+"en",
+"sun"
+],
+[
+"en",
+"hat"
+],
+[
+"en",
+"pig"
+],
+[
+"en",
+"bus"
+],
+[
+"en",
+"bed"
+],
+[
+"en",
+"fox"
+],
+[
+"en",
+"hen"
+],
+[
+"en",
+"bat"
+],
+[
+"en",
+"bug"
+],
+[
+"en",
+"car"
+],
+[
+"en",
+"cow"
+],
+[
+"en",
+"egg"
+],
+[
+"en",
+"bee"
+],
+[
+"en",
+"fish"
+],
+[
+"en",
+"frog"
+],
+[
+"en",
+"duck"
+],
+[
+"en",
+"moon"
+],
+[
+"en",
+"star"
+],
+[
+"en",
+"tree"
+],
+[
+"en",
+"book"
+],
+[
+"en",
+"ball"
+],
+[
+"en",
+"cake"
+],
+[
+"en",
+"bird"
+],
+[
+"en",
+"lion"
+],
+[
+"en",
+"shoe"
+],
+[
+"en",
+"milk"
+],
+[
+"en",
+"rain"
+],
+[
+"en",
+"boat"
+],
+[
+"en",
+"bear"
+],
+[
+"en",
+"apple"
+],
+[
+"en",
+"horse"
+],
+[
+"en",
+"snake"
+],
+[
+"en",
+"train"
+],
+[
+"en",
+"house"
+],
+[
+"en",
+"bread"
+],
+[
+"en",
+"chair"
+],
+[
+"en",
+"mouse"
+],
+[
+"en",
+"sheep"
+],
+[
+"en",
+"plane"
+],
+[
+"en",
+"banana"
+],
+[
+"en",
+"rabbit"
+],
+[
+"en",
+"flower"
+],
+[
+"en",
+"rocket"
+],
+[
+"en",
+"pencil"
+],
+[
+"en",
+"monkey"
+],
+[
+"en",
+"The dog is big."
+],
+[
+"en",
+"I see the sun."
+],
+[
+"en",
+"The fish can swim."
+],
+[
+"en",
+"The frog can hop."
+],
+[
+"en",
+"The bus is red."
+],
+[
+"en",
+"I have a book."
+],
+[
+"en",
+"The duck is wet."
+],
+[
+"en",
+"Look at the moon."
+],
+[
+"en",
+"The cat can nap."
+],
+[
+"en",
+"The bee is busy."
+],
+[
+"en",
+"The snake is long."
+],
+[
+"en",
+"The bird can sing."
+],
+[
+"en",
+"My shoe is blue."
+],
+[
+"en",
+"The bear is asleep."
+],
+[
+"en",
+"The rocket is fast."
+],
+[
+"en",
+"The monkey is funny."
+],
+[
+"en",
+"I like to eat cake."
+],
+[
+"en",
+"The horse runs fast."
+],
+[
+"en",
+"Well done!"
+],
+[
+"en",
+"How many?"
+],
+[
+"en",
+"Which side has more?"
+],
+[
+"en",
+"Which side has fewer?"
+],
+[
+"en",
+"What comes next?"
+],
+[
+"en",
+"Which one does not belong?"
+],
+[
+"en",
+"Where does it belong?"
+],
+[
+"en",
+"Which one is the biggest?"
+],
+[
+"en",
+"Which one is the smallest?"
+],
+[
+"en",
+"plus"
+],
+[
+"en",
+"minus"
+],
+[
+"en",
+"times"
+],
+[
+"en",
+"shared by"
+],
+[
+"en",
+"0"
+],
+[
+"en",
+"1"
+],
+[
+"en",
+"2"
+],
+[
+"en",
+"3"
+],
+[
+"en",
+"4"
+],
+[
+"en",
+"5"
+],
+[
+"en",
+"6"
+],
+[
+"en",
+"7"
+],
+[
+"en",
+"8"
+],
+[
+"en",
+"9"
+],
+[
+"en",
+"10"
+],
+[
+"en",
+"11"
+],
+[
+"en",
+"12"
+],
+[
+"en",
+"13"
+],
+[
+"en",
+"14"
+],
+[
+"en",
+"15"
+],
+[
+"en",
+"16"
+],
+[
+"en",
+"17"
+],
+[
+"en",
+"18"
+],
+[
+"en",
+"19"
+],
+[
+"en",
+"20"
+],
+[
+"en",
+"21"
+],
+[
+"en",
+"22"
+],
+[
+"en",
+"23"
+],
+[
+"en",
+"24"
+],
+[
+"en",
+"25"
+],
+[
+"en",
+"26"
+],
+[
+"en",
+"27"
+],
+[
+"en",
+"28"
+],
+[
+"en",
+"29"
+],
+[
+"en",
+"30"
+],
+[
+"en",
+"31"
+],
+[
+"en",
+"32"
+],
+[
+"en",
+"33"
+],
+[
+"en",
+"34"
+],
+[
+"en",
+"35"
+],
+[
+"en",
+"36"
+],
+[
+"en",
+"37"
+],
+[
+"en",
+"38"
+],
+[
+"en",
+"39"
+],
+[
+"en",
+"40"
+],
+[
+"en",
+"41"
+],
+[
+"en",
+"42"
+],
+[
+"en",
+"43"
+],
+[
+"en",
+"44"
+],
+[
+"en",
+"45"
+],
+[
+"en",
+"46"
+],
+[
+"en",
+"47"
+],
+[
+"en",
+"48"
+],
+[
+"en",
+"49"
+],
+[
+"en",
+"50"
+],
+[
+"en",
+"51"
+],
+[
+"en",
+"52"
+],
+[
+"en",
+"53"
+],
+[
+"en",
+"54"
+],
+[
+"en",
+"55"
+],
+[
+"en",
+"56"
+],
+[
+"en",
+"57"
+],
+[
+"en",
+"58"
+],
+[
+"en",
+"59"
+],
+[
+"en",
+"60"
+],
+[
+"en",
+"61"
+],
+[
+"en",
+"62"
+],
+[
+"en",
+"63"
+],
+[
+"en",
+"64"
+],
+[
+"en",
+"65"
+],
+[
+"en",
+"66"
+],
+[
+"en",
+"67"
+],
+[
+"en",
+"68"
+],
+[
+"en",
+"69"
+],
+[
+"en",
+"70"
+],
+[
+"en",
+"71"
+],
+[
+"en",
+"72"
+],
+[
+"en",
+"73"
+],
+[
+"en",
+"74"
+],
+[
+"en",
+"75"
+],
+[
+"en",
+"76"
+],
+[
+"en",
+"77"
+],
+[
+"en",
+"78"
+],
+[
+"en",
+"79"
+],
+[
+"en",
+"80"
+],
+[
+"en",
+"81"
+],
+[
+"en",
+"82"
+],
+[
+"en",
+"83"
+],
+[
+"en",
+"84"
+],
+[
+"en",
+"85"
+],
+[
+"en",
+"86"
+],
+[
+"en",
+"87"
+],
+[
+"en",
+"88"
+],
+[
+"en",
+"89"
+],
+[
+"en",
+"90"
+],
+[
+"en",
+"91"
+],
+[
+"en",
+"92"
+],
+[
+"en",
+"93"
+],
+[
+"en",
+"94"
+],
+[
+"en",
+"95"
+],
+[
+"en",
+"96"
+],
+[
+"en",
+"97"
+],
+[
+"en",
+"98"
+],
+[
+"en",
+"99"
+],
+[
+"en",
+"100"
+],
+[
+"en",
+"101"
+],
+[
+"en",
+"102"
+],
+[
+"en",
+"103"
+],
+[
+"en",
+"104"
+],
+[
+"en",
+"105"
+],
+[
+"en",
+"106"
+],
+[
+"en",
+"107"
+],
+[
+"en",
+"108"
+],
+[
+"en",
+"109"
+],
+[
+"en",
+"110"
+],
+[
+"en",
+"111"
+],
+[
+"en",
+"112"
+],
+[
+"en",
+"113"
+],
+[
+"en",
+"114"
+],
+[
+"en",
+"115"
+],
+[
+"en",
+"116"
+],
+[
+"en",
+"117"
+],
+[
+"en",
+"118"
+],
+[
+"en",
+"119"
+],
+[
+"en",
+"120"
+],
+[
+"en",
+"Little dog, little dog,"
+],
+[
+"en",
+"wag your tail."
+],
+[
+"en",
+"Little dog, little dog,"
+],
+[
+"en",
+"chase the snail."
+],
+[
+"en",
+"Moon up high,"
+],
+[
+"en",
+"stars so bright,"
+],
+[
+"en",
+"close your eyes,"
+],
+[
+"en",
+"good night, good night."
+],
+[
+"en",
+"One duck, two ducks,"
+],
+[
+"en",
+"splash, splash, splash."
+],
+[
+"en",
+"Three ducks, four ducks,"
+],
+[
+"en",
+"off they dash."
+],
+[
+"en",
+"Clap your hands,"
+],
+[
+"en",
+"tap your toes,"
+],
+[
+"en",
+"touch your ears,"
+],
+[
+"en",
+"and touch your nose."
+],
+[
+"de",
+"A wie Apfel."
+],
+[
+"de",
+"Apfel"
+],
+[
+"de",
+"Der Buchstabe A."
+],
+[
+"de",
+"B wie Ball."
+],
+[
+"de",
+"Ball"
+],
+[
+"de",
+"Der Buchstabe B."
+],
+[
+"de",
+"C wie Clown."
+],
+[
+"de",
+"Clown"
+],
+[
+"de",
+"Der Buchstabe C."
+],
+[
+"de",
+"D wie Delfin."
+],
+[
+"de",
+"Delfin"
+],
+[
+"de",
+"Der Buchstabe D."
+],
+[
+"de",
+"E wie Ente."
+],
+[
+"de",
+"Ente"
+],
+[
+"de",
+"Der Buchstabe E."
+],
+[
+"de",
+"F wie Fisch."
+],
+[
+"de",
+"Fisch"
+],
+[
+"de",
+"Der Buchstabe F."
+],
+[
+"de",
+"G wie Giraffe."
+],
+[
+"de",
+"Giraffe"
+],
+[
+"de",
+"Der Buchstabe G."
+],
+[
+"de",
+"H wie Hund."
+],
+[
+"de",
+"Hund"
+],
+[
+"de",
+"Der Buchstabe H."
+],
+[
+"de",
+"I wie Igel."
+],
+[
+"de",
+"Igel"
+],
+[
+"de",
+"Der Buchstabe I."
+],
+[
+"de",
+"J wie Jacke."
+],
+[
+"de",
+"Jacke"
+],
+[
+"de",
+"Der Buchstabe J."
+],
+[
+"de",
+"K wie Katze."
+],
+[
+"de",
+"Katze"
+],
+[
+"de",
+"Der Buchstabe K."
+],
+[
+"de",
+"L wie Löwe."
+],
+[
+"de",
+"Löwe"
+],
+[
+"de",
+"Der Buchstabe L."
+],
+[
+"de",
+"M wie Maus."
+],
+[
+"de",
+"Maus"
+],
+[
+"de",
+"Der Buchstabe M."
+],
+[
+"de",
+"N wie Nase."
+],
+[
+"de",
+"Nase"
+],
+[
+"de",
+"Der Buchstabe N."
+],
+[
+"de",
+"O wie Oma."
+],
+[
+"de",
+"Oma"
+],
+[
+"de",
+"Der Buchstabe O."
+],
+[
+"de",
+"P wie Pilz."
+],
+[
+"de",
+"Pilz"
+],
+[
+"de",
+"Der Buchstabe P."
+],
+[
+"de",
+"Q wie Qualle."
+],
+[
+"de",
+"Qualle"
+],
+[
+"de",
+"Der Buchstabe Q."
+],
+[
+"de",
+"R wie Rakete."
+],
+[
+"de",
+"Rakete"
+],
+[
+"de",
+"Der Buchstabe R."
+],
+[
+"de",
+"S wie Sonne."
+],
+[
+"de",
+"Sonne"
+],
+[
+"de",
+"Der Buchstabe S."
+],
+[
+"de",
+"T wie Tiger."
+],
+[
+"de",
+"Tiger"
+],
+[
+"de",
+"Der Buchstabe T."
+],
+[
+"de",
+"U wie Uhr."
+],
+[
+"de",
+"Uhr"
+],
+[
+"de",
+"Der Buchstabe U."
+],
+[
+"de",
+"V wie Vogel."
+],
+[
+"de",
+"Vogel"
+],
+[
+"de",
+"Der Buchstabe V."
+],
+[
+"de",
+"W wie Wal."
+],
+[
+"de",
+"Wal"
+],
+[
+"de",
+"Der Buchstabe W."
+],
+[
+"de",
+"X wie Xylofon."
+],
+[
+"de",
+"Xylofon"
+],
+[
+"de",
+"Der Buchstabe X."
+],
+[
+"de",
+"Y wie Yoga."
+],
+[
+"de",
+"Yoga"
+],
+[
+"de",
+"Der Buchstabe Y."
+],
+[
+"de",
+"Z wie Zug."
+],
+[
+"de",
+"Zug"
+],
+[
+"de",
+"Der Buchstabe Z."
+],
+[
+"de",
+"Bär"
+],
+[
+"de",
+"Löwe"
+],
+[
+"de",
+"Tür"
+],
+[
+"de",
+"Fuß"
+],
+[
+"de",
+"Schuh"
+],
+[
+"de",
+"Buch"
+],
+[
+"de",
+"Ei"
+],
+[
+"de",
+"Auto"
+],
+[
+"de",
+"Eule"
+],
+[
+"de",
+"Biene"
+],
+[
+"de",
+"Die Zahl 0."
+],
+[
+"de",
+"Die Zahl 1."
+],
+[
+"de",
+"Die Zahl 2."
+],
+[
+"de",
+"Die Zahl 3."
+],
+[
+"de",
+"Die Zahl 4."
+],
+[
+"de",
+"Die Zahl 5."
+],
+[
+"de",
+"Die Zahl 6."
+],
+[
+"de",
+"Die Zahl 7."
+],
+[
+"de",
+"Die Zahl 8."
+],
+[
+"de",
+"Die Zahl 9."
+],
+[
+"de",
+"Hut"
+],
+[
+"de",
+"Bus"
+],
+[
+"de",
+"Oma"
+],
+[
+"de",
+"Opa"
+],
+[
+"de",
+"Eis"
+],
+[
+"de",
+"Zug"
+],
+[
+"de",
+"Kuh"
+],
+[
+"de",
+"Uhr"
+],
+[
+"de",
+"Ei"
+],
+[
+"de",
+"Maus"
+],
+[
+"de",
+"Haus"
+],
+[
+"de",
+"Hund"
+],
+[
+"de",
+"Ball"
+],
+[
+"de",
+"Baum"
+],
+[
+"de",
+"Mond"
+],
+[
+"de",
+"Fisch"
+],
+[
+"de",
+"Buch"
+],
+[
+"de",
+"Auto"
+],
+[
+"de",
+"Ente"
+],
+[
+"de",
+"Biene"
+],
+[
+"de",
+"Stern"
+],
+[
+"de",
+"Frosch"
+],
+[
+"de",
+"Katze"
+],
+[
+"de",
+"Sonne"
+],
+[
+"de",
+"Bär"
+],
+[
+"de",
+"Brot"
+],
+[
+"de",
+"Boot"
+],
+[
+"de",
+"Hase"
+],
+[
+"de",
+"Affe"
+],
+[
+"de",
+"Käse"
+],
+[
+"de",
+"Apfel"
+],
+[
+"de",
+"Pferd"
+],
+[
+"de",
+"Blume"
+],
+[
+"de",
+"Stuhl"
+],
+[
+"de",
+"Schaf"
+],
+[
+"de",
+"Vogel"
+],
+[
+"de",
+"Löwe"
+],
+[
+"de",
+"Schuh"
+],
+[
+"de",
+"Milch"
+],
+[
+"de",
+"Regen"
+],
+[
+"de",
+"Wolke"
+],
+[
+"de",
+"Banane"
+],
+[
+"de",
+"Rakete"
+],
+[
+"de",
+"Kuchen"
+],
+[
+"de",
+"Schlange"
+],
+[
+"de",
+"Flugzeug"
+],
+[
+"de",
+"Der Hund ist groß."
+],
+[
+"de",
+"Ich sehe die Sonne."
+],
+[
+"de",
+"Der Fisch schwimmt."
+],
+[
+"de",
+"Der Frosch hüpft."
+],
+[
+"de",
+"Der Bus ist rot."
+],
+[
+"de",
+"Ich habe ein Buch."
+],
+[
+"de",
+"Die Ente ist nass."
+],
+[
+"de",
+"Da ist der Mond."
+],
+[
+"de",
+"Die Katze schläft."
+],
+[
+"de",
+"Die Maus ist klein."
+],
+[
+"de",
+"Die Schlange ist lang."
+],
+[
+"de",
+"Der Vogel singt."
+],
+[
+"de",
+"Mein Schuh ist blau."
+],
+[
+"de",
+"Der Bär schläft tief."
+],
+[
+"de",
+"Die Rakete ist schnell."
+],
+[
+"de",
+"Der Affe ist lustig."
+],
+[
+"de",
+"Ich esse gern Kuchen."
+],
+[
+"de",
+"Das Pferd läuft schnell."
+],
+[
+"de",
+"Super gemacht!"
+],
+[
+"de",
+"Wie viele?"
+],
+[
+"de",
+"Wo sind mehr?"
+],
+[
+"de",
+"Wo sind weniger?"
+],
+[
+"de",
+"Was kommt als Nächstes?"
+],
+[
+"de",
+"Was passt nicht dazu?"
+],
+[
+"de",
+"Wohin gehört das?"
+],
+[
+"de",
+"Was ist am größten?"
+],
+[
+"de",
+"Was ist am kleinsten?"
+],
+[
+"de",
+"plus"
+],
+[
+"de",
+"minus"
+],
+[
+"de",
+"mal"
+],
+[
+"de",
+"geteilt durch"
+],
+[
+"de",
+"0"
+],
+[
+"de",
+"1"
+],
+[
+"de",
+"2"
+],
+[
+"de",
+"3"
+],
+[
+"de",
+"4"
+],
+[
+"de",
+"5"
+],
+[
+"de",
+"6"
+],
+[
+"de",
+"7"
+],
+[
+"de",
+"8"
+],
+[
+"de",
+"9"
+],
+[
+"de",
+"10"
+],
+[
+"de",
+"11"
+],
+[
+"de",
+"12"
+],
+[
+"de",
+"13"
+],
+[
+"de",
+"14"
+],
+[
+"de",
+"15"
+],
+[
+"de",
+"16"
+],
+[
+"de",
+"17"
+],
+[
+"de",
+"18"
+],
+[
+"de",
+"19"
+],
+[
+"de",
+"20"
+],
+[
+"de",
+"21"
+],
+[
+"de",
+"22"
+],
+[
+"de",
+"23"
+],
+[
+"de",
+"24"
+],
+[
+"de",
+"25"
+],
+[
+"de",
+"26"
+],
+[
+"de",
+"27"
+],
+[
+"de",
+"28"
+],
+[
+"de",
+"29"
+],
+[
+"de",
+"30"
+],
+[
+"de",
+"31"
+],
+[
+"de",
+"32"
+],
+[
+"de",
+"33"
+],
+[
+"de",
+"34"
+],
+[
+"de",
+"35"
+],
+[
+"de",
+"36"
+],
+[
+"de",
+"37"
+],
+[
+"de",
+"38"
+],
+[
+"de",
+"39"
+],
+[
+"de",
+"40"
+],
+[
+"de",
+"41"
+],
+[
+"de",
+"42"
+],
+[
+"de",
+"43"
+],
+[
+"de",
+"44"
+],
+[
+"de",
+"45"
+],
+[
+"de",
+"46"
+],
+[
+"de",
+"47"
+],
+[
+"de",
+"48"
+],
+[
+"de",
+"49"
+],
+[
+"de",
+"50"
+],
+[
+"de",
+"51"
+],
+[
+"de",
+"52"
+],
+[
+"de",
+"53"
+],
+[
+"de",
+"54"
+],
+[
+"de",
+"55"
+],
+[
+"de",
+"56"
+],
+[
+"de",
+"57"
+],
+[
+"de",
+"58"
+],
+[
+"de",
+"59"
+],
+[
+"de",
+"60"
+],
+[
+"de",
+"61"
+],
+[
+"de",
+"62"
+],
+[
+"de",
+"63"
+],
+[
+"de",
+"64"
+],
+[
+"de",
+"65"
+],
+[
+"de",
+"66"
+],
+[
+"de",
+"67"
+],
+[
+"de",
+"68"
+],
+[
+"de",
+"69"
+],
+[
+"de",
+"70"
+],
+[
+"de",
+"71"
+],
+[
+"de",
+"72"
+],
+[
+"de",
+"73"
+],
+[
+"de",
+"74"
+],
+[
+"de",
+"75"
+],
+[
+"de",
+"76"
+],
+[
+"de",
+"77"
+],
+[
+"de",
+"78"
+],
+[
+"de",
+"79"
+],
+[
+"de",
+"80"
+],
+[
+"de",
+"81"
+],
+[
+"de",
+"82"
+],
+[
+"de",
+"83"
+],
+[
+"de",
+"84"
+],
+[
+"de",
+"85"
+],
+[
+"de",
+"86"
+],
+[
+"de",
+"87"
+],
+[
+"de",
+"88"
+],
+[
+"de",
+"89"
+],
+[
+"de",
+"90"
+],
+[
+"de",
+"91"
+],
+[
+"de",
+"92"
+],
+[
+"de",
+"93"
+],
+[
+"de",
+"94"
+],
+[
+"de",
+"95"
+],
+[
+"de",
+"96"
+],
+[
+"de",
+"97"
+],
+[
+"de",
+"98"
+],
+[
+"de",
+"99"
+],
+[
+"de",
+"100"
+],
+[
+"de",
+"101"
+],
+[
+"de",
+"102"
+],
+[
+"de",
+"103"
+],
+[
+"de",
+"104"
+],
+[
+"de",
+"105"
+],
+[
+"de",
+"106"
+],
+[
+"de",
+"107"
+],
+[
+"de",
+"108"
+],
+[
+"de",
+"109"
+],
+[
+"de",
+"110"
+],
+[
+"de",
+"111"
+],
+[
+"de",
+"112"
+],
+[
+"de",
+"113"
+],
+[
+"de",
+"114"
+],
+[
+"de",
+"115"
+],
+[
+"de",
+"116"
+],
+[
+"de",
+"117"
+],
+[
+"de",
+"118"
+],
+[
+"de",
+"119"
+],
+[
+"de",
+"120"
+],
+[
+"de",
+"Kleine Katze, kleine Katze,"
+],
+[
+"de",
+"leck die Tatze."
+],
+[
+"de",
+"Kleine Katze, kleine Maus,"
+],
+[
+"de",
+"lauf ins Haus."
+],
+[
+"de",
+"Mond und Stern,"
+],
+[
+"de",
+"ich hab dich gern."
+],
+[
+"de",
+"Augen zu,"
+],
+[
+"de",
+"schlaf in Ruh."
+],
+[
+"de",
+"Eine Ente, zwei Enten,"
+],
+[
+"de",
+"platsch, platsch, platsch."
+],
+[
+"de",
+"Drei Enten, vier Enten,"
+],
+[
+"de",
+"alle im Matsch."
+],
+[
+"de",
+"Hände klatschen,"
+],
+[
+"de",
+"Füße patschen,"
+],
+[
+"de",
+"Nase, Ohr,"
+],
+[
+"de",
+"und Kopf hervor."
+],
+[
+"en",
+"dog"
+],
+[
+"de",
+"der Hund"
+],
+[
+"de",
+"Wo ist der Hund?"
+],
+[
+"en",
+"Where is the dog?"
+],
+[
+"en",
+"cat"
+],
+[
+"de",
+"die Katze"
+],
+[
+"de",
+"Wo ist die Katze?"
+],
+[
+"en",
+"Where is the cat?"
+],
+[
+"en",
+"cow"
+],
+[
+"de",
+"die Kuh"
+],
+[
+"de",
+"Wo ist die Kuh?"
+],
+[
+"en",
+"Where is the cow?"
+],
+[
+"en",
+"pig"
+],
+[
+"de",
+"das Schwein"
+],
+[
+"de",
+"Wo ist das Schwein?"
+],
+[
+"en",
+"Where is the pig?"
+],
+[
+"en",
+"horse"
+],
+[
+"de",
+"das Pferd"
+],
+[
+"de",
+"Wo ist das Pferd?"
+],
+[
+"en",
+"Where is the horse?"
+],
+[
+"en",
+"sheep"
+],
+[
+"de",
+"das Schaf"
+],
+[
+"de",
+"Wo ist das Schaf?"
+],
+[
+"en",
+"Where is the sheep?"
+],
+[
+"en",
+"chicken"
+],
+[
+"de",
+"das Huhn"
+],
+[
+"de",
+"Wo ist das Huhn?"
+],
+[
+"en",
+"Where is the chicken?"
+],
+[
+"en",
+"duck"
+],
+[
+"de",
+"die Ente"
+],
+[
+"de",
+"Wo ist die Ente?"
+],
+[
+"en",
+"Where is the duck?"
+],
+[
+"en",
+"rabbit"
+],
+[
+"de",
+"der Hase"
+],
+[
+"de",
+"Wo ist der Hase?"
+],
+[
+"en",
+"Where is the rabbit?"
+],
+[
+"en",
+"bear"
+],
+[
+"de",
+"der Bär"
+],
+[
+"de",
+"Wo ist der Bär?"
+],
+[
+"en",
+"Where is the bear?"
+],
+[
+"en",
+"apple"
+],
+[
+"de",
+"der Apfel"
+],
+[
+"de",
+"Wo ist der Apfel?"
+],
+[
+"en",
+"Where is the apple?"
+],
+[
+"en",
+"banana"
+],
+[
+"de",
+"die Banane"
+],
+[
+"de",
+"Wo ist die Banane?"
+],
+[
+"en",
+"Where is the banana?"
+],
+[
+"en",
+"bread"
+],
+[
+"de",
+"das Brot"
+],
+[
+"de",
+"Wo ist das Brot?"
+],
+[
+"en",
+"Where is the bread?"
+],
+[
+"en",
+"milk"
+],
+[
+"de",
+"die Milch"
+],
+[
+"de",
+"Wo ist die Milch?"
+],
+[
+"en",
+"Where is the milk?"
+],
+[
+"en",
+"cheese"
+],
+[
+"de",
+"der Käse"
+],
+[
+"de",
+"Wo ist der Käse?"
+],
+[
+"en",
+"Where is the cheese?"
+],
+[
+"en",
+"carrot"
+],
+[
+"de",
+"die Karotte"
+],
+[
+"de",
+"Wo ist die Karotte?"
+],
+[
+"en",
+"Where is the carrot?"
+],
+[
+"en",
+"strawberry"
+],
+[
+"de",
+"die Erdbeere"
+],
+[
+"de",
+"Wo ist die Erdbeere?"
+],
+[
+"en",
+"Where is the strawberry?"
+],
+[
+"en",
+"egg"
+],
+[
+"de",
+"das Ei"
+],
+[
+"de",
+"Wo ist das Ei?"
+],
+[
+"en",
+"Where is the egg?"
+],
+[
+"en",
+"water"
+],
+[
+"de",
+"das Wasser"
+],
+[
+"de",
+"Wo ist das Wasser?"
+],
+[
+"en",
+"Where is the water?"
+],
+[
+"en",
+"red"
+],
+[
+"de",
+"Rot"
+],
+[
+"de",
+"Wo ist Rot?"
+],
+[
+"en",
+"Where is red?"
+],
+[
+"en",
+"blue"
+],
+[
+"de",
+"Blau"
+],
+[
+"de",
+"Wo ist Blau?"
+],
+[
+"en",
+"Where is blue?"
+],
+[
+"en",
+"green"
+],
+[
+"de",
+"Grün"
+],
+[
+"de",
+"Wo ist Grün?"
+],
+[
+"en",
+"Where is green?"
+],
+[
+"en",
+"yellow"
+],
+[
+"de",
+"Gelb"
+],
+[
+"de",
+"Wo ist Gelb?"
+],
+[
+"en",
+"Where is yellow?"
+],
+[
+"en",
+"orange"
+],
+[
+"de",
+"Orange"
+],
+[
+"de",
+"Wo ist Orange?"
+],
+[
+"en",
+"Where is orange?"
+],
+[
+"en",
+"purple"
+],
+[
+"de",
+"Lila"
+],
+[
+"de",
+"Wo ist Lila?"
+],
+[
+"en",
+"Where is purple?"
+],
+[
+"en",
+"black"
+],
+[
+"de",
+"Schwarz"
+],
+[
+"de",
+"Wo ist Schwarz?"
+],
+[
+"en",
+"Where is black?"
+],
+[
+"en",
+"white"
+],
+[
+"de",
+"Weiß"
+],
+[
+"de",
+"Wo ist Weiß?"
+],
+[
+"en",
+"Where is white?"
+],
+[
+"en",
+"eye"
+],
+[
+"de",
+"das Auge"
+],
+[
+"de",
+"Wo ist das Auge?"
+],
+[
+"en",
+"Where is the eye?"
+],
+[
+"en",
+"ear"
+],
+[
+"de",
+"das Ohr"
+],
+[
+"de",
+"Wo ist das Ohr?"
+],
+[
+"en",
+"Where is the ear?"
+],
+[
+"en",
+"nose"
+],
+[
+"de",
+"die Nase"
+],
+[
+"de",
+"Wo ist die Nase?"
+],
+[
+"en",
+"Where is the nose?"
+],
+[
+"en",
+"mouth"
+],
+[
+"de",
+"der Mund"
+],
+[
+"de",
+"Wo ist der Mund?"
+],
+[
+"en",
+"Where is the mouth?"
+],
+[
+"en",
+"hand"
+],
+[
+"de",
+"die Hand"
+],
+[
+"de",
+"Wo ist die Hand?"
+],
+[
+"en",
+"Where is the hand?"
+],
+[
+"en",
+"foot"
+],
+[
+"de",
+"der Fuß"
+],
+[
+"de",
+"Wo ist der Fuß?"
+],
+[
+"en",
+"Where is the foot?"
+],
+[
+"en",
+"tooth"
+],
+[
+"de",
+"der Zahn"
+],
+[
+"de",
+"Wo ist der Zahn?"
+],
+[
+"en",
+"Where is the tooth?"
+],
+[
+"en",
+"house"
+],
+[
+"de",
+"das Haus"
+],
+[
+"de",
+"Wo ist das Haus?"
+],
+[
+"en",
+"Where is the house?"
+],
+[
+"en",
+"bed"
+],
+[
+"de",
+"das Bett"
+],
+[
+"de",
+"Wo ist das Bett?"
+],
+[
+"en",
+"Where is the bed?"
+],
+[
+"en",
+"chair"
+],
+[
+"de",
+"der Stuhl"
+],
+[
+"de",
+"Wo ist der Stuhl?"
+],
+[
+"en",
+"Where is the chair?"
+],
+[
+"en",
+"car"
+],
+[
+"de",
+"das Auto"
+],
+[
+"de",
+"Wo ist das Auto?"
+],
+[
+"en",
+"Where is the car?"
+],
+[
+"en",
+"ball"
+],
+[
+"de",
+"der Ball"
+],
+[
+"de",
+"Wo ist der Ball?"
+],
+[
+"en",
+"Where is the ball?"
+],
+[
+"en",
+"book"
+],
+[
+"de",
+"das Buch"
+],
+[
+"de",
+"Wo ist das Buch?"
+],
+[
+"en",
+"Where is the book?"
+],
+[
+"en",
+"teddy"
+],
+[
+"de",
+"der Teddy"
+],
+[
+"de",
+"Wo ist der Teddy?"
+],
+[
+"en",
+"Where is the teddy?"
+],
+[
+"en",
+"shoe"
+],
+[
+"de",
+"der Schuh"
+],
+[
+"de",
+"Wo ist der Schuh?"
+],
+[
+"en",
+"Where is the shoe?"
+],
+[
+"en",
+"moon"
+],
+[
+"de",
+"der Mond"
+],
+[
+"de",
+"Wo ist der Mond?"
+],
+[
+"en",
+"Where is the moon?"
+],
+[
+"en",
+"sun"
+],
+[
+"de",
+"die Sonne"
+],
+[
+"de",
+"Wo ist die Sonne?"
+],
+[
+"en",
+"Where is the sun?"
+],
+[
+"en",
+"mummy"
+],
+[
+"de",
+"Mama"
+],
+[
+"de",
+"Wo ist Mama?"
+],
+[
+"en",
+"Where is mummy?"
+],
+[
+"en",
+"daddy"
+],
+[
+"de",
+"Papa"
+],
+[
+"de",
+"Wo ist Papa?"
+],
+[
+"en",
+"Where is daddy?"
+],
+[
+"en",
+"baby"
+],
+[
+"de",
+"das Baby"
+],
+[
+"de",
+"Wo ist das Baby?"
+],
+[
+"en",
+"Where is the baby?"
+],
+[
+"en",
+"grandma"
+],
+[
+"de",
+"Oma"
+],
+[
+"de",
+"Wo ist Oma?"
+],
+[
+"en",
+"Where is grandma?"
+],
+[
+"en",
+"grandpa"
+],
+[
+"de",
+"Opa"
+],
+[
+"de",
+"Wo ist Opa?"
+],
+[
+"en",
+"Where is grandpa?"
+],
+[
+"en",
+"Let us count."
+],
+[
+"en",
+"There are"
+],
+[
+"en",
+"Here are"
+],
+[
+"en",
+"more come"
+],
+[
+"en",
+"Now we count them all."
+],
+[
+"en",
+"is"
+],
+[
+"en",
+"go away"
+],
+[
+"en",
+"We count what is left."
+],
+[
+"en",
+"groups. Each group has"
+],
+[
+"en",
+"We share them between"
+],
+[
+"en",
+"plates"
+],
+[
+"en",
+"Each plate has"
+],
+[
+"de",
+"Wir zählen."
+],
+[
+"de",
+"Es sind"
+],
+[
+"de",
+"Hier sind"
+],
+[
+"de",
+"kommen dazu"
+],
+[
+"de",
+"Jetzt zählen wir alle."
+],
+[
+"de",
+"ist"
+],
+[
+"de",
+"gehen weg"
+],
+[
+"de",
+"Wir zählen, was bleibt."
+],
+[
+"de",
+"Gruppen. In jeder Gruppe sind"
+],
+[
+"de",
+"Wir teilen sie auf"
+],
+[
+"de",
+"Teller auf"
+],
+[
+"de",
+"Auf jedem Teller sind"
+]
+]
