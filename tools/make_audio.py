@@ -5,15 +5,17 @@
    in a browser while this script runs with --collect: the page posts the list of
    sentences to it, saved as audio/list.json.
 2. Run without arguments: every entry in audio/list.json becomes audio/<lang>-<hash>.mp3
-   and audio/index.json lists what exists.
+   and audio/index.json lists what exists. Delete the mp3 files to record them again.
 Needs macOS `say` and `ffmpeg`.
 """
 import json, os, struct, subprocess, sys, tempfile, re
+from concurrent.futures import ThreadPoolExecutor
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'audio')
 VOICE = {'de': 'Anna', 'en': 'Daniel'}
-RATE = '150'  # words per minute; slower than the default, for children
+TEMPO = '0.88'  # speed of normal clips: a little slower than the voice's default, for children
+SLOW = '0.6'    # letters and sound pairs, for a five-year-old
 
 
 def norm(x):
@@ -54,28 +56,35 @@ def collect():
 
 def build():
     items = json.load(open(os.path.join(ROOT, 'list.json'), encoding='utf-8'))
-    ids, made = [], 0
-    for lang, text in items:
+    ids, made, todo = [], 0, {}
+    for it in items:  # [lang, text] or [lang, text, 1] for a slow recording; slow wins when a text appears twice
+        lang, text, slow = it[0], it[1], len(it) > 2
         key = norm(text)
-        if not key:
-            continue
-        cid = lang + '-' + ahash(lang + '|' + key)
-        ids.append(cid)
+        if key:
+            cid = lang + '-' + ahash(lang + '|' + key)
+            todo[cid] = (lang, text, slow or todo.get(cid, (0, 0, False))[2])
+    def one(cid):
+        lang, text, slow = todo[cid]
         out = os.path.join(ROOT, cid + '.mp3')
         if os.path.exists(out):
-            continue
+            return 0
+        spoken = ' [[slnc 320]] '.join(text.split()) if slow else text  # a short pause between the words of slow clips
         with tempfile.TemporaryDirectory() as d:
             aiff = os.path.join(d, 'a.aiff')
             for attempt in range(4):  # `say` sometimes hangs; give up after 20 s and try again
                 try:
-                    subprocess.run(['say', '-v', VOICE[lang], '-r', RATE, '-o', aiff, text], check=True, timeout=20)
+                    subprocess.run(['say', '-v', VOICE[lang], '-o', aiff, spoken], check=True, timeout=20)
                     break
                 except subprocess.TimeoutExpired:
                     if attempt == 3:
                         raise
-            subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', aiff, '-ac', '1', '-ar', '22050',
-                            '-b:a', '40k', out], check=True)
-        made += 1
+            # `say -r` hardly slows these voices, so stretch the sound instead (pitch stays the same)
+            subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', aiff, '-filter:a', 'atempo=' + (SLOW if slow else TEMPO),
+                            '-ac', '1', '-ar', '22050', '-b:a', '40k', out], check=True)
+        return 1
+    ids = list(todo)
+    with ThreadPoolExecutor(4) as ex:
+        made = sum(ex.map(one, ids))
     ids = sorted(set(ids))
     json.dump(ids, open(os.path.join(ROOT, 'index.json'), 'w'))
     print(len(ids), 'clips,', made, 'new')

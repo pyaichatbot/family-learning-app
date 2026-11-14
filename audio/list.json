@@ -1,7 +1,8 @@
 [
 [
 "en",
-"A is for apple."
+"A is for apple.",
+1
 ],
 [
 "en",
@@ -13,7 +14,8 @@
 ],
 [
 "en",
-"B is for ball."
+"B is for ball.",
+1
 ],
 [
 "en",
@@ -25,7 +27,8 @@
 ],
 [
 "en",
-"C is for cat."
+"C is for cat.",
+1
 ],
 [
 "en",
@@ -37,7 +40,8 @@
 ],
 [
 "en",
-"D is for dog."
+"D is for dog.",
+1
 ],
 [
 "en",
@@ -49,7 +53,8 @@
 ],
 [
 "en",
-"E is for egg."
+"E is for egg.",
+1
 ],
 [
 "en",
@@ -61,7 +66,8 @@
 ],
 [
 "en",
-"F is for fish."
+"F is for fish.",
+1
 ],
 [
 "en",
@@ -73,7 +79,8 @@
 ],
 [
 "en",
-"G is for goat."
+"G is for goat.",
+1
 ],
 [
 "en",
@@ -85,7 +92,8 @@
 ],
 [
 "en",
-"H is for hat."
+"H is for hat.",
+1
 ],
 [
 "en",
@@ -97,7 +105,8 @@
 ],
 [
 "en",
-"I is for iguana."
+"I is for iguana.",
+1
 ],
 [
 "en",
@@ -109,7 +118,8 @@
 ],
 [
 "en",
-"J is for juice."
+"J is for juice.",
+1
 ],
 [
 "en",
@@ -121,7 +131,8 @@
 ],
 [
 "en",
-"K is for kite."
+"K is for kite.",
+1
 ],
 [
 "en",
@@ -133,7 +144,8 @@
 ],
 [
 "en",
-"L is for lion."
+"L is for lion.",
+1
 ],
 [
 "en",
@@ -145,7 +157,8 @@
 ],
 [
 "en",
-"M is for moon."
+"M is for moon.",
+1
 ],
 [
 "en",
@@ -157,7 +170,8 @@
 ],
 [
 "en",
-"N is for nose."
+"N is for nose.",
+1
 ],
 [
 "en",
@@ -169,7 +183,8 @@
 ],
 [
 "en",
-"O is for octopus."
+"O is for octopus.",
+1
 ],
 [
 "en",
@@ -181,7 +196,8 @@
 ],
 [
 "en",
-"P is for pig."
+"P is for pig.",
+1
 ],
 [
 "en",
@@ -193,7 +209,8 @@
 ],
 [
 "en",
-"Q is for queen."
+"Q is for queen.",
+1
 ],
 [
 "en",
@@ -205,7 +222,8 @@
 ],
 [
 "en",
-"R is for rabbit."
+"R is for rabbit.",
+1
 ],
 [
 "en",
@@ -217,7 +235,8 @@
 ],
 [
 "en",
-"S is for sun."
+"S is for sun.",
+1
 ],
 [
 "en",
@@ -229,7 +248,8 @@
 ],
 [
 "en",
-"T is for tree."
+"T is for tree.",
+1
 ],
 [
 "en",
@@ -241,7 +261,8 @@
 ],
 [
 "en",
-"U is for umbrella."
+"U is for umbrella.",
+1
 ],
 [
 "en",
@@ -253,7 +274,8 @@
 ],
 [
 "en",
-"V is for van."
+"V is for van.",
+1
 ],
 [
 "en",
@@ -265,7 +287,8 @@
 ],
 [
 "en",
-"W is for whale."
+"W is for whale.",
+1
 ],
 [
 "en",
@@ -277,7 +300,8 @@
 ],
 [
 "en",
-"X, as in box."
+"X, as in box.",
+1
 ],
 [
 "en",
@@ -289,7 +313,8 @@
 ],
 [
 "en",
-"Y is for yo-yo."
+"Y is for yo-yo.",
+1
 ],
 [
 "en",
@@ -301,7 +326,8 @@
 ],
 [
 "en",
-"Z is for zebra."
+"Z is for zebra.",
+1
 ],
 [
 "en",
@@ -313,35 +339,43 @@
 ],
 [
 "en",
-"ship"
+"ship",
+1
 ],
 [
 "en",
-"cheese"
+"cheese",
+1
 ],
 [
 "en",
-"three"
+"three",
+1
 ],
 [
 "en",
-"moon"
+"moon",
+1
 ],
 [
 "en",
-"bee"
+"bee",
+1
 ],
 [
 "en",
-"rain"
+"rain",
+1
 ],
 [
 "en",
-"boat"
+"boat",
+1
 ],
 [
 "en",
-"car"
+"car",
+1
 ],
 [
 "en",
@@ -1245,7 +1279,8 @@
 ],
 [
 "de",
-"A wie Apfel."
+"A wie Apfel.",
+1
 ],
 [
 "de",
@@ -1257,7 +1292,8 @@
 ],
 [
 "de",
-"B wie Ball."
+"B wie Ball.",
+1
 ],
 [
 "de",
@@ -1269,7 +1305,8 @@
 ],
 [
 "de",
-"C wie Clown."
+"C wie Clown.",
+1
 ],
 [
 "de",
@@ -1281,7 +1318,8 @@
 ],
 [
 "de",
-"D wie Delfin."
+"D wie Delfin.",
+1
 ],
 [
 "de",
@@ -1293,7 +1331,8 @@
 ],
 [
 "de",
-"E wie Ente."
+"E wie Ente.",
+1
 ],
 [
 "de",
@@ -1305,7 +1344,8 @@
 ],
 [
 "de",
-"F wie Fisch."
+"F wie Fisch.",
+1
 ],
 [
 "de",
@@ -1317,7 +1357,8 @@
 ],
 [
 "de",
-"G wie Giraffe."
+"G wie Giraffe.",
+1
 ],
 [
 "de",
@@ -1329,7 +1370,8 @@
 ],
 [
 "de",
-"H wie Hund."
+"H wie Hund.",
+1
 ],
 [
 "de",
@@ -1341,7 +1383,8 @@
 ],
 [
 "de",
-"I wie Igel."
+"I wie Igel.",
+1
 ],
 [
 "de",
@@ -1353,7 +1396,8 @@
 ],
 [
 "de",
-"J wie Jacke."
+"J wie Jacke.",
+1
 ],
 [
 "de",
@@ -1365,7 +1409,8 @@
 ],
 [
 "de",
-"K wie Katze."
+"K wie Katze.",
+1
 ],
 [
 "de",
@@ -1377,7 +1422,8 @@
 ],
 [
 "de",
-"L wie Löwe."
+"L wie Löwe.",
+1
 ],
 [
 "de",
@@ -1389,7 +1435,8 @@
 ],
 [
 "de",
-"M wie Maus."
+"M wie Maus.",
+1
 ],
 [
 "de",
@@ -1401,7 +1448,8 @@
 ],
 [
 "de",
-"N wie Nase."
+"N wie Nase.",
+1
 ],
 [
 "de",
@@ -1413,7 +1461,8 @@
 ],
 [
 "de",
-"O wie Oma."
+"O wie Oma.",
+1
 ],
 [
 "de",
@@ -1425,7 +1474,8 @@
 ],
 [
 "de",
-"P wie Pilz."
+"P wie Pilz.",
+1
 ],
 [
 "de",
@@ -1437,7 +1487,8 @@
 ],
 [
 "de",
-"Q wie Qualle."
+"Q wie Qualle.",
+1
 ],
 [
 "de",
@@ -1449,7 +1500,8 @@
 ],
 [
 "de",
-"R wie Rakete."
+"R wie Rakete.",
+1
 ],
 [
 "de",
@@ -1461,7 +1513,8 @@
 ],
 [
 "de",
-"S wie Sonne."
+"S wie Sonne.",
+1
 ],
 [
 "de",
@@ -1473,7 +1526,8 @@
 ],
 [
 "de",
-"T wie Tiger."
+"T wie Tiger.",
+1
 ],
 [
 "de",
@@ -1485,7 +1539,8 @@
 ],
 [
 "de",
-"U wie Uhr."
+"U wie Uhr.",
+1
 ],
 [
 "de",
@@ -1497,7 +1552,8 @@
 ],
 [
 "de",
-"V wie Vogel."
+"V wie Vogel.",
+1
 ],
 [
 "de",
@@ -1509,7 +1565,8 @@
 ],
 [
 "de",
-"W wie Wal."
+"W wie Wal.",
+1
 ],
 [
 "de",
@@ -1521,7 +1578,8 @@
 ],
 [
 "de",
-"X wie Xylofon."
+"X wie Xylofon.",
+1
 ],
 [
 "de",
@@ -1533,7 +1591,8 @@
 ],
 [
 "de",
-"Y wie Yoga."
+"Y wie Yoga.",
+1
 ],
 [
 "de",
@@ -1545,7 +1604,8 @@
 ],
 [
 "de",
-"Z wie Zug."
+"Z wie Zug.",
+1
 ],
 [
 "de",
@@ -1557,43 +1617,53 @@
 ],
 [
 "de",
-"Bär"
+"Bär",
+1
 ],
 [
 "de",
-"Löwe"
+"Löwe",
+1
 ],
 [
 "de",
-"Tür"
+"Tür",
+1
 ],
 [
 "de",
-"Fuß"
+"Fuß",
+1
 ],
 [
 "de",
-"Schuh"
+"Schuh",
+1
 ],
 [
 "de",
-"Buch"
+"Buch",
+1
 ],
 [
 "de",
-"Ei"
+"Ei",
+1
 ],
 [
 "de",
-"Auto"
+"Auto",
+1
 ],
 [
 "de",
-"Eule"
+"Eule",
+1
 ],
 [
 "de",
-"Biene"
+"Biene",
+1
 ],
 [
 "de",

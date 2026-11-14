@@ -301,8 +301,10 @@ function webSpeak(ss,parts){try{
   parts.forEach(p=>{const u=new SpeechSynthesisUtterance(p.text),de=p.lang==='de';u.lang=de?'de-DE':'en-GB';u.rate=p.rate||0.85;
     const vs=deviceVoices(de?'de':'en'),v=(de&&vs.find(x=>x.name===deVoice))||vs.find(x=>vtag(x)===(de?'de-de':'en-gb'))||vs[0];if(v){u.voice=v;u.lang=v.lang.replace('_','-');}ss.speak(u);});}catch(e){}}
 /* Recorded clips (audio/*.mp3, made by tools/make_audio.py) play on every device, including TVs without a speech engine. Anything not recorded falls back to the device voice. */
-let AUD=null,clipEl=null,clipRun=0;
-try{fetch('audio/index.json').then(r=>r.ok?r.json():null).then(a=>{if(Array.isArray(a)){AUD=new Set(a);if(!cur&&last)reshow();}}).catch(()=>{});}catch(e){}
+let AUD=null,clipEl=null,clipRun=0,clipMsg='not tried yet';
+const isTV=/Web0S|webOS|SmartTV|Smart-TV|Tizen|AFT|Silk|BRAVIA|TV Safari/i.test(navigator.userAgent);
+let audErr='';
+try{fetch('audio/index.json').then(r=>{if(!r.ok)audErr='list '+r.status;return r.ok?r.json():null;}).then(a=>{if(Array.isArray(a)){AUD=new Set(a);if(!cur&&last)reshow();}}).catch(e=>{audErr='list failed: '+(e&&e.name||e);});}catch(e){audErr='no fetch';}
 const anorm=x=>String(x).replace(/^[\s.!?,…]+|[\s.!?,…]+$/g,'');
 function ahash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619);}return ('0000000'+(h>>>0).toString(16)).slice(-8);}
 console.assert(ahash('de|Katze')==='27e07373','ahash self-check');
@@ -317,13 +319,15 @@ function clipsFor(p){
 function stopClips(){clipRun++;if(clipEl){try{clipEl.pause();}catch(e){}}}
 function playClips(list){
   stopClips();const my=clipRun;let i=0;clipEl=clipEl||new Audio();
-  const next=()=>{if(my!==clipRun||i>=list.length)return;const c=list[i++];clipEl.onended=next;clipEl.onerror=next;clipEl.src='audio/'+c.id+'.mp3';
-    clipEl.defaultPlaybackRate=c.rate;clipEl.playbackRate=c.rate;try{const pr=clipEl.play();if(pr&&pr.catch)pr.catch(()=>{});}catch(e){}};
+  const next=()=>{if(my!==clipRun||i>=list.length)return;const c=list[i++];clipEl.onended=next;clipEl.onplaying=()=>{clipMsg='playing';};
+    clipEl.onerror=()=>{clipMsg='file error '+(clipEl.error?clipEl.error.code:'?');next();};clipEl.src='audio/'+c.id+'.mp3';
+    /* Never change playbackRate: TV media players go silent at any speed but normal. Slow clips are recorded slow. */
+    try{const pr=clipEl.play();if(pr&&pr.catch)pr.catch(e=>{clipMsg='blocked: '+(e&&e.name||e);});}catch(e){clipMsg='play failed: '+(e&&e.name||e);}};
   next();
 }
 function sayParts(parts){
   if(voiceMode==='auto'&&AUD){const cl=[];let ok=true;
-    for(let i=0;i<parts.length&&ok;i++){const c=clipsFor(parts[i]),rate=Math.max(0.55,Math.min(1.1,(parts[i].rate||0.85)/0.85));if(c)c.forEach(id=>cl.push({id,rate}));else ok=false;}
+    for(let i=0;i<parts.length&&ok;i++){const c=clipsFor(parts[i]);if(c)c.forEach(id=>cl.push({id}));else ok=false;}
     if(ok&&cl.length){try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}playClips(cl);return;}}
   stopClips();
   parts=parts.map(p=>p.lang==='de'?Object.assign({},p,{text:String(p.text).replace(/\d+/g,m=>deNum(+m))}):p);
@@ -428,14 +432,14 @@ function home(){
 }
 function voicePanel(){
   const de=deviceVoices('de'),usingClaude=ctts&&voiceMode!=='device';
-  const info='Version 7 · '+((navigator.userAgent.match(/Chrome\/\d+|Version\/[\d.]+|Web0S|webOS[^;)]*|Silk\/\d+/g)||[]).join(' ')||'unknown browser')+' · '+(AUD&&voiceMode==='auto'?AUD.size+' recorded clips, otherwise ':'')+(usingClaude?'Claude voice':'device voice'+(window.speechSynthesis?(de.length?', '+de.length+' German voice'+(de.length>1?'s':'')+' found':', no German voice found'):', not available in this view'));
+  const info='Version 7 · '+((navigator.userAgent.match(/Chrome\/\d+|Version\/[\d.]+|Web0S|webOS[^;)]*|Silk\/\d+/g)||[]).join(' ')||'unknown browser')+' · '+(isTV?'TV · ':'')+(AUD?AUD.size+' recorded clips'+(voiceMode==='auto'?', otherwise ':' (switched off), '):'no recordings loaded'+(audErr?' ('+audErr+')':'')+', ')+(usingClaude?'Claude voice':'device voice'+(window.speechSynthesis?(de.length?', '+de.length+' German voice'+(de.length>1?'s':'')+' found':', no German voice found'):', not available in this view'));
   const set=m=>{voiceMode=m;try{localStorage.setItem('fla-voice',m);}catch(e){}reshow();};
   const sel=de.length>1?el('select',{id:'de-voice','aria-label':'German device voice',onchange:ev=>{deVoice=ev.target.value;try{localStorage.setItem('fla-devoice',deVoice);}catch(e){}}},de.map(v=>el('option',{value:v.name,selected:v.name===deVoice},v.name+' ('+v.lang+')'))):null;
   return el('details',{class:'panel'},el('summary',null,'Voice settings'),el('p',{class:'note'},info),
     el('div',{class:'chips',role:'group','aria-label':'Voice'},[['auto','Recordings first'],['claude','Claude voice'],['device','Device voice']].map(([m,lb])=>el('button',{type:'button',class:'chip'+(voiceMode===m?' on':''),'aria-pressed':String(voiceMode===m),disabled:m==='claude'&&!ctts,onclick:()=>set(m)},lb))),
     sel,
-    el('div',{class:'row'},el('button',{class:'btn alt',type:'button',onclick:()=>say('Der Vogel fliegt. J wie Jacke. Wir haben 21 Äpfel.','de')},'Test German'),el('button',{class:'btn alt',type:'button',onclick:()=>say('The bird can fly. A is for apple.','en')},'Test English')),
-    el('p',{class:'note'},'German is right when you hear "Fogel" and "Yacke". If not, switch the voice above and test again.'));
+    el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:ev=>{const out=ev.target.parentNode.nextSibling;clipMsg='no clip for this';voiceMode='auto';sayParts([{text:'Katze',lang:'de'},{text:'cat',lang:'en'}]);out.textContent='Recording test: starting …';setTimeout(()=>{out.textContent='Recording test: '+clipMsg+'.';},2500);}},'Test recording'),el('button',{class:'btn alt',type:'button',onclick:()=>say('Der Vogel fliegt. J wie Jacke. Wir haben 21 Äpfel.','de')},'Test German'),el('button',{class:'btn alt',type:'button',onclick:()=>say('The bird can fly. A is for apple.','en')},'Test English')),
+    el('p',{class:'note','aria-live':'polite'},'Test recording plays two recorded words (Katze, cat). The other two buttons use the device voice, which TVs do not have. German is right when you hear "Fogel" and "Yacke". If not, switch the voice above and test again.'));
 }
 function progress(){
   const keys=['letters','first','build','miss','match','sent','trace','count','hear','more','add','times','share','next','pat','odd','sort','size','mem'];
@@ -509,7 +513,7 @@ function addStarOnce(key,id){const k=cur+key+lang+id;if(seen.has(k))return;seen.
 function letters(){
   const P=PACK[lang];let sel=null;
   const grid=(list,pair)=>el('div',{class:'letters'},list.map(l=>el('button',{type:'button',class:l===sel?'on':null,onclick:()=>{
-    sel=l;addStarOnce('letters',l[0]);reshow();sayParts([{text:pair?l[1]:letterPhrase(l,lang),lang,rate:0.4}]);}},pair?l[0]:l[0].toUpperCase()+l[0])));
+    sel=l;addStarOnce('letters',l[0]);reshow();sayParts([{text:pair?l[1]:letterPhrase(l,lang),lang,rate:0.7}]);}},pair?l[0]:l[0].toUpperCase()+l[0])));
   const body=()=>el('div',{class:'game'},
     el('div',{class:'lcard','aria-live':'polite'},sel?[el('span',{class:'big'},P.pairs.includes(sel)?sel[0]:sel[0].toUpperCase()+' '+sel[0]),el('span',{class:'pic'},sel[2]),el('span',{class:'wd'},sel[1])]:el('span',{class:'ask'},t('tap'))),
     grid(P.letters,false),el('h2',{style:'align-self:flex-start;color:var(--sky);font-size:1.2rem'},t('pairs')),grid(P.pairs,true));
@@ -1636,10 +1640,10 @@ function mistakes(){
 
 /* ?audiolist=1 posts every fixed sentence to tools/make_audio.py --collect, which records them. */
 if(/[?&]audiolist=1/.test(location.search)){
-  const L=[],add=(lg,x)=>L.push([lg,String(x)]);
+  const L=[],add=(lg,x,slow)=>L.push(slow?[lg,String(x),1]:[lg,String(x)]);
   ['en','de'].forEach(lg=>{const P=PACK[lg];
-    P.letters.forEach(l=>{add(lg,letterPhrase(l,lg));add(lg,l[1]);add(lg,charPhrase(l[0],lg));});
-    P.pairs.forEach(l=>add(lg,l[1]));'0123456789'.split('').forEach(c=>add(lg,charPhrase(c,lg)));
+    P.letters.forEach(l=>{add(lg,letterPhrase(l,lg),1);add(lg,l[1]);add(lg,charPhrase(l[0],lg));});
+    P.pairs.forEach(l=>add(lg,l[1],1));'0123456789'.split('').forEach(c=>add(lg,charPhrase(c,lg)));
     P.words.forEach(w=>add(lg,w[0]));P.sentences.forEach(x=>add(lg,x[0]));
     ['well','many','wmore','wfewer','wnext','wodd','wsort','big','small','plus','minus','timesw','sharew'].forEach(k=>add(lg,T[lg][k]));
     for(let n=0;n<=120;n++)add(lg,n);
