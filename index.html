@@ -300,7 +300,32 @@ let sayTimer=null;
 function webSpeak(ss,parts){try{
   parts.forEach(p=>{const u=new SpeechSynthesisUtterance(p.text),de=p.lang==='de';u.lang=de?'de-DE':'en-GB';u.rate=p.rate||0.85;
     const vs=deviceVoices(de?'de':'en'),v=(de&&vs.find(x=>x.name===deVoice))||vs.find(x=>vtag(x)===(de?'de-de':'en-gb'))||vs[0];if(v){u.voice=v;u.lang=v.lang.replace('_','-');}ss.speak(u);});}catch(e){}}
+/* Recorded clips (audio/*.mp3, made by tools/make_audio.py) play on every device, including TVs without a speech engine. Anything not recorded falls back to the device voice. */
+let AUD=null,clipEl=null,clipRun=0;
+try{fetch('audio/index.json').then(r=>r.ok?r.json():null).then(a=>{if(Array.isArray(a))AUD=new Set(a);}).catch(()=>{});}catch(e){}
+const anorm=x=>String(x).replace(/^[\s.!?,…]+|[\s.!?,…]+$/g,'');
+function ahash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619);}return ('0000000'+(h>>>0).toString(16)).slice(-8);}
+console.assert(ahash('de|Katze')==='27e07373','ahash self-check');
+const clipId=(lg,x)=>lg+'-'+ahash(lg+'|'+x);
+function clipsFor(p){
+  if(!AUD)return null;const whole=clipId(p.lang,anorm(p.text));if(AUD.has(whole))return [whole];
+  /* Sentences built around numbers ("3 plus 4 is 7") are stitched from number clips and phrase clips. */
+  const out=[],toks=String(p.text).match(/\d+|[^\d]+/g)||[];
+  for(let i=0;i<toks.length;i++){const n=anorm(toks[i]);if(!n)continue;const id=clipId(p.lang,n);if(!AUD.has(id))return null;out.push(id);}
+  return out.length>1?out:null;
+}
+function stopClips(){clipRun++;if(clipEl){try{clipEl.pause();}catch(e){}}}
+function playClips(list){
+  stopClips();const my=clipRun;let i=0;clipEl=clipEl||new Audio();
+  const next=()=>{if(my!==clipRun||i>=list.length)return;const c=list[i++];clipEl.onended=next;clipEl.onerror=next;clipEl.src='audio/'+c.id+'.mp3';
+    clipEl.defaultPlaybackRate=c.rate;clipEl.playbackRate=c.rate;try{const pr=clipEl.play();if(pr&&pr.catch)pr.catch(()=>{});}catch(e){}};
+  next();
+}
 function sayParts(parts){
+  if(voiceMode==='auto'&&AUD){const cl=[];let ok=true;
+    for(let i=0;i<parts.length&&ok;i++){const c=clipsFor(parts[i]),rate=Math.max(0.55,Math.min(1.1,(parts[i].rate||0.85)/0.85));if(c)c.forEach(id=>cl.push({id,rate}));else ok=false;}
+    if(ok&&cl.length){try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}playClips(cl);return;}}
+  stopClips();
   parts=parts.map(p=>p.lang==='de'?Object.assign({},p,{text:String(p.text).replace(/\d+/g,m=>deNum(+m))}):p);
   if(ctts&&voiceMode!=='device'){try{const one=parts.every(p=>p.lang===parts[0].lang),tag=l=>l==='de'?'de-DE':'en-US';
     ctts.speak(parts.map(p=>({text:p.text,language:tag(p.lang),rate:p.rate||0.9})),one?{language:tag(parts[0].lang)}:undefined).catch(e=>{if(e&&e.code==='not_granted'){ctts=null;webSay(parts);}});}catch(e){webSay(parts);}}
@@ -403,11 +428,11 @@ function home(){
 }
 function voicePanel(){
   const de=deviceVoices('de'),usingClaude=ctts&&voiceMode!=='device';
-  const info='Version 7 · '+((navigator.userAgent.match(/Chrome\/\d+|Version\/[\d.]+|Web0S|webOS[^;)]*|Silk\/\d+/g)||[]).join(' ')||'unknown browser')+' · Now speaking with: '+(usingClaude?'Claude voice':'device voice'+(window.speechSynthesis?(de.length?', '+de.length+' German voice'+(de.length>1?'s':'')+' found':', no German voice found'):', not available in this view'));
+  const info='Version 7 · '+((navigator.userAgent.match(/Chrome\/\d+|Version\/[\d.]+|Web0S|webOS[^;)]*|Silk\/\d+/g)||[]).join(' ')||'unknown browser')+' · '+(AUD&&voiceMode==='auto'?AUD.size+' recorded clips, otherwise ':'')+(usingClaude?'Claude voice':'device voice'+(window.speechSynthesis?(de.length?', '+de.length+' German voice'+(de.length>1?'s':'')+' found':', no German voice found'):', not available in this view'));
   const set=m=>{voiceMode=m;try{localStorage.setItem('fla-voice',m);}catch(e){}reshow();};
   const sel=de.length>1?el('select',{id:'de-voice','aria-label':'German device voice',onchange:ev=>{deVoice=ev.target.value;try{localStorage.setItem('fla-devoice',deVoice);}catch(e){}}},de.map(v=>el('option',{value:v.name,selected:v.name===deVoice},v.name+' ('+v.lang+')'))):null;
   return el('details',{class:'panel'},el('summary',null,'Voice settings'),el('p',{class:'note'},info),
-    el('div',{class:'chips',role:'group','aria-label':'Voice'},[['auto','Automatic'],['claude','Claude voice'],['device','Device voice']].map(([m,lb])=>el('button',{type:'button',class:'chip'+(voiceMode===m?' on':''),'aria-pressed':String(voiceMode===m),disabled:m==='claude'&&!ctts,onclick:()=>set(m)},lb))),
+    el('div',{class:'chips',role:'group','aria-label':'Voice'},[['auto','Recordings first'],['claude','Claude voice'],['device','Device voice']].map(([m,lb])=>el('button',{type:'button',class:'chip'+(voiceMode===m?' on':''),'aria-pressed':String(voiceMode===m),disabled:m==='claude'&&!ctts,onclick:()=>set(m)},lb))),
     sel,
     el('div',{class:'row'},el('button',{class:'btn alt',type:'button',onclick:()=>say('Der Vogel fliegt. J wie Jacke. Wir haben 21 Äpfel.','de')},'Test German'),el('button',{class:'btn alt',type:'button',onclick:()=>say('The bird can fly. A is for apple.','en')},'Test English')),
     el('p',{class:'note'},'German is right when you hear "Fogel" and "Yacke". If not, switch the voice above and test again.'));
@@ -1056,13 +1081,13 @@ function timerPill(mins){
 
 function adultHome(){
   const s=st[cur],now=Date.now();
-  const all=VOCAB.concat(s.extra),due=all.filter(c=>!s.srs[c.de]||s.srs[c.de].due<=now).length;
+  const all=VOCAB.concat(s.extra),due=all.filter(c=>s.srs[c.de]&&s.srs[c.de].due<=now).length,fresh=all.length-Object.keys(s.srs).length;
   const lastW=s.writing[s.writing.length-1];
   const tile=(lb,mini,fn)=>el('button',{class:'tile-card',type:'button',onclick:fn},el('span',{class:'lb'},lb),el('span',{class:'mini'},mini));
   show(s.name,()=>el('div',{class:'tiles-grid'},
     tile('Schreiben','Goethe B1 writing, timed and corrected, with mock exam'+(lastW&&lastW.est!=null?' · last estimate '+lastW.est+'/100':''),writeMenu),
     tile('Sprechen','Goethe B1 speaking, three parts, AI partner',speakMenu),
-    tile('Vocabulary',due+' cards due · review, spelling, dictation',vocabHome),
+    tile('Vocabulary',due+' to review · '+Math.max(0,fresh)+' new · learn, speak, spell, dictation',vocabHome),
     tile('Grammar',(s.gram.done?s.gram.right+' of '+s.gram.done+' correct so far · ':'')+'B1, B2, C1: connectors, passive, Konjunktiv and more, with rules',grammar),
     tile('My mistakes',s.mistakes.length+' saved from corrections',mistakes)),home,adultHome);
 }
@@ -1238,10 +1263,104 @@ function speakTask(n,k){
 }
 
 /* ---------- Vocabulary (spaced repetition) ---------- */
+VOCAB.push(...parseV(`B2|Alltag und Behörden|die Bescheinigung|certificate, written confirmation|Für den Antrag brauche ich eine Bescheinigung vom Arbeitgeber.
+B2|Alltag und Behörden|die Frist|deadline|Die Frist für den Antrag endet am Freitag.
+B2|Alltag und Behörden|beantragen|to apply for|Wir möchten Elterngeld beantragen.
+B2|Alltag und Behörden|die Unterlagen|documents|Bitte bringen Sie alle Unterlagen zum Termin mit.
+B2|Alltag und Behörden|zuständig|responsible, in charge|Wer ist für diesen Antrag zuständig?
+B2|Alltag und Behörden|die Genehmigung|permission, approval|Ohne Genehmigung darf man hier nicht bauen.
+B2|Alltag und Behörden|kündigen|to give notice, to cancel|Ich möchte meinen Vertrag zum Monatsende kündigen.
+B2|Alltag und Behörden|die Gebühr|fee|Für den neuen Ausweis zahlt man eine Gebühr.
+B2|Alltag und Behörden|verlängern|to extend, to renew|Ich muss meinen Aufenthaltstitel verlängern.
+B2|Alltag und Behörden|der Anspruch auf|entitlement to|Sie haben Anspruch auf zwanzig Urlaubstage.
+B2|Meinung und Diskussion|der Standpunkt|point of view|Ich kann Ihren Standpunkt gut verstehen.
+B2|Meinung und Diskussion|überzeugen|to convince|Das Argument hat mich nicht überzeugt.
+B2|Meinung und Diskussion|zustimmen|to agree|In diesem Punkt stimme ich Ihnen zu.
+B2|Meinung und Diskussion|widersprechen|to contradict, to disagree|Da muss ich Ihnen leider widersprechen.
+B2|Meinung und Diskussion|der Nachteil|disadvantage|Ein Nachteil ist der hohe Preis.
+B2|Meinung und Diskussion|abwägen|to weigh up|Man muss Vorteile und Nachteile abwägen.
+B2|Meinung und Diskussion|die Ansicht|opinion, view|Meiner Ansicht nach ist das zu teuer.
+B2|Meinung und Diskussion|bezweifeln|to doubt|Ich bezweifle, dass das funktioniert.
+B2|Meinung und Diskussion|betonen|to emphasise|Ich möchte betonen, wie wichtig das Thema ist.
+B2|Meinung und Diskussion|die Lösung|solution|Wir müssen gemeinsam eine Lösung finden.
+B2|Gesundheit und Umwelt|die Ernährung|diet, nutrition|Eine gesunde Ernährung ist wichtig für Kinder.
+B2|Gesundheit und Umwelt|vorbeugen|to prevent|Sport kann vielen Krankheiten vorbeugen.
+B2|Gesundheit und Umwelt|die Behandlung|treatment|Die Behandlung dauert etwa drei Wochen.
+B2|Gesundheit und Umwelt|der Verbrauch|consumption|Der Verbrauch von Strom ist gestiegen.
+B2|Gesundheit und Umwelt|die Umweltverschmutzung|pollution|Die Umweltverschmutzung ist ein großes Problem.
+B2|Gesundheit und Umwelt|erneuerbar|renewable|Erneuerbare Energien werden immer wichtiger.
+B2|Gesundheit und Umwelt|der Klimawandel|climate change|Der Klimawandel betrifft uns alle.
+B2|Gesundheit und Umwelt|schädlich|harmful|Zu viel Zucker ist schädlich für die Zähne.
+B2|Gesundheit und Umwelt|sich erholen|to recover, to relax|Im Urlaub kann ich mich gut erholen.
+B2|Gesundheit und Umwelt|die Belastung|strain, burden|Schichtarbeit ist eine große Belastung für die Familie.
+C1|Wissenschaft und Bildung|die Erhebung|survey, data collection|Die Erhebung wurde in zehn Städten durchgeführt.
+C1|Wissenschaft und Bildung|belegen|to prove, to substantiate|Die Studie belegt den Zusammenhang deutlich.
+C1|Wissenschaft und Bildung|die Annahme|assumption|Diese Annahme hat sich als falsch erwiesen.
+C1|Wissenschaft und Bildung|sich erweisen als|to turn out to be|Die Methode hat sich als zuverlässig erwiesen.
+C1|Wissenschaft und Bildung|der Ansatz|approach|Dieser Ansatz ist in der Forschung neu.
+C1|Wissenschaft und Bildung|aufschlussreich|revealing, informative|Die Ergebnisse sind sehr aufschlussreich.
+C1|Wissenschaft und Bildung|die Schlussfolgerung|conclusion|Daraus lässt sich eine klare Schlussfolgerung ziehen.
+C1|Wissenschaft und Bildung|veranschaulichen|to illustrate|Die Grafik veranschaulicht die Entwicklung.
+C1|Wissenschaft und Bildung|grundlegend|fundamental|Hier besteht ein grundlegendes Missverständnis.
+C1|Wissenschaft und Bildung|widerlegen|to refute|Diese These wurde längst widerlegt.
+C1|Wirtschaft und Politik|die Rahmenbedingungen|general conditions, framework|Die Rahmenbedingungen für Familien haben sich verbessert.
+C1|Wirtschaft und Politik|der Wettbewerb|competition|Der Wettbewerb auf dem Markt ist hart.
+C1|Wirtschaft und Politik|die Wertschöpfung|value creation|Die Wertschöpfung bleibt in der Region.
+C1|Wirtschaft und Politik|umsetzen|to implement|Die Reform wurde schnell umgesetzt.
+C1|Wirtschaft und Politik|die Befugnis|authority, power|Dazu hat die Behörde keine Befugnis.
+C1|Wirtschaft und Politik|gewährleisten|to guarantee|Die Sicherheit der Daten muss gewährleistet sein.
+C1|Wirtschaft und Politik|der Engpass|bottleneck, shortage|Bei Fachkräften gibt es einen Engpass.
+C1|Wirtschaft und Politik|beeinträchtigen|to impair|Der Lärm beeinträchtigt die Konzentration.
+C1|Wirtschaft und Politik|die Auflage|requirement, condition|Die Firma muss strenge Auflagen erfüllen.
+C1|Wirtschaft und Politik|tragfähig|viable, sustainable|Wir brauchen eine tragfähige Lösung.
+C1|Feine Unterschiede|gewissermaßen|so to speak|Das ist gewissermaßen ein Kompromiss.
+C1|Feine Unterschiede|ohnehin|anyway, in any case|Ich wollte ohnehin früher gehen.
+C1|Feine Unterschiede|keineswegs|by no means|Das ist keineswegs sicher.
+C1|Feine Unterschiede|weitgehend|largely|Die Arbeiten sind weitgehend abgeschlossen.
+C1|Feine Unterschiede|allenfalls|at most, at best|Das dauert allenfalls eine Stunde.
+C1|Feine Unterschiede|vermeintlich|supposed, alleged|Der vermeintliche Fehler war gar keiner.
+C1|Feine Unterschiede|etliche|quite a few|Ich habe etliche Male angerufen.
+C1|Feine Unterschiede|unweigerlich|inevitably|Das führt unweigerlich zu Problemen.
+C1|Feine Unterschiede|sich anbahnen|to be in the offing|Es bahnt sich eine Veränderung an.
+C1|Feine Unterschiede|nachvollziehbar|comprehensible, understandable|Ihre Entscheidung ist gut nachvollziehbar.`));
+/* Learn new words in four short steps: meet, recognise, use in a sentence, say your own sentence. */
+function learn(cards){
+  const s=st[cur],bare=c=>c.de.replace(/^(der|die|das|sich) /,'');let stage=0,i=0;
+  const names=['Meet the words','What does it mean?','Fill the gap','Say it yourself'];
+  const gaps=cards.filter(c=>c.ex&&c.ex.includes(bare(c)));
+  const frame=(kids,restartable)=>show('New words',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px;max-width:640px'},
+    el('p',{class:'note'},'Step '+(stage+1)+' of 4 · '+names[stage]),typeof kids==='function'?kids():kids),vocabHome,restartable?()=>learn(cards):null);
+  const choice=(prompt,opts,right,after)=>{let done=false;const why=el('p',{class:'warn','aria-live':'polite',style:'margin:0;display:none'}),nx=el('button',{class:'btn',type:'button',style:'display:none',onclick:step},'Next');
+    frame([prompt,el('div',{class:'gopts'},shuffle(opts).map(o=>{const b=el('button',{type:'button',onclick:()=>{if(done)return;done=true;const ok=o===right;b.classList.add(ok?'ok':'no');
+      if(!ok)[...b.parentNode.children].forEach(x=>{if(x.textContent===right)x.classList.add('ok');});why.textContent=after;why.style.display='';nx.style.display='';nx.focus();}},o);return b;})),why,el('div',{class:'row'},nx)]);};
+  function step(){
+    const list=stage===2?gaps:cards;
+    if(i>=list.length){stage++;i=0;if(stage===2&&!gaps.length)stage=3;}
+    if(stage>3){cards.forEach(c=>{if(!s.srs[c.de])s.srs[c.de]={b:1,due:Date.now()+DAY};});save(cur);
+      show('New words',()=>el('div',{class:'finish'},el('h2',null,cards.length+' new words learned'),el('p',{class:'note'},'They come back for review tomorrow. Use one of them in a real sentence today.'),
+        el('div',{class:'row',style:'justify-content:center'},el('button',{class:'btn',type:'button',onclick:vocabHome},'Back to deck'))),vocabHome);return;}
+    const c=(stage===2?gaps:cards)[i];i++;
+    if(stage===0){const hear=()=>sayParts([{text:c.de,lang:'de',rate:0.8},{text:c.ex,lang:'de'}]);
+      frame(el('div',{class:'card'},el('div',{class:'fw',lang:'de'},c.de),el('button',{class:'hear',type:'button','aria-label':'Hear the word',onclick:hear},'🔊'),el('div',{class:'en'},c.en),el('div',{class:'ex',lang:'de'},c.ex),
+        el('p',{class:'note'},'Listen, then say the word and the sentence aloud twice.'),el('button',{class:'btn',type:'button',onclick:step},'Next')));hear();}
+    else if(stage===1){const pool=VOCAB.filter(x=>x.lv===c.lv&&x.en!==c.en);
+      choice(el('div',{class:'card'},el('div',{class:'fw',lang:'de'},c.de)),[c.en].concat(pick(pool,3).map(x=>x.en)),c.en,c.de+' = '+c.en);say(c.de,'de');}
+    else if(stage===2){choice(el('p',{class:'q',lang:'de',style:'margin:0'},c.ex.replace(bare(c),'___')),[bare(c)].concat(pick(cards.filter(x=>x!==c),2).map(bare)),bare(c),c.ex);}
+    else{let shown=false;const body=()=>el('div',{class:'card'},el('div',{class:'en'},c.en),el('div',{class:'fw',lang:'de'},c.de),
+        el('p',{class:'note'},'Say your own sentence with this word, about your day, your family or your work.'),
+        shown?[el('div',{class:'ex',lang:'de'},c.ex),el('button',{class:'hear',type:'button','aria-label':'Hear the example',onclick:()=>say(c.ex,'de')},'🔊')]:null,
+        el('div',{class:'row',style:'justify-content:center'},!shown&&el('button',{class:'btn alt',type:'button',onclick:()=>{shown=true;reshow();say(c.ex,'de');}},'Show an example'),el('button',{class:'btn',type:'button',onclick:step},'I said it')));
+      frame(body);}
+  }
+  step();
+}
+/* Paste your own list: one word per line, "German ; English ; example". It stays on this device. */
+function parseList(txt){return txt.split('\n').map(l=>l.split(/\t|\s*;\s*|\s+[–-]\s+|\s*=\s*/).map(x=>x.trim())).filter(a=>a.length>=2&&a[0]&&a[1]).map(a=>({de:a[0].slice(0,60),en:a[1].slice(0,80),ex:(a[2]||'').slice(0,160)}));}
+console.assert((()=>{const r=parseList('die Frist ; deadline ; Die Frist endet.\nder Hund - dog\n\nnur ein Wort');return r.length===2&&r[0].ex==='Die Frist endet.'&&r[1].de==='der Hund'&&r[1].en==='dog';})(),'parseList self-check');
 let vLevel='B1';const STEPS=[1,3,7,14,30,60];
 function vocabHome(){
   const s=st[cur],now=Date.now(),cards=VOCAB.concat(s.extra).filter(c=>c.lv===vLevel);
-  const due=cards.filter(c=>!s.srs[c.de]||s.srs[c.de].due<=now),learned=cards.filter(c=>s.srs[c.de]&&s.srs[c.de].b>=2).length;
+  const due=cards.filter(c=>s.srs[c.de]&&s.srs[c.de].due<=now),learned=cards.filter(c=>s.srs[c.de]&&s.srs[c.de].b>=2).length;
   const msg=el('p',{class:'note','aria-live':'polite'});
   const topic=el('input',{type:'text',id:'v-topic',maxlength:'40',placeholder:'Topic, for example Schule or Bank'});
   const addBtn=el('button',{class:'btn alt',type:'button',onclick:async()=>{
@@ -1252,14 +1371,22 @@ function vocabHome(){
       if(s.extra.length>400)s.extra=s.extra.slice(-400);save(cur);vocabHome();
     }catch(e){msg.textContent=errMsg(e);addBtn.disabled=false;}}},'Add 10 new words');
   const topics=[...new Set(cards.map(c=>c.tp))];
+  const fresh=cards.filter(c=>!s.srs[c.de]);
+  const imp=el('textarea',{id:'v-imp',lang:'de',style:'min-height:110px',placeholder:'die Frist ; deadline ; Die Frist endet am Freitag.'}),impMsg=el('p',{class:'note','aria-live':'polite'});
+  const impBtn=el('button',{class:'btn alt',type:'button',onclick:()=>{const rows=parseList(imp.value);let n=0;
+    rows.forEach(r=>{if(!VOCAB.concat(s.extra).some(c=>c.de===r.de)){s.extra.push({lv:vLevel,tp:'My list',de:r.de,en:r.en,ex:r.ex});n++;}});
+    if(s.extra.length>2000)s.extra=s.extra.slice(-2000);
+    if(n){save(cur);vocabHome();}else impMsg.textContent=rows.length?'These words are already in the deck.':'Nothing found. Use one line per word: German ; English ; example.';}},'Add to '+vLevel+' deck');
   show('Vocabulary',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
     el('div',{class:'chips',role:'group','aria-label':'Level'},['B1','B2','C1'].map(l=>el('button',{type:'button',class:'chip'+(l===vLevel?' on':''),'aria-pressed':String(l===vLevel),onclick:()=>{vLevel=l;vocabHome();}},l))),
-    el('div',{class:'panel'},el('div',{class:'meta'},el('span',{class:'pill'},cards.length+' cards'),el('span',{class:due.length?'pill mid':'pill good'},due.length+' due'),el('span',{class:'pill good'},learned+' learned')),
+    el('div',{class:'panel'},el('div',{class:'meta'},el('span',{class:'pill'},cards.length+' cards'),el('span',{class:'pill'},fresh.length+' new'),el('span',{class:due.length?'pill mid':'pill good'},due.length+' due'),el('span',{class:'pill good'},learned+' learned')),
       el('div',{class:'row'},
+        el('button',{class:'btn warm',type:'button',disabled:!fresh.length,onclick:()=>learn(fresh.slice(0,5))},fresh.length?'Learn 5 new words':'No new words left'),
         el('button',{class:'btn',type:'button',disabled:!due.length,onclick:()=>review(pick(due,15),false)},due.length?'Review '+Math.min(15,due.length)+' cards':'Nothing due today'),
-        el('button',{class:'btn alt',type:'button',onclick:()=>review(pick(due.length>=8?due:cards,10),true)},'Write the words'),
+        el('button',{class:'btn alt',type:'button',onclick:()=>review(pick(due.length>=8?due:cards.filter(c=>s.srs[c.de]).length>=8?cards.filter(c=>s.srs[c.de]):cards,10),true)},'Write the words'),
         el('button',{class:'btn alt',type:'button',onclick:diktat},'Dictation')),
-      el('p',{class:'note'},'Review trains recall. Write the words trains spelling. Dictation trains listening and writing together.')),
+      el('p',{class:'note'},'Learn new words first: hear, recognise, use, speak. Review trains recall. Write the words trains spelling. Dictation trains listening and writing together.')),
+    el('details',{class:'panel'},el('summary',null,'Add your own word list'),el('label',{for:'v-imp',class:'note'},'Paste one word per line: German ; English ; example sentence (optional). For example from a course word list. The words stay on this device.'),imp,el('div',{class:'row'},impBtn),impMsg),
     el('div',{class:'panel'},el('h2',null,'Grow this deck'),el('label',{for:'v-topic',class:'note'},'Optional topic'),topic,el('div',{class:'row'},addBtn),msg),
     topics.map(tp=>el('details',null,el('summary',null,tp+' · '+cards.filter(c=>c.tp===tp).length+' words'),el('div',{class:'vlist'},cards.filter(c=>c.tp===tp).map(c=>el('div',{lang:'de'},el('b',null,c.de),' · '+c.en,el('small',null,c.ex))))))),adultHome,vocabHome);
 }
@@ -1507,6 +1634,22 @@ function mistakes(){
       el('div',{class:'row'},el('button',{class:'btn alt',type:'button',onclick:()=>say(m.right,'de',0.9)},'Listen'),el('button',{class:'btn alt',type:'button',onclick:()=>{s.mistakes=s.mistakes.filter(x=>x!==m);save(cur);mistakes();}},'I know this now'))))),adultHome,mistakes);
 }
 
+/* ?audiolist=1 posts every fixed sentence to tools/make_audio.py --collect, which records them. */
+if(/[?&]audiolist=1/.test(location.search)){
+  const L=[],add=(lg,x)=>L.push([lg,String(x)]);
+  ['en','de'].forEach(lg=>{const P=PACK[lg];
+    P.letters.forEach(l=>{add(lg,letterPhrase(l,lg));add(lg,l[1]);add(lg,charPhrase(l[0],lg));});
+    P.pairs.forEach(l=>add(lg,l[1]));'0123456789'.split('').forEach(c=>add(lg,charPhrase(c,lg)));
+    P.words.forEach(w=>add(lg,w[0]));P.sentences.forEach(x=>add(lg,x[0]));
+    ['well','many','wmore','wfewer','wnext','wodd','wsort','big','small','plus','minus','timesw','sharew'].forEach(k=>add(lg,T[lg][k]));
+    for(let n=0;n<=120;n++)add(lg,n);
+    RHYMES[lg].forEach(r=>r[1].forEach(x=>add(lg,x)));});
+  Object.keys(TOD).forEach(c=>TOD[c].forEach(a=>{add('en',a[1]);add('de',a[2]);add('de','Wo ist '+a[2]+'?');add('en','Where is '+(a[3]?'the ':'')+a[1]+'?');}));
+  /* pieces of the maths lesson sentences, spoken around number clips */
+  ['Let us count.','There are','Here are','more come','Now we count them all.','is','go away','We count what is left.','groups. Each group has','We share them between','plates','Each plate has'].forEach(x=>add('en',x));
+  ['Wir zählen.','Es sind','Hier sind','kommen dazu','Jetzt zählen wir alle.','ist','gehen weg','Wir zählen, was bleibt.','Gruppen. In jeder Gruppe sind','Wir teilen sie auf','Teller auf','Auf jedem Teller sind'].forEach(x=>add('de',x));
+  fetch('http://127.0.0.1:8766/',{method:'POST',body:JSON.stringify(L)}).then(()=>{document.title='audio list sent: '+L.length;}).catch(()=>{document.title='audio list: collector not running';});
+}
 home();
 })();
 </script>
