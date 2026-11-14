@@ -215,6 +215,23 @@ summary{font-weight:700;color:var(--sky);cursor:pointer;padding:6px 0}
 <body>
 <div id="app"></div>
 <script>
+/* Old TV browsers (LG webOS, Fire TV): fill in what they lack, and show the reason instead of a blank page. Keep this block ES5. */
+(function(){
+  var E=Element.prototype;
+  if(!E.append)E.append=function(){for(var i=0;i<arguments.length;i++){var c=arguments[i];this.appendChild(c&&c.nodeType?c:document.createTextNode(String(c)));}};
+  if(!E.replaceChildren)E.replaceChildren=function(){while(this.firstChild)this.removeChild(this.firstChild);this.append.apply(this,arguments);};
+  if(!E.remove)E.remove=function(){if(this.parentNode)this.parentNode.removeChild(this);};
+  if(!Array.prototype.flatMap)Array.prototype.flatMap=function(f){return [].concat.apply([],this.map(f));};
+  if(!Array.prototype.includes)Array.prototype.includes=function(x){return this.indexOf(x)>=0;};
+  if(!String.prototype.includes)String.prototype.includes=function(x){return this.indexOf(x)>=0;};
+  if(!Object.values)Object.values=function(o){return Object.keys(o).map(function(k){return o[k];});};
+  if(!String.prototype.padStart)String.prototype.padStart=function(n,c){var t=String(this);while(t.length<n)t=(c||' ')+t;return t;};
+  window.onerror=function(msg,src,line){var a=document.getElementById('app');if(!a||a.firstChild)return;
+    var p=document.createElement('p');p.style.cssText='padding:24px;font:20px/1.5 sans-serif';
+    p.textContent='This browser cannot run the app. Mirror it from an iPhone or MacBook instead. Reason: '+msg+' (line '+line+')';a.appendChild(p);};
+})();
+</script>
+<script>
 (function(){
 'use strict';
 /* ---------- tiny helpers ---------- */
@@ -236,12 +253,16 @@ const DAY=864e5;
 /* ---------- state and saving ---------- */
 const PIDS=['p1','p2','p3','p4'];
 const DEF={p1:{name:'Big kid',kind:'kid',icon:'🦊'},p2:{name:'Little kid',kind:'toddler',icon:'🐣'},p3:{name:'Mama',kind:'adult',icon:'🌷'},p4:{name:'Papa',kind:'adult',icon:'🧭'}};
-function fresh(p){return {name:DEF[p].name,t:0,lang:'en',stars:{},srs:{},mistakes:[],writing:[],extra:[],gram:{done:0,right:0,wrong:[]},traceIdx:0,wx:{1:[],2:[],3:[]}};}
+function fresh(p){return {name:DEF[p].name,t:0,lang:'en',stars:{},srs:{},mistakes:[],writing:[],extra:[],gram:{done:0,right:0,wrong:[]},traceIdx:0,wx:{1:[],2:[],3:[]},days:[]};}
 const st={};PIDS.forEach(p=>st[p]=fresh(p));
 function adopt(p,v){const f=fresh(p);st[p]=Object.assign(f,v);st[p].gram=Object.assign({done:0,right:0,wrong:[]},v.gram||{});st[p].wx=Object.assign({1:[],2:[],3:[]},v.wx||{});}
 try{const j=JSON.parse(localStorage.getItem('fla-v1')||'null');if(j)PIDS.forEach(p=>{if(j[p])adopt(p,j[p]);});}catch(e){}
 let db=null,busy=false,saveTimer=null,syncMsg='';const dirty=new Set();
-function save(p){st[p].t=Date.now();try{localStorage.setItem('fla-v1',JSON.stringify(st));}catch(e){}
+const dayKey=d=>{d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+const streak=p=>streakOf(st[p].days);
+function streakOf(days){const set=new Set(days||[]),d=new Date();if(!set.has(dayKey(d)))d.setDate(d.getDate()-1);let n=0;while(set.has(dayKey(d))){n++;d.setDate(d.getDate()-1);}return n;}
+console.assert((()=>{const d=new Date(),y=new Date();y.setDate(y.getDate()-1);return streakOf([dayKey(y),dayKey(d)])===2&&streakOf([dayKey(y)])===1&&streakOf([])===0&&streakOf(['2020-01-01'])===0;})(),'streak self-check');
+function save(p){st[p].t=Date.now();{const k=dayKey(),ds=st[p].days||(st[p].days=[]);if(ds[ds.length-1]!==k){ds.push(k);if(ds.length>400)ds.shift();}}try{localStorage.setItem('fla-v1',JSON.stringify(st));}catch(e){}
   dirty.add(p);clearTimeout(saveTimer);saveTimer=setTimeout(flush,1500);}
 async function flush(){if(!db||busy)return;busy=true;
   try{for(const p of [...dirty]){dirty.delete(p);await db.doc('profiles/'+p).set(JSON.parse(JSON.stringify(st[p])));}}
@@ -333,7 +354,7 @@ function header(title,back){
 }
 function show(title,bodyFn,back,restart){
   if(ticker){clearInterval(ticker);ticker=null;}
-  playId++;
+  playId++;stopRec();
   if(dict&&dictTarget){try{dict.stop();}catch(e){}}dictTarget=null;dictBtn=null;
   last={title,bodyFn,back,restart};
   app.replaceChildren(header(title,back),el('main',{class:'main'+(cur&&DEF[cur].kind==='adult'?' adult':'')},bodyFn()));
@@ -354,10 +375,11 @@ function flyStar(){
 function home(){
   cur=null;let editing=false;
   const sub=p=>{const s=st[p],k=DEF[p].kind;
-    if(k==='kid')return '★ '+totalStars(p)+' stars';
+    const sk=streak(p),fire=sk>1?' · 🔥 '+sk+' days':'';
+    if(k==='kid')return '★ '+totalStars(p)+' stars'+fire;
     if(k==='toddler')return 'Pictures, words, sounds';
     const learned=Object.values(s.srs).filter(x=>x.b>=2).length;
-    return learned+' words learned · '+s.writing.length+' texts written';};
+    return learned+' words learned · '+s.writing.length+' texts written'+fire;};
   const body=()=>el('div',{style:'display:flex;flex-direction:column;gap:18px'},
     el('p',{class:'note'},'Who is learning?'),
     el('div',{class:'people'},PIDS.map((p,k)=>el('button',{class:'person',type:'button',style:'--i:'+k,onclick:()=>open(p)},
@@ -386,11 +408,11 @@ function progress(){
   const keys=['letters','first','build','miss','match','sent','trace','count','hear','more','add','times','share','next','pat','odd','sort','size','mem'];
   show('Progress',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},PIDS.map(p=>{const s=st[p],k=DEF[p].kind;
     if(k==='toddler')return null;
-    if(k==='kid')return el('div',{class:'panel'},el('h2',null,DEF[p].icon+' '+s.name+' · ★ '+totalStars(p)),
+    if(k==='kid')return el('div',{class:'panel'},el('h2',null,DEF[p].icon+' '+s.name+' · ★ '+totalStars(p)+' · 🔥 '+streak(p)+' day streak'),
       totalStars(p)?el('div',{class:'meta'},keys.filter(x=>s.stars[x]).map(x=>el('span',{class:'pill'},T.en[x]+' ★ '+s.stars[x]+' · level '+Math.min(3,1+Math.floor(s.stars[x]/12))))):el('p',{class:'note'},'No stars yet.'));
     const all=VOCAB.concat(s.extra),learned=all.filter(c=>s.srs[c.de]&&s.srs[c.de].b>=2).length,ests=s.writing.filter(w=>w.est!=null).slice(-5).map(w=>w.est);
     return el('div',{class:'panel'},el('h2',null,DEF[p].icon+' '+s.name),el('div',{class:'meta'},
-      el('span',{class:'pill'},learned+' of '+all.length+' words learned'),el('span',{class:'pill'},s.writing.length+' texts corrected'),
+      el('span',{class:'pill'},'🔥 '+streak(p)+' day streak'),el('span',{class:'pill'},learned+' of '+all.length+' words learned'),el('span',{class:'pill'},s.writing.length+' texts corrected'),
       ests.length?el('span',{class:pillClass(ests[ests.length-1])},'Writing estimates: '+ests.join(', ')):null,
       s.gram.done?el('span',{class:'pill'},'Grammar '+s.gram.right+' of '+s.gram.done):null,el('span',{class:'pill'},s.mistakes.length+' open mistakes')));
   })),home,progress);
@@ -671,13 +693,28 @@ function memory(){
 }
 
 /* ---------- toddler ---------- */
+const RHYMES={
+ en:[['🐶',['Little dog, little dog,','wag your tail.','Little dog, little dog,','chase the snail.']],['🌙',['Moon up high,','stars so bright,','close your eyes,','good night, good night.']],['🦆',['One duck, two ducks,','splash, splash, splash.','Three ducks, four ducks,','off they dash.']],['✋',['Clap your hands,','tap your toes,','touch your ears,','and touch your nose.']]],
+ de:[['🐱',['Kleine Katze, kleine Katze,','leck die Tatze.','Kleine Katze, kleine Maus,','lauf ins Haus.']],['🌙',['Mond und Stern,','ich hab dich gern.','Augen zu,','schlaf in Ruh.']],['🦆',['Eine Ente, zwei Enten,','platsch, platsch, platsch.','Drei Enten, vier Enten,','alle im Matsch.']],['✋',['Hände klatschen,','Füße patschen,','Nase, Ohr,','und Kopf hervor.']]]
+};
+Object.assign(T.en,{rhyme:'Rhymes'});Object.assign(T.de,{rhyme:'Reime'});
+function todRhyme(){
+  const list=RHYMES[lang];let i=0;
+  const speak=()=>sayParts(list[i][1].map(text=>({text,lang,rate:0.7})));
+  const draw=()=>{show(t('rhyme'),()=>el('div',{class:'tod'},
+    el('button',{class:'opt',type:'button',style:'border:0;background:none;min-height:0','aria-label':'Hear the rhyme',onclick:speak},el('span',{class:'pic',style:'font-size:clamp(4rem,20vh,8rem)'},list[i][0])),
+    el('div',{class:'w',lang:lang,style:'font-size:1.7rem;line-height:1.5'},list[i][1].map(l=>el('div',null,l))),
+    el('div',{class:'row',style:'justify-content:center'},hearBtn(speak),el('button',{class:'btn warm',type:'button',style:'font-size:1.3rem;padding:14px 30px',onclick:()=>{i=(i+1)%list.length;draw();speak();}},t('nextc')+' ›'))),todHome,todRhyme);};
+  draw();
+}
 let todCat='Animals';
 function todHome(){
   show(st[cur].name,()=>el('div',{style:'display:flex;flex-direction:column;gap:18px'},
     el('div',{class:'chips',role:'group','aria-label':'Topic'},Object.keys(TOD).map(c=>el('button',{type:'button',class:'chip'+(c===todCat?' on':''),'aria-pressed':String(c===todCat),onclick:()=>{todCat=c;reshow();}},TOD[c][0][0]+' '+c))),
     el('div',{class:'tiles-grid'},
       el('button',{class:'tile-card',type:'button',onclick:todLook},el('span',{class:'ic'},'👀'),el('span',{class:'lb'},t('look'))),
-      el('button',{class:'tile-card',type:'button',onclick:todWhere},el('span',{class:'ic'},'👉'),el('span',{class:'lb'},t('where')))),
+      el('button',{class:'tile-card',type:'button',onclick:todWhere},el('span',{class:'ic'},'👉'),el('span',{class:'lb'},t('where'))),
+      el('button',{class:'tile-card',type:'button',onclick:todRhyme},el('span',{class:'ic'},'🎵'),el('span',{class:'lb'},t('rhyme')))),
     el('p',{class:'note'},'Each word is spoken in English, then German. No scores and no timers. Sit together and keep it under five minutes.')),home,todHome);
 }
 function todLook(){
@@ -1132,6 +1169,28 @@ function partnerChat(taskText){
   return el('div',{class:'panel'},el('h2',null,'Talk it through with an AI partner'),el('p',{class:'note'},'Say your sentence aloud, then type it. The partner answers in German and reads the answer out.'),log,
     el('label',{for:'pc-in',class:'note'},'Your turn'),inp,el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:send},'Send')));
 }
+let recStream=null;
+function stopRec(){if(recStream){try{recStream.getTracks().forEach(x=>x.stop());}catch(e){}recStream=null;}}
+function recorder(){
+  const msg=el('p',{class:'note','aria-live':'polite'},'Record your answer, then listen to yourself. The recording stays on this device and is gone when you leave the page.');
+  const player=el('audio',{controls:true,style:'width:100%;display:none'});let mr=null,url=null;
+  const btn=el('button',{class:'btn',type:'button',onclick:async()=>{
+    if(mr&&mr.state==='recording'){mr.stop();return;}
+    if(!navigator.mediaDevices||!window.MediaRecorder){msg.textContent='Recording is not available in this browser.';return;}
+    try{recStream=await navigator.mediaDevices.getUserMedia({audio:true});}catch(e){msg.textContent='Microphone access was not allowed.';return;}
+    const chunks=[];mr=new MediaRecorder(recStream);
+    mr.ondataavailable=ev=>{if(ev.data&&ev.data.size)chunks.push(ev.data);};
+    mr.onstop=()=>{stopRec();if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(new Blob(chunks,{type:mr.mimeType||'audio/mp4'}));player.src=url;player.style.display='';btn.textContent='Record again';msg.textContent='Listen to yourself, then compare with the phrases and the model answer.';};
+    mr.start();btn.textContent='Stop recording';msg.textContent='Recording … speak now.';}},'Record');
+  return el('div',{class:'panel'},el('h2',null,'Record and compare'),msg,el('div',{class:'row'},btn),player);
+}
+const CUES={
+ 1:p=>[['Start','Was schlägst du vor? Wann und wo sollen wir das machen?']].concat((p||[]).map(x=>['Ask about: '+x,'Und was meinst du: '+x])).concat([['Disagree once','Ich bin nicht ganz sicher. Wäre es nicht besser, wenn wir … ?'],['Agree','Gute Idee, einverstanden.'],['Close','Gut, dann fassen wir zusammen: …']]),
+ 2:()=>[['Listen first','Do not interrupt during the presentation.','en'],['Then ask','Können Sie ein Beispiel dafür nennen?'],['Or ask','Wie ist das bei Ihnen persönlich?'],['Or ask','Was ist Ihrer Meinung nach der größte Nachteil?']],
+ 3:()=>[['You present first','Speak for one minute about the topic in the task.','en'],['Answer the question','Das ist eine gute Frage. Ich denke, dass …'],['React to the feedback','Vielen Dank für die Rückmeldung.']]
+};
+const cueCard=(n,task)=>el('details',{class:'panel'},el('summary',null,'Cue card for the partner'),el('p',{class:'note'},'The partner reads from this card and plays the second candidate.'),
+  el('ul',{class:'phr'},CUES[n](task.p).map(([role,line,lg])=>el('li',null,el('button',{class:'sp',type:'button','aria-label':'Hear line',onclick:()=>say(line.replace(/…/g,''),lg||'de',0.9)},'🔊'),el('div',null,el('span',{class:'de',lang:lg||'de'},line),el('small',null,role))))));
 function speakTask(n,k){
   const S=SPEAK[n],task=S.tasks[k];
   const ta=el('textarea',{id:'s-text',lang:'de',style:'min-height:130px',placeholder:'Type the key sentences you said, or dictate them.'});
@@ -1164,6 +1223,7 @@ function speakTask(n,k){
     el('div',{class:'panel'},el('div',{class:'task',lang:'de'},el('b',null,task.s),task.p?el('ul',null,task.p.map(x=>el('li',null,x))):null,n===2?el('ol',{class:'slides'},SLIDES.map(x=>el('li',null,x))):null),
       el('div',{class:'meta'},timerPill(S.mins),el('span',{class:'note'},'Speak aloud for '+S.mins+' minutes.')),
       el('details',{open:true},el('summary',null,'Useful phrases (tap to hear)'),phrases(PHR_S[n]))),
+    cueCard(n,task),recorder(),
     n===1?partnerChat(taskText):null,
     el('div',{class:'panel'},el('h2',null,'Check your answer'),el('label',{for:'s-text',class:'note'},'What you said'),ta,el('div',{class:'row'},dBtn,fbBtn,modelBtn)),
     out),speakMenu,()=>speakTask(n,k));
