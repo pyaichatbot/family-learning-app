@@ -77,9 +77,9 @@ textarea{min-height:220px;resize:vertical;line-height:1.5}
 .dots i{width:14px;height:14px;border-radius:50%;background:var(--line)}
 .dots i.d{background:var(--sun)}
 .prompt{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
-.pic{font-size:clamp(5rem,22vh,9rem);line-height:1.1}
-.word{font-family:var(--display);font-size:clamp(2.6rem,10vw,5rem);letter-spacing:.04em}
-.sent{font-family:var(--display);font-size:clamp(1.7rem,6vw,3rem);max-width:18ch}
+.pic{font-size:5rem;font-size:clamp(5rem,22vh,9rem);line-height:1.1}
+.word{font-family:var(--display);font-size:2.6rem;font-size:clamp(2.6rem,10vw,5rem);letter-spacing:.04em}
+.sent{font-family:var(--display);font-size:1.7rem;font-size:clamp(1.7rem,6vw,3rem);max-width:18ch}
 .ask{font-family:var(--display);font-size:1.5rem}
 .hear{width:60px;height:60px;border-radius:50%;border:0;background:var(--sun);font-size:1.7rem}
 .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;width:100%;max-width:820px}
@@ -87,7 +87,7 @@ textarea{min-height:220px;resize:vertical;line-height:1.5}
 .opt.big{font-size:3.6rem}
 .opt.ok{border-color:var(--leaf);background:#DDF3E6}
 .opt.no{border-color:var(--berry);background:#FBE3EA;opacity:.6}
-.emo-row{font-size:clamp(1.8rem,6vw,2.8rem);letter-spacing:.12em;max-width:16em;overflow-wrap:anywhere;line-height:1.35}
+.emo-row{font-size:1.8rem;font-size:clamp(1.8rem,6vw,2.8rem);letter-spacing:.12em;max-width:16em;overflow-wrap:anywhere;line-height:1.35}
 .emo-row .gone{opacity:.22}
 .slots,.tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .slot{width:64px;height:76px;border-bottom:5px solid var(--sky);font-family:var(--display);font-size:3rem;display:flex;align-items:center;justify-content:center}
@@ -103,7 +103,7 @@ textarea{min-height:220px;resize:vertical;line-height:1.5}
 .lcard .big{font-family:var(--display);font-size:4rem;line-height:1}
 .lcard .pic{font-size:4rem}
 .lcard .wd{font-family:var(--display);font-size:2rem}
-.pad{position:relative;width:min(100%,62vh,560px);aspect-ratio:1;background:var(--card);border:3px solid var(--line);border-radius:24px;overflow:hidden;touch-action:none}
+.pad{position:relative;width:100%;max-width:560px;width:min(100%,62vh,560px);aspect-ratio:1;background:var(--card);border:3px solid var(--line);border-radius:24px;overflow:hidden;touch-action:none}
 .pad canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
 .mem{display:grid;grid-template-columns:repeat(4,minmax(64px,110px));gap:10px;justify-content:center;width:100%}
 .mem button{aspect-ratio:1;border-radius:18px;border:3px solid var(--line);background:var(--sky);font-size:2.6rem;color:transparent}
@@ -113,11 +113,11 @@ textarea{min-height:220px;resize:vertical;line-height:1.5}
 .finish .big{font-size:4.5rem;line-height:1}
 .finish h2{font-size:2.2rem}
 .tod{display:flex;flex-direction:column;align-items:center;gap:14px}
-.tod .pic{font-size:clamp(7rem,34vh,13rem)}
+.tod .pic{font-size:7rem;font-size:clamp(7rem,34vh,13rem)}
 .tod .w{font-family:var(--display);font-size:2.2rem;text-align:center}
 .tod .w small{display:block;font-size:1.4rem;color:var(--muted);font-family:var(--body);font-weight:600}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:760px}
-.two .opt{min-height:220px;font-size:clamp(5rem,20vw,9rem)}
+.two .opt{min-height:220px;font-size:5rem;font-size:clamp(5rem,20vw,9rem)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;font-weight:700}
 .chip.on{background:var(--sky);border-color:var(--sky);color:#fff}
@@ -193,8 +193,8 @@ summary{font-weight:700;color:var(--sky);cursor:pointer;padding:6px 0}
 .tod .pic{animation:settle .5s both,breathe 3.5s ease-in-out .5s infinite}
 .mem button{transition:background .25s,border-color .25s}
 .mem button.up{animation:pop .3s}
-.stage{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;min-height:170px;font-size:clamp(2rem,7vw,3.2rem);width:100%}
-.stage.small{min-height:0;font-size:clamp(1.5rem,5vw,2.2rem)}
+.stage{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;min-height:170px;font-size:2rem;font-size:clamp(2rem,7vw,3.2rem);width:100%}
+.stage.small{min-height:0;font-size:1.5rem;font-size:clamp(1.5rem,5vw,2.2rem)}
 .obj{display:inline-block;animation:pop .35s both;transition:transform .5s,opacity .5s}
 .obj.lit{transform:scale(1.3)}
 .obj.away{opacity:.12;transform:translateY(-34px) scale(.7)}
@@ -203,13 +203,14 @@ summary{font-weight:700;color:var(--sky);cursor:pointer;padding:6px 0}
 .box.slide{animation:slidein .8s both}
 .box.plate{border-style:solid;border-radius:999px;min-width:120px}
 .cap{font-family:var(--display);font-size:1.6rem;text-align:center;min-height:2.6em;max-width:22ch}
-.eq{font-size:clamp(2.2rem,8vw,3.6rem);min-height:1.2em}
+.eq{font-size:2.2rem;font-size:clamp(2.2rem,8vw,3.6rem);min-height:1.2em}
 .chat{display:flex;flex-direction:column;gap:8px}
 .chat .me,.chat .them{max-width:85%;padding:8px 12px;border-radius:14px}
 .chat .me{align-self:flex-end;background:var(--sky);color:#fff}
 .chat .them{align-self:flex-start;background:var(--paper);border:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 @media (max-width:420px){.opt{min-height:88px;font-size:2rem}.slot{width:50px;height:64px;font-size:2.4rem}.tile{width:58px;height:64px;font-size:2.1rem}.bar h1{font-size:1.15rem}}
+img.emoji{height:1em;width:1em;margin:0 .05em;vertical-align:-.12em;display:inline-block}
 </style>
 </head>
 <body>
@@ -226,6 +227,13 @@ summary{font-weight:700;color:var(--sky);cursor:pointer;padding:6px 0}
   if(!String.prototype.includes)String.prototype.includes=function(x){return this.indexOf(x)>=0;};
   if(!Object.values)Object.values=function(o){return Object.keys(o).map(function(k){return o[k];});};
   if(!String.prototype.padStart)String.prototype.padStart=function(n,c){var t=String(this);while(t.length<n)t=(c||' ')+t;return t;};
+  /* TVs ship old emoji fonts: pictures show as empty boxes. Test one newer emoji; if it does not draw in colour, swap all emoji for images. */
+  function emojiOK(){try{var c=document.createElement('canvas');c.width=c.height=40;var x=c.getContext('2d');x.font='30px sans-serif';x.fillText('\uD83E\uDE81',2,32);
+    var d=x.getImageData(0,0,40,40).data;for(var i=0;i<d.length;i+=4){if(d[i+3]>60&&(Math.abs(d[i]-d[i+1])>24||Math.abs(d[i+1]-d[i+2])>24))return true;}return false;}catch(e){return true;}}
+  if(/[?&]twemoji=1/.test(location.search)||!emojiOK()){var sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js';
+    sc.onload=function(){var o={folder:'svg',ext:'.svg'},go=function(n){try{window.twemoji.parse(n,o);}catch(e){}};go(document.body);
+      if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var t=ms[i].target;if(t&&t.nodeType===1&&t.tagName!=='CANVAS')go(t);}}).observe(document.body,{childList:true,subtree:true});};
+    document.head.appendChild(sc);}
   window.onerror=function(msg,src,line){var a=document.getElementById('app');if(!a||a.firstChild)return;
     var p=document.createElement('p');p.style.cssText='padding:24px;font:20px/1.5 sans-serif';
     p.textContent='This browser cannot run the app. Mirror it from an iPhone or MacBook instead. Reason: '+msg+' (line '+line+')';a.appendChild(p);};
@@ -395,7 +403,7 @@ function home(){
 }
 function voicePanel(){
   const de=deviceVoices('de'),usingClaude=ctts&&voiceMode!=='device';
-  const info='Version 6 · Now speaking with: '+(usingClaude?'Claude voice':'device voice'+(window.speechSynthesis?(de.length?', '+de.length+' German voice'+(de.length>1?'s':'')+' found':', no German voice found'):', not available in this view'));
+  const info='Version 7 · '+((navigator.userAgent.match(/Chrome\/\d+|Version\/[\d.]+|Web0S|webOS[^;)]*|Silk\/\d+/g)||[]).join(' ')||'unknown browser')+' · Now speaking with: '+(usingClaude?'Claude voice':'device voice'+(window.speechSynthesis?(de.length?', '+de.length+' German voice'+(de.length>1?'s':'')+' found':', no German voice found'):', not available in this view'));
   const set=m=>{voiceMode=m;try{localStorage.setItem('fla-voice',m);}catch(e){}reshow();};
   const sel=de.length>1?el('select',{id:'de-voice','aria-label':'German device voice',onchange:ev=>{deVoice=ev.target.value;try{localStorage.setItem('fla-devoice',deVoice);}catch(e){}}},de.map(v=>el('option',{value:v.name,selected:v.name===deVoice},v.name+' ('+v.lang+')'))):null;
   return el('details',{class:'panel'},el('summary',null,'Voice settings'),el('p',{class:'note'},info),
@@ -476,7 +484,7 @@ function addStarOnce(key,id){const k=cur+key+lang+id;if(seen.has(k))return;seen.
 function letters(){
   const P=PACK[lang];let sel=null;
   const grid=(list,pair)=>el('div',{class:'letters'},list.map(l=>el('button',{type:'button',class:l===sel?'on':null,onclick:()=>{
-    sel=l;addStarOnce('letters',l[0]);reshow();sayParts([{text:pair?l[1]:letterPhrase(l,lang),lang,rate:0.5}]);}},pair?l[0]:l[0].toUpperCase()+l[0])));
+    sel=l;addStarOnce('letters',l[0]);reshow();sayParts([{text:pair?l[1]:letterPhrase(l,lang),lang,rate:0.4}]);}},pair?l[0]:l[0].toUpperCase()+l[0])));
   const body=()=>el('div',{class:'game'},
     el('div',{class:'lcard','aria-live':'polite'},sel?[el('span',{class:'big'},P.pairs.includes(sel)?sel[0]:sel[0].toUpperCase()+' '+sel[0]),el('span',{class:'pic'},sel[2]),el('span',{class:'wd'},sel[1])]:el('span',{class:'ask'},t('tap'))),
     grid(P.letters,false),el('h2',{style:'align-self:flex-start;color:var(--sky);font-size:1.2rem'},t('pairs')),grid(P.pairs,true));
@@ -1055,7 +1063,7 @@ function adultHome(){
     tile('Schreiben','Goethe B1 writing, timed and corrected, with mock exam'+(lastW&&lastW.est!=null?' · last estimate '+lastW.est+'/100':''),writeMenu),
     tile('Sprechen','Goethe B1 speaking, three parts, AI partner',speakMenu),
     tile('Vocabulary',due+' cards due · review, spelling, dictation',vocabHome),
-    tile('Grammar',s.gram.done?s.gram.right+' of '+s.gram.done+' correct so far':'Fifty typical B1 weak spots, plus fresh AI questions',grammar),
+    tile('Grammar',(s.gram.done?s.gram.right+' of '+s.gram.done+' correct so far · ':'')+'B1, B2, C1: connectors, passive, Konjunktiv and more, with rules',grammar),
     tile('My mistakes',s.mistakes.length+' saved from corrections',mistakes)),home,adultHome);
 }
 
@@ -1303,20 +1311,175 @@ function diktat(){
 }
 
 /* ---------- Grammar ---------- */
+/* More questions: level|topic|sentence with ___|right answer/wrong/wrong|rule. The first option is the correct one; options are shuffled on screen. */
+`B1|Konnektoren|Ich bleibe zu Hause, ___ ich krank bin.|weil/denn/deshalb|Weil starts a subordinate clause: the verb goes to the end.
+B1|Konnektoren|Ich bin krank, ___ bleibe ich zu Hause.|deshalb/weil/dass|Deshalb is an adverb in position 1, so the verb comes straight after it.
+B1|Konnektoren|Ich bleibe zu Hause, ___ ich bin krank.|denn/weil/da|Denn keeps main clause order: verb in second place.
+B1|Konnektoren|___ es regnet, gehen wir spazieren.|Obwohl/Trotzdem/Aber|Obwohl starts a subordinate clause that expresses a contrast.
+B1|Konnektoren|Es regnet. ___ gehen wir spazieren.|Trotzdem/Obwohl/Weil|Trotzdem is an adverb: the verb follows directly.
+B1|Konnektoren|Ich lerne Deutsch, ___ ich in Deutschland arbeiten kann.|damit/um/dass|Damit expresses purpose with a full clause.
+B1|Konnektoren|Ich lerne Deutsch, ___ in Deutschland zu arbeiten.|um/damit/weil|Um ... zu plus infinitive when both parts have the same subject.
+B1|Konnektoren|___ ich Zeit habe, rufe ich dich an.|Wenn/Als/Wann|Wenn for conditions and for repeated events.
+B1|Konnektoren|___ ich ein Kind war, wohnte ich auf dem Land.|Als/Wenn/Wann|Als for a single event or period in the past.
+B1|Konnektoren|Ich weiß nicht, ___ er heute kommt.|ob/wenn/dass|Ob introduces an indirect yes or no question.
+B1|Konnektoren|Ich putze die Wohnung, ___ du einkaufst.|während/bevor/seit|Während: two actions at the same time.
+B1|Konnektoren|___ ich frühstücke, dusche ich.|Bevor/Nachdem/Während|Bevor: the action in the main clause happens first.
+B1|Konnektoren|___ ich gegessen hatte, ging ich spazieren.|Nachdem/Bevor/Obwohl|Nachdem needs the earlier tense: Plusquamperfekt with Präteritum.
+B1|Konnektoren|Er kommt nicht mit dem Auto, ___ mit dem Zug.|sondern/aber/oder|Sondern corrects a negated statement.
+B1|Konnektoren|Ich warte, ___ du fertig bist.|bis/seit/als|Bis means until.
+B1|Konnektoren|___ ich in Berlin wohne, spreche ich viel Deutsch.|Seit/Bis/Als|Seit: from a point in the past until now.
+B1|Relativsätze|Das ist der Mann, ___ ich gestern geholfen habe.|dem/den/der|Helfen takes the dative: masculine dative is dem.
+B1|Relativsätze|Die Frau, ___ Auto kaputt ist, wartet draußen.|deren/dessen/der|Genitive relative pronoun for a feminine noun: deren.
+B1|Relativsätze|Das ist das Haus, in ___ ich aufgewachsen bin.|dem/das/den|In plus dative for a location: neuter dative is dem.
+B1|Konjunktiv II|Wenn ich mehr Zeit ___, würde ich mehr lesen.|hätte/habe/hatte|Unreal condition: Konjunktiv II.
+B1|Konjunktiv II|___ Sie mir bitte helfen?|Könnten/Konnten/Kannst|Polite request with Konjunktiv II.
+B1|Konjunktiv II|An deiner Stelle ___ ich zum Arzt gehen.|würde/werde/wurde|Advice: würde plus infinitive.
+B1|Passiv|Das Auto ___ gerade repariert.|wird/ist/hat|Process passive: werden plus Partizip II.
+B1|Passiv|Die Rechnung muss bis Freitag bezahlt ___.|werden/worden/sein|Passive with a modal verb: Partizip II plus werden.
+B1|Infinitiv mit zu|Ich habe keine Lust, heute ___.|zu kochen/kochen/gekocht|After Lust haben: zu plus infinitive.
+B1|Infinitiv mit zu|Er hat vergessen, die Tür ___.|abzuschließen/zu abschließen/abschließen|Separable verbs: zu goes between prefix and verb.
+B1|Indirekte Fragen|Können Sie mir sagen, ___?|wo der Bahnhof ist/wo ist der Bahnhof/wo der Bahnhof sein|In an indirect question the verb goes to the end.
+B1|Genitiv|Wegen ___ Wetters bleiben wir zu Hause.|des schlechten/dem schlechten/das schlechte|Wegen takes the genitive in written German.
+B1|Genitiv|Trotz ___ Regens gehen wir spazieren.|des/dem/den|Trotz takes the genitive.
+B2|Konnektoren|Er hat viel gelernt, ___ er die Prüfung bestanden hat.|sodass/damit/obwohl|Sodass expresses a result.
+B2|Konnektoren|Je mehr ich übe, ___ besser spreche ich.|desto/als/so|Je plus comparative, desto plus comparative plus verb.
+B2|Konnektoren|Sie spricht ___ Englisch als auch Französisch.|sowohl/weder/entweder|Sowohl ... als auch: both ... and.
+B2|Konnektoren|Er hat ___ Zeit noch Lust.|weder/sowohl/entweder|Weder ... noch: neither ... nor.
+B2|Konnektoren|___ du kommst jetzt mit, oder du bleibst hier.|Entweder/Weder/Sowohl|Entweder ... oder: either ... or.
+B2|Konnektoren|Sie ist nicht nur klug, ___ auch fleißig.|sondern/aber/als|Nicht nur ... sondern auch.
+B2|Konnektoren|___ ist die Wohnung schön, aber sie ist zu teuer.|Zwar/Obwohl/Trotz|Zwar ... aber: a concession with main clause order.
+B2|Konnektoren|Er ist gegangen, ___ dass ich es gemerkt habe.|ohne/anstatt/so|Ohne dass: something expected did not happen.
+B2|Konnektoren|___ zu lernen, sieht er den ganzen Tag fern.|Anstatt/Ohne/Um|Anstatt ... zu: instead of doing something.
+B2|Konnektoren|Er ging, ___ sich zu verabschieden.|ohne/anstatt/um|Ohne ... zu: without doing something.
+B2|Konnektoren|___ man regelmäßig übt, verbessert man seine Aussprache.|Indem/Damit/Sodass|Indem expresses the means: by doing something.
+B2|Konnektoren|___ es morgen regnet, findet das Fest drinnen statt.|Falls/Obwohl/Als|Falls: in case.
+B2|Konnektoren|___ ich weiß, ist das Büro heute geschlossen.|Soweit/Sobald/Solange|Soweit ich weiß: as far as I know.
+B2|Konnektoren|___ ich angekommen bin, rufe ich dich an.|Sobald/Solange/Soweit|Sobald: as soon as.
+B2|Konnektoren|___ du Fieber hast, bleibst du im Bett.|Solange/Sobald/Bevor|Solange: as long as.
+B2|Konnektoren|Das Auto war zu teuer. ___ haben wir es nicht gekauft.|Folglich/Dennoch/Allerdings|Folglich: consequently.
+B2|Konnektoren|Der Film war lang. ___ war er nie langweilig.|Dennoch/Folglich/Deswegen|Dennoch: nevertheless.
+B2|Konnektoren|Du musst dich beeilen, ___ verpasst du den Zug.|sonst/trotzdem/deshalb|Sonst: otherwise.
+B2|Konnektoren|Einerseits möchte ich reisen, ___ muss ich sparen.|andererseits/dagegen/sondern|Einerseits ... andererseits: on the one hand ... on the other.
+B2|Konnektoren|Er ist sehr sportlich. Sein Bruder ___ sitzt lieber vor dem Computer.|dagegen/deshalb/folglich|Dagegen and hingegen mark a contrast.
+B2|Passiv|Das Problem ___ sofort gelöst werden.|muss/ist/hat|Passive with a modal verb: modal plus Partizip II plus werden.
+B2|Passiv|Das Haus ist letztes Jahr gebaut ___.|worden/geworden/werden|Passive in the Perfekt: sein plus Partizip II plus worden.
+B2|Passiv|Die Tür ___ sich nicht öffnen.|lässt/wird/ist|Sich lassen plus infinitive replaces a passive with können.
+B2|Passiv|Diese Aufgabe ist leicht zu ___.|lösen/gelöst/löst|Sein plus zu plus infinitive: it can be done.
+B2|Passiv|Das Geschäft ist ab 20 Uhr ___.|geschlossen/schließen/schloss|State passive: sein plus Partizip II.
+B2|Konjunktiv II|Wenn ich das gewusst ___, wäre ich früher gekommen.|hätte/habe/würde|Unreal past: hätte or wäre plus Partizip II.
+B2|Konjunktiv II|Du ___ mich anrufen sollen.|hättest/hast/würdest|Hätte ... sollen: should have done.
+B2|Konjunktiv II|Er tut so, ___ er alles wüsste.|als ob/obwohl/damit|Als ob plus Konjunktiv II: as if.
+B2|Konjunktiv II|Wenn er doch nur hier ___!|wäre/ist/sei|Unreal wish with Konjunktiv II.
+B2|Konjunktiv I|Der Minister sagte, er ___ keine Zeit.|habe/hat/haben|Indirect speech in formal German: Konjunktiv I.
+B2|Konjunktiv I|Sie sagt, sie ___ krank.|sei/ist/seien|Indirect speech: Konjunktiv I of sein.
+B2|Relativsätze|Das ist alles, ___ ich weiß.|was/das/welches|After alles, etwas, nichts the relative pronoun is was.
+B2|Relativsätze|Das ist die Stadt, ___ ich geboren bin.|wo/die/wohin|Wo can replace in der for places.
+B2|Relativsätze|Das Thema, ___ wir gesprochen haben, ist wichtig.|über das/über dem/von das|Sprechen über takes the accusative.
+B2|Partizipien|Die ___ Kinder spielen im Garten.|lachenden/gelachten/lachend|Partizip I as an adjective: an action in progress.
+B2|Partizipien|Das frisch ___ Brot riecht gut.|gebackene/backende/gebacken|Partizip II as an adjective: a finished action, with an ending.
+B2|n-Deklination|Ich habe mit dem ___ gesprochen.|Kollegen/Kollege/Kolleges|Weak masculine nouns take -n in every case except nominative singular.
+B2|n-Deklination|Kennst du den ___ dort?|Studenten/Student/Students|Weak masculine nouns take -en in the accusative.
+B2|Verben mit Präposition|Ich interessiere mich ___ Geschichte.|für/an/über|Sich interessieren für.
+B2|Verben mit Präposition|Es hängt ___ Wetter ab.|vom/am/im|Abhängen von plus dative.
+B2|Verben mit Präposition|___ wartest du? Auf den Bus.|Worauf/Wofür/Woran|Warten auf: the question word is worauf.
+B2|Verben mit Präposition|Ich ärgere mich ___, dass der Zug schon wieder Verspätung hat.|darüber/darauf/daran|Sich ärgern über: darüber points to the dass clause.
+B2|Nomen-Verb-Verbindungen|Wir müssen bald eine Entscheidung ___.|treffen/machen/tun|Eine Entscheidung treffen.
+B2|Nomen-Verb-Verbindungen|Darf ich Ihnen eine Frage ___?|stellen/geben/fragen|Eine Frage stellen.
+B2|Nomen-Verb-Verbindungen|Das kommt nicht in ___.|Frage/Antwort/Rede|Nicht in Frage kommen: to be out of the question.
+B2|Futur II|Bis morgen ___ ich den Bericht geschrieben haben.|werde/bin/habe|Futur II: werden plus Partizip II plus haben or sein.
+C1|Nominalstil|___ des schlechten Wetters wurde das Spiel abgesagt.|Aufgrund/Obwohl/Weil|Nominal style: aufgrund plus genitive replaces a weil clause.
+C1|Nominalstil|___ seiner Krankheit ging er zur Arbeit.|Trotz/Obwohl/Dennoch|Trotz plus genitive replaces an obwohl clause.
+C1|Nominalstil|___ regelmäßiges Training verbessert man seine Kondition.|Durch/Indem/Dadurch|Durch plus accusative replaces an indem clause.
+C1|Nominalstil|___ Verbesserung der Qualität wurden neue Maschinen gekauft.|Zur/Um/Damit|Zu plus dative replaces um ... zu.
+C1|Nominalstil|___ Regen findet die Veranstaltung in der Halle statt.|Bei/Falls/Wenn|Bei plus dative replaces a wenn or falls clause.
+C1|Nominalstil|___ Abschluss des Studiums zog sie nach Hamburg.|Nach/Nachdem/Danach|Nach plus dative replaces a nachdem clause.
+C1|Konnektoren|___ er sich sehr bemühte, gelang es ihm nicht.|Wenngleich/Zumal/Sofern|Wenngleich and obgleich: formal words for although.
+C1|Konnektoren|Ich bleibe heute zu Hause, ___ ich ohnehin viel zu tun habe.|zumal/wenngleich/sofern|Zumal: especially since.
+C1|Konnektoren|___ nichts dazwischenkommt, sehen wir uns am Montag.|Sofern/Zumal/Wohingegen|Sofern: provided that.
+C1|Konnektoren|Sie liebt die Stadt, ___ er lieber auf dem Land lebt.|wohingegen/sofern/zumal|Wohingegen: whereas.
+C1|Konnektoren|Man spart Energie ___, dass man das Licht ausschaltet.|dadurch/damit/dafür|Dadurch, dass: by doing something.
+C1|Konnektoren|Die Preise steigen. ___ sinkt die Nachfrage.|Infolgedessen/Gleichwohl/Indessen|Infolgedessen: as a result.
+C1|Konnektoren|Die Kritik war hart. ___ blieb sie ruhig.|Gleichwohl/Infolgedessen/Demzufolge|Gleichwohl: nevertheless, in formal style.
+C1|Konnektoren|Er ist ___ faul als vielmehr unmotiviert.|weniger/nicht/kaum|Weniger ... als vielmehr: not so much ... as rather.
+C1|Konnektoren|Kaum ___ ich zu Hause angekommen, klingelte das Telefon.|war/bin/hatte|Kaum in first position, then the verb; Plusquamperfekt for the earlier action.
+C1|Konnektoren|Er hat die Stelle bekommen, ___ er keine Erfahrung hatte.|obgleich/zumal/sofern|Obgleich: formal although.
+C1|Konnektoren|Ich komme mit, ___ denn, ich muss länger arbeiten.|es sei/außer/sofern|Es sei denn: unless.
+C1|Partizipialattribute|Die von der Firma ___ Produkte sind sehr beliebt.|hergestellten/herstellenden/hergestellt|An extended participle with Partizip II replaces a passive relative clause.
+C1|Partizipialattribute|Der seit Jahren in Berlin ___ Künstler stellt wieder aus.|lebende/gelebte/lebend|Partizip I: active and ongoing.
+C1|Partizipialattribute|Das ist ein nicht zu ___ Problem.|unterschätzendes/unterschätztes/unterschätzen|Zu plus Partizip I: something that must or must not be done.
+C1|Konjunktiv I|Der Sprecher erklärte, die Verhandlungen ___ gescheitert.|seien/sind/sein|Indirect speech, plural of sein: seien.
+C1|Konjunktiv I|Sie behaupteten, sie ___ nichts davon gewusst.|hätten/haben/seien|When Konjunktiv I looks like the indicative (sie haben), use Konjunktiv II.
+C1|Konjunktiv I|Man ___ 200 Gramm Mehl und zwei Eier.|nehme/nimmt/nähme|Konjunktiv I in recipes and instructions.
+C1|Subjektive Modalverben|Er ___ sehr reich sein, sagt man.|soll/muss/will|Sollen: the speaker reports what others say.
+C1|Subjektive Modalverben|Sie ___ den Unfall gesehen haben, aber niemand glaubt ihr.|will/soll/muss|Wollen: a claim someone makes about themselves.
+C1|Subjektive Modalverben|Das Licht ist an. Er ___ zu Hause sein.|muss/will/soll|Müssen: the speaker is almost certain.
+C1|Subjektive Modalverben|Das ___ stimmen, aber sicher bin ich nicht.|könnte/will/soll|Könnte: a possibility.
+C1|Passiversatz|Die Regeln ___ unbedingt zu beachten.|sind/haben/werden|Sein plus zu plus infinitive: must be done.
+C1|Passiversatz|Trinkwasser ist nicht unbegrenzt ___.|verfügbar/verfügend/verfügt|The ending -bar means it can be done.
+C1|Funktionsverbgefüge|Der Vorschlag wurde zur Diskussion ___.|gestellt/gebracht/gesetzt|Zur Diskussion stellen.
+C1|Funktionsverbgefüge|Das neue Gesetz tritt im Januar in ___.|Kraft/Gang/Lauf|In Kraft treten: to come into force.
+C1|Funktionsverbgefüge|Wir müssen diese Kosten in Kauf ___.|nehmen/bringen/stellen|In Kauf nehmen: to accept a disadvantage.
+C1|Funktionsverbgefüge|Diese Methode findet immer häufiger ___.|Anwendung/Benutzung/Verbrauch|Anwendung finden: to be applied.
+C1|Funktionsverbgefüge|Er hat großen Einfluss ___ die Entscheidung genommen.|auf/über/an|Einfluss nehmen auf plus accusative.
+C1|Genitivpräpositionen|___ der hohen Kosten wurde das Projekt gestoppt.|Angesichts/Anhand/Zugunsten|Angesichts: in view of.
+C1|Genitivpräpositionen|___ dieser Daten lässt sich die These belegen.|Anhand/Angesichts/Ungeachtet|Anhand: by means of.
+C1|Genitivpräpositionen|___ aller Warnungen fuhr er weiter.|Ungeachtet/Anhand/Infolge|Ungeachtet: regardless of.
+C1|Genitivpräpositionen|___ des Streiks fielen viele Züge aus.|Infolge/Zugunsten/Anhand|Infolge: as a consequence of.
+C1|Wortstellung|___ so etwas gesehen.|Nie zuvor habe ich/Nie zuvor ich habe/Ich nie zuvor habe|An adverbial in first position is followed directly by the verb.
+C1|Wortstellung|Er hat es mir nicht ___.|sagen wollen/wollen sagen/gewollt sagen|Perfekt of a modal with another verb: double infinitive, modal last.
+C1|Wortstellung|Ich weiß, dass er das ___.|hätte machen sollen/machen sollen hätte/gemacht sollen hätte|In a subordinate clause hätte stands before the double infinitive.`.split('\n').forEach(l=>{const [lv,tp,q,o,why]=l.split('|');GRAM.push([q,o.split('/'),0,why,lv,tp]);});
+/* Short reference per level: [topic, [[German example, English note], ...]] */
+const GUIDE={
+ B1:[
+  ['Connectors with normal word order (und, aber, oder, denn, sondern)',[['Ich bleibe hier, denn ich bin müde.','denn = because; the verb stays in second place'],['Er kommt nicht heute, sondern morgen.','sondern = but rather, after a negation'],['Ich rufe an oder ich schreibe eine E-Mail.','oder = or']]],
+  ['Connectors that send the verb to the end',[['Ich bleibe hier, weil ich müde bin.','weil = because'],['Ich glaube, dass er recht hat.','dass = that'],['Ich weiß nicht, ob sie kommt.','ob = whether'],['Wenn ich Zeit habe, komme ich.','wenn = if, whenever'],['Als ich jung war, lebte ich in Indien.','als = when, once in the past'],['Obwohl es regnet, gehe ich raus.','obwohl = although'],['Ich spare, damit wir reisen können.','damit = so that'],['Bevor ich gehe, rufe ich an.','bevor = before'],['Nachdem ich gegessen hatte, ging ich los.','nachdem = after'],['Während du kochst, decke ich den Tisch.','während = while'],['Ich warte, bis du kommst.','bis = until'],['Seit ich hier wohne, lerne ich Deutsch.','seit = since']]],
+  ['Connector adverbs: verb comes straight after',[['Ich bin müde, deshalb bleibe ich hier.','deshalb, deswegen, darum = therefore'],['Es regnet, trotzdem gehe ich raus.','trotzdem = nevertheless'],['Zuerst essen wir, danach gehen wir.','dann, danach = then, afterwards'],['Er ist nett, außerdem hilft er immer.','außerdem = besides'],['Beeil dich, sonst kommen wir zu spät.','sonst = otherwise']]],
+  ['Purpose: um … zu and damit',[['Ich lerne, um die Prüfung zu bestehen.','same subject: um … zu'],['Ich lerne, damit mein Chef zufrieden ist.','different subject: damit']]],
+  ['Relative clauses',[['Der Mann, der dort steht, ist mein Lehrer.','nominative'],['Der Mann, den ich kenne, ist nett.','accusative'],['Der Mann, dem ich helfe, ist alt.','dative'],['Die Stadt, in der ich wohne, ist klein.','preposition plus pronoun']]],
+  ['Konjunktiv II: wishes, advice, polite requests',[['Ich hätte gern einen Kaffee.','polite wish'],['Könnten Sie mir helfen?','polite request'],['Wenn ich Zeit hätte, würde ich kommen.','unreal condition'],['Du solltest mehr schlafen.','advice']]],
+  ['Passive',[['Das Haus wird gebaut.','present: werden plus Partizip II'],['Das Haus wurde gebaut.','past: wurde plus Partizip II'],['Das Haus muss gebaut werden.','with a modal verb']]]],
+ B2:[
+  ['Two-part connectors',[['Sie spricht sowohl Englisch als auch Deutsch.','both … and'],['Er hat weder Zeit noch Geld.','neither … nor'],['Entweder kommst du mit, oder du bleibst hier.','either … or'],['Sie ist nicht nur klug, sondern auch fleißig.','not only … but also'],['Zwar ist es teuer, aber es lohnt sich.','it is true that … but'],['Je mehr ich lese, desto mehr verstehe ich.','the more … the more'],['Einerseits will ich bleiben, andererseits muss ich gehen.','on the one hand … on the other']]],
+  ['More connectors with the verb at the end',[['Er sprach leise, sodass ich nichts verstand.','sodass = so that, result'],['Man lernt, indem man übt.','indem = by doing'],['Falls du Hilfe brauchst, ruf mich an.','falls = in case'],['Sobald ich fertig bin, komme ich.','sobald = as soon as'],['Solange es regnet, bleiben wir hier.','solange = as long as'],['Er ging, ohne dass ich es merkte.','ohne dass = without'],['Anstatt zu helfen, sah er nur zu.','anstatt … zu = instead of']]],
+  ['Connector adverbs for essays',[['Die Miete ist hoch. Folglich ziehen viele weg.','folglich, somit = consequently'],['Es war schwer. Dennoch hat sie es geschafft.','dennoch = nevertheless'],['Das Auto ist schnell. Allerdings ist es teuer.','allerdings = however'],['Er spart viel. Seine Schwester dagegen gibt alles aus.','dagegen, hingegen = by contrast'],['Zudem ist die Lage sehr gut.','zudem, darüber hinaus = moreover']]],
+  ['Passive forms and substitutes',[['Das Haus ist gebaut worden.','Perfekt passive'],['Die Tür ist geöffnet.','state passive'],['Das lässt sich leicht erklären.','sich lassen = can be done'],['Das ist leicht zu erklären.','sein plus zu = can be done']]],
+  ['Konjunktiv II in the past',[['Wenn ich das gewusst hätte, wäre ich gekommen.','unreal past condition'],['Du hättest fragen sollen.','should have'],['Er tut so, als ob er krank wäre.','as if']]],
+  ['Konjunktiv I: reported speech',[['Er sagt, er habe keine Zeit.','he says he has no time'],['Sie sagte, sie sei krank gewesen.','she said she had been ill'],['Er fragte, ob ich kommen könne.','reported question']]],
+  ['Participles as adjectives',[['das spielende Kind','Partizip I: the child that is playing'],['das reparierte Auto','Partizip II: the car that was repaired']]],
+  ['Weak masculine nouns',[['der Kollege, den Kollegen, dem Kollegen','-n in all cases but nominative singular'],['der Student, den Studenten, dem Studenten','also: Herr, Mensch, Nachbar, Kunde, Junge']]],
+  ['Noun and verb pairs',[['eine Entscheidung treffen','to make a decision'],['eine Frage stellen','to ask a question'],['einen Antrag stellen','to submit an application'],['Rücksicht nehmen auf','to show consideration for'],['zur Verfügung stehen','to be available']]]],
+ C1:[
+  ['Nominal style: clause becomes preposition plus noun',[['weil es regnet → wegen des Regens, aufgrund des Regens','cause'],['obwohl es regnet → trotz des Regens','concession'],['wenn es regnet → bei Regen','condition'],['indem man übt → durch Üben','means'],['um die Qualität zu verbessern → zur Verbesserung der Qualität','purpose'],['nachdem er angekommen war → nach seiner Ankunft','time, after'],['bevor der Kurs beginnt → vor Beginn des Kurses','time, before'],['während wir essen → während des Essens','time, during']]],
+  ['Formal connectors',[['Wenngleich das Risiko hoch ist, lohnt es sich.','wenngleich, obgleich = although'],['Ich gehe nicht hin, zumal ich krank bin.','zumal = especially since'],['Sofern nichts dazwischenkommt, komme ich.','sofern = provided that'],['Er spart, wohingegen sie alles ausgibt.','wohingegen = whereas'],['Ich komme, es sei denn, es regnet.','es sei denn = unless'],['Infolgedessen stiegen die Preise.','infolgedessen, demzufolge = as a result'],['Gleichwohl bleibt die Frage offen.','gleichwohl, nichtsdestotrotz = nevertheless'],['Insofern hast du recht.','insofern = in this respect']]],
+  ['Extended participles',[['die von der Stadt geplante Straße','the road that was planned by the city'],['der seit Jahren hier lebende Autor','the author who has lived here for years'],['die zu lösende Aufgabe','the task that must be solved']]],
+  ['Modal verbs for opinions and reports',[['Er soll sehr reich sein.','people say he is'],['Sie will nichts gewusst haben.','she claims she knew nothing'],['Er muss krank sein.','I am almost sure'],['Er dürfte schon zu Hause sein.','probably'],['Das könnte stimmen.','possibly']]],
+  ['Fixed verb phrases',[['in Kraft treten','to come into force'],['zur Diskussion stellen','to put up for discussion'],['in Kauf nehmen','to accept a drawback'],['Anwendung finden','to be applied'],['in Betracht ziehen','to take into consideration'],['zum Ausdruck bringen','to express']]],
+  ['Prepositions with the genitive',[['angesichts der Lage','in view of'],['anhand der Daten','by means of'],['ungeachtet der Kritik','regardless of'],['infolge des Unfalls','as a result of'],['zugunsten der Kinder','in favour of'],['hinsichtlich des Preises','with regard to']]]]
+};
+let gLevel='B1',gTopic='';
+const gLv=g=>g[4]||'B1',gTp=g=>g[5]||'Mixed practice';
 function grammar(){
   const s=st[cur],msg=el('p',{class:'note','aria-live':'polite'});
-  const start=()=>{const wrong=(s.gram.wrong||[]).filter(i=>GRAM[i]);
-    runGram([...new Set(wrong.concat(shuffle(GRAM.map((_,i)=>i))))].slice(0,10).map(gi=>({g:GRAM[gi],gi})));};
+  const idx=GRAM.map((_,i)=>i).filter(i=>gLv(GRAM[i])===gLevel),topics=[...new Set(idx.map(i=>gTp(GRAM[i])))];
+  if(gTopic&&!topics.includes(gTopic))gTopic='';
+  const pool=idx.filter(i=>!gTopic||gTp(GRAM[i])===gTopic),wrong=(s.gram.wrong||[]).filter(i=>pool.includes(i));
+  const start=()=>runGram([...new Set(wrong.concat(shuffle(pool)))].slice(0,10).map(gi=>({g:GRAM[gi],gi})));
   const aiBtn=el('button',{class:'btn alt',type:'button',onclick:async()=>{
     if(!ai){msg.textContent=noAI;return;}aiBtn.disabled=true;msg.textContent='Writing ten new questions …';
-    try{const r=await askJSON('Write 10 multiple-choice German grammar questions for a learner preparing for the Goethe-Zertifikat B1: word order, cases after prepositions, connectors, Perfekt and Präteritum, adjective endings, verbs with prepositions. Each has one German sentence with exactly one gap written as ___, three options, exactly one correct. Reply with JSON only: an array of {"q":"sentence with ___","opts":["a","b","c"],"a":index of the correct option (0, 1 or 2),"why":"one short English sentence with the rule"}.');
+    try{const r=await askJSON('Write 10 multiple-choice German grammar questions for a learner preparing for a Goethe exam at CEFR level '+gLevel+'. Topic: '+(gTopic||topics.join(', '))+'. Each has one German sentence with exactly one gap written as ___, three options, exactly one correct. Reply with JSON only: an array of {"q":"sentence with ___","opts":["a","b","c"],"a":index of the correct option (0, 1 or 2),"why":"one short English sentence with the rule"}.');
       const list=(Array.isArray(r)?r:r.items||[]).filter(x=>x&&typeof x.q==='string'&&x.q.includes('___')&&Array.isArray(x.opts)&&x.opts.length===3&&[0,1,2].includes(x.a)).slice(0,10).map(x=>({g:[x.q.slice(0,200),x.opts.map(o=>String(o).slice(0,80)),x.a,String(x.why||'').slice(0,240)],gi:-1}));
       if(!list.length)throw 0;runGram(list);
     }catch(e){msg.textContent=errMsg(e);aiBtn.disabled=false;}}},'Ten new questions with AI');
+  const chip=(lb,on,fn)=>el('button',{type:'button',class:'chip'+(on?' on':''),'aria-pressed':String(on),onclick:fn},lb);
   show('Grammar',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
-    el('div',{class:'panel'},el('h2',null,'B1 weak spots'),el('div',{class:'meta'},el('span',{class:'pill'},GRAM.length+' questions'),s.gram.done?el('span',{class:'pill good'},s.gram.right+' of '+s.gram.done+' correct'):null,(s.gram.wrong||[]).length?el('span',{class:'pill mid'},s.gram.wrong.length+' to repeat'):null),
-      el('p',{class:'note'},'Word order, cases, connectors, past tenses, adjective endings, verbs with prepositions. Wrong answers come back first.'),
-      el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:start},'Start ten questions'),aiBtn),msg)),adultHome,grammar);
+    el('div',{class:'chips',role:'group','aria-label':'Level'},['B1','B2','C1'].map(l=>chip(l,l===gLevel,()=>{gLevel=l;gTopic='';grammar();}))),
+    el('div',{class:'panel'},el('h2',null,'Practice · '+gLevel),
+      el('div',{class:'chips',role:'group','aria-label':'Topic'},chip('All topics',!gTopic,()=>{gTopic='';grammar();}),topics.map(tp=>chip(tp,tp===gTopic,()=>{gTopic=tp;grammar();}))),
+      el('div',{class:'meta'},el('span',{class:'pill'},pool.length+' questions'),s.gram.done?el('span',{class:'pill good'},s.gram.right+' of '+s.gram.done+' correct overall'):null,wrong.length?el('span',{class:'pill mid'},wrong.length+' to repeat'):null),
+      el('p',{class:'note'},'Wrong answers come back first.'),
+      el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:start},'Start ten questions'),aiBtn),msg),
+    el('h2',{style:'font-size:1.25rem'},'Rules and examples · '+gLevel),
+    GUIDE[gLevel].map(([title,rows])=>el('details',null,el('summary',null,title),phrases(rows)))),adultHome,grammar);
 }
 function runGram(list){
   const s=st[cur];let i=0,right=0;
