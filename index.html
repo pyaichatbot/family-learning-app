@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family Learning App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one calm "paper" surface in soft, low-saturation colours, big touch targets, landscape-friendly grids so the phone mirrors well to a TV. Single light theme by choice. */
+:root{
+  color-scheme:light;
+  --paper:#EAF2EE; --card:#FBFCFA; --ink:#1B3A40; --muted:#56717A; --line:#CBDDD6;
+  --sun:#E9B04C; --sky:#2C6F86; --berry:#BF5570; --leaf:#3F9370;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.45;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+#app{min-height:100%;display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--sky);color:#fff;position:sticky;top:0;z-index:5}
+.bar h1{font-size:1.35rem;flex:1;min-width:0;overflow-wrap:anywhere}
+.back{width:44px;height:44px;border-radius:14px;border:0;background:rgba(255,255,255,.18);color:#fff;font-size:1.8rem;line-height:1;flex:none}
+.back.ghost{background:none;width:0;padding:0}
+.bar-r{display:flex;align-items:center;gap:10px;flex:none}
+.seg{display:flex;background:rgba(255,255,255,.18);border-radius:12px;padding:3px}
+.seg button{border:0;background:none;color:#fff;padding:6px 12px;border-radius:9px;font-weight:700}
+.seg button.on{background:#fff;color:var(--sky)}
+.stars{font-family:var(--display);font-size:1.15rem;background:var(--sun);color:var(--ink);padding:4px 12px;border-radius:999px;font-variant-numeric:tabular-nums}
+.main{flex:1;width:100%;max-width:1040px;margin:0 auto;padding:18px 16px 40px;display:flex;flex-direction:column;gap:18px}
+.note{color:var(--muted);font-size:.95rem;margin:0}
+.warn{background:#FFF4D6;border:1px solid var(--sun);border-radius:12px;padding:10px 12px;font-size:.95rem}
+
+/* profiles */
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.person{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.person .face{font-size:3.4rem;line-height:1}
+.person .nm{font-family:var(--display);font-size:1.5rem}
+.person .sub{color:var(--muted);font-size:.9rem}
+.person:hover{border-color:var(--sky)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:2px solid var(--sky);background:var(--sky);color:#fff;border-radius:14px;padding:10px 18px;font-weight:700;min-height:46px}
+.btn.alt{background:var(--card);color:var(--sky)}
+.btn.warm{background:var(--sun);border-color:var(--sun);color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:default}
+.names{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.names label{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+input[type=text],textarea,select{font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 12px;width:100%}
+textarea{min-height:220px;resize:vertical;line-height:1.5}
+
+/* menus */
+.grp h2{font-size:1.25rem;margin-bottom:8px;color:var(--sky)}
+.tiles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tile-card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:128px;justify-content:center}
+.tile-card .ic{font-size:2.6rem;line-height:1.1}
+.tile-card .lb{font-family:var(--display);font-size:1.1rem;text-align:center;line-height:1.1}
+.tile-card .mini{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.tile-card:hover{border-color:var(--sun)}
+.adult .tile-card{align-items:flex-start;text-align:left;padding:16px;min-height:110px}
+.adult .tile-card .lb{text-align:left;font-size:1.25rem}
+.adult .tile-card .mini{font-size:.92rem}
+.adult .tiles-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+
+/* kid games */
+.game{display:flex;flex-direction:column;align-items:center;gap:18px}
+.dots{display:flex;gap:8px}
+.dots i{width:14px;height:14px;border-radius:50%;background:var(--line)}
+.dots i.d{background:var(--sun)}
+.prompt{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.pic{font-size:clamp(5rem,22vh,9rem);line-height:1.1}
+.word{font-family:var(--display);font-size:clamp(2.6rem,10vw,5rem);letter-spacing:.04em}
+.sent{font-family:var(--display);font-size:clamp(1.7rem,6vw,3rem);max-width:18ch}
+.ask{font-family:var(--display);font-size:1.5rem}
+.hear{width:60px;height:60px;border-radius:50%;border:0;background:var(--sun);font-size:1.7rem}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;width:100%;max-width:820px}
+.opt{background:var(--card);border:3px solid var(--line);border-radius:22px;min-height:104px;font-family:var(--display);font-size:2.3rem;padding:8px;display:flex;align-items:center;justify-content:center}
+.opt.big{font-size:3.6rem}
+.opt.ok{border-color:var(--leaf);background:#DDF3E6}
+.opt.no{border-color:var(--berry);background:#FBE3EA;opacity:.6}
+.emo-row{font-size:clamp(1.8rem,6vw,2.8rem);letter-spacing:.12em;max-width:16em;overflow-wrap:anywhere;line-height:1.35}
+.emo-row .gone{opacity:.22}
+.slots,.tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.slot{width:64px;height:76px;border-bottom:5px solid var(--sky);font-family:var(--display);font-size:3rem;display:flex;align-items:center;justify-content:center}
+.slot.full{color:var(--leaf)}
+.tile{width:72px;height:76px;border-radius:18px;border:3px solid var(--sun);background:var(--card);font-family:var(--display);font-size:2.6rem}
+.tile.used{visibility:hidden}
+.tile.no{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;width:100%}
+.letters button{background:var(--card);border:3px solid var(--line);border-radius:18px;font-family:var(--display);font-size:1.9rem;min-height:72px}
+.letters button.on{border-color:var(--sun);background:#FFF4D6}
+.lcard{display:flex;align-items:center;gap:18px;background:var(--card);border-radius:22px;border:2px solid var(--line);padding:12px 22px;min-height:120px}
+.lcard .big{font-family:var(--display);font-size:4rem;line-height:1}
+.lcard .pic{font-size:4rem}
+.lcard .wd{font-family:var(--display);font-size:2rem}
+.pad{position:relative;width:min(100%,62vh,560px);aspect-ratio:1;background:var(--card);border:3px solid var(--line);border-radius:24px;overflow:hidden;touch-action:none}
+.pad canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.mem{display:grid;grid-template-columns:repeat(4,minmax(64px,110px));gap:10px;justify-content:center;width:100%}
+.mem button{aspect-ratio:1;border-radius:18px;border:3px solid var(--line);background:var(--sky);font-size:2.6rem;color:transparent}
+.mem button.up{background:var(--card);color:inherit}
+.mem button.ok{background:#DDF3E6;border-color:var(--leaf);color:inherit}
+.finish{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding-top:20px}
+.finish .big{font-size:4.5rem;line-height:1}
+.finish h2{font-size:2.2rem}
+.tod{display:flex;flex-direction:column;align-items:center;gap:14px}
+.tod .pic{font-size:clamp(7rem,34vh,13rem)}
+.tod .w{font-family:var(--display);font-size:2.2rem;text-align:center}
+.tod .w small{display:block;font-size:1.4rem;color:var(--muted);font-family:var(--body);font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:760px}
+.two .opt{min-height:220px;font-size:clamp(5rem,20vw,9rem)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;font-weight:700}
+.chip.on{background:var(--sky);border-color:var(--sky);color:#fff}
+
+/* adults */
+.panel{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.panel h2{font-size:1.25rem}
+.panel h3{font-size:1.05rem;color:var(--sky)}
+.de{font-weight:700}
+.task{font-size:1.05rem;max-width:65ch}
+.task ul{margin:6px 0 0;padding-left:20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{border-radius:999px;padding:3px 12px;font-weight:700;font-size:.9rem;background:var(--paper);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.pill.good{background:#DDF3E6;border-color:var(--leaf)}
+.pill.low{background:#FBE3EA;border-color:var(--berry)}
+.pill.mid{background:#FFF4D6;border-color:var(--sun)}
+details{border-top:1px solid var(--line);padding-top:8px}
+summary{font-weight:700;color:var(--sky);cursor:pointer;padding:6px 0}
+.phr{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.phr li{display:flex;gap:10px;align-items:flex-start}
+.phr .sp{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);font-size:1rem}
+.phr small{display:block;color:var(--muted)}
+.fix{border-left:4px solid var(--berry);padding-left:10px}
+.fix s{color:var(--berry)}
+.fix b{color:var(--leaf)}
+.fix small{display:block;color:var(--muted)}
+.pre{white-space:pre-wrap;max-width:65ch}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:26px 18px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;min-height:240px;justify-content:center}
+.card .fw{font-family:var(--display);font-size:2.2rem}
+.card .ex{color:var(--muted);max-width:40ch}
+.card .en{font-size:1.3rem;font-weight:700}
+.gopts{display:flex;flex-direction:column;gap:10px}
+.gopts button{text-align:left;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-weight:600;min-height:48px}
+.gopts button.ok{border-color:var(--leaf);background:#DDF3E6}
+.gopts button.no{border-color:var(--berry);background:#FBE3EA}
+.q{font-size:1.3rem;font-weight:700}
+.vlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.vlist div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.vlist small{display:block;color:var(--muted)}
+.slides{margin:0;padding-left:22px}
+/* motion: slow, purposeful, never looping fast or flashing */
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+@keyframes yes{40%{transform:scale(1.08)}}
+@keyframes settle{from{opacity:0;transform:scale(.7) rotate(-6deg)}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(233,176,76,.6)}100%{box-shadow:0 0 0 22px rgba(233,176,76,0)}}
+@keyframes sway{50%{transform:rotate(4deg)}}
+@keyframes up{to{transform:translateY(-110vh) translateX(var(--dx));opacity:0}}
+@keyframes breathe{50%{transform:scale(1.04)}}
+@keyframes slidein{from{opacity:0;transform:translateX(120px)}}
+.main>*{animation:rise .32s ease-out both}
+.tile-card,.person{animation:pop .36s cubic-bezier(.2,.8,.3,1.2) both;animation-delay:calc(var(--i,0)*40ms);transition:transform .15s,border-color .15s}
+.tile-card:active,.person:active,.opt:active,.btn:active{transform:scale(.97)}
+.opt{transition:transform .15s,background .25s,border-color .25s;animation:pop .3s both;animation-delay:calc(var(--i,0)*70ms)}
+.opt.ok{animation:yes .5s}
+.opt.no{animation:shake .35s}
+.pic{animation:settle .5s cubic-bezier(.2,.8,.3,1.3) both}
+.emo-row .it{display:inline-block;animation:pop .3s both;animation-delay:calc(var(--i)*110ms)}
+.slots{transition:gap .5s}
+.slots.done{gap:0}
+.slots.done .slot{border-color:var(--leaf);animation:yes .6s}
+.tile{animation:pop .3s both;animation-delay:calc(var(--i,0)*60ms)}
+.hear.say{animation:ring 1.2s}
+.gap{color:var(--berry)}
+.gap.in{color:var(--leaf);display:inline-block;animation:yes .5s}
+.fly{position:fixed;z-index:20;font-size:2rem;color:var(--sun);pointer-events:none;transition:transform .7s cubic-bezier(.3,.1,.3,1),opacity .7s}
+.stars.bump{animation:yes .4s}
+.garden{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;background:linear-gradient(#E2EEE9,#D3E6DB);border-radius:20px;padding:12px 16px;min-height:74px;font-size:2rem;width:100%}
+.garden span{display:inline-block;transform-origin:bottom center;animation:sway 5s ease-in-out infinite;animation-delay:calc(var(--i,0)*-0.7s)}
+.garden .gnote{font-size:1rem;color:var(--muted);animation:none;align-self:center}
+.float{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.float i{position:absolute;bottom:-40px;width:22px;height:22px;border-radius:50%;opacity:.5;animation:up 3.4s ease-out forwards}
+.tod .pic{animation:settle .5s both,breathe 3.5s ease-in-out .5s infinite}
+.mem button{transition:background .25s,border-color .25s}
+.mem button.up{animation:pop .3s}
+.stage{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;min-height:170px;font-size:clamp(2rem,7vw,3.2rem);width:100%}
+.stage.small{min-height:0;font-size:clamp(1.5rem,5vw,2.2rem)}
+.obj{display:inline-block;animation:pop .35s both;transition:transform .5s,opacity .5s}
+.obj.lit{transform:scale(1.3)}
+.obj.away{opacity:.12;transform:translateY(-34px) scale(.7)}
+.box{display:flex;flex-wrap:wrap;gap:4px;padding:10px 14px;border:3px dashed var(--line);border-radius:20px;min-width:90px;min-height:70px;justify-content:center;align-items:center;animation:pop .4s both;animation-delay:calc(var(--i,0)*120ms);transition:border-color .3s,background .3s}
+.box.lit{border-color:var(--sun);background:#FFF4D6}
+.box.slide{animation:slidein .8s both}
+.box.plate{border-style:solid;border-radius:999px;min-width:120px}
+.cap{font-family:var(--display);font-size:1.6rem;text-align:center;min-height:2.6em;max-width:22ch}
+.eq{font-size:clamp(2.2rem,8vw,3.6rem);min-height:1.2em}
+.chat{display:flex;flex-direction:column;gap:8px}
+.chat .me,.chat .them{max-width:85%;padding:8px 12px;border-radius:14px}
+.chat .me{align-self:flex-end;background:var(--sky);color:#fff}
+.chat .them{align-self:flex-start;background:var(--paper);border:1px solid var(--line)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media (max-width:420px){.opt{min-height:88px;font-size:2rem}.slot{width:50px;height:64px;font-size:2.4rem}.tile{width:58px;height:64px;font-size:2.1rem}.bar h1{font-size:1.15rem}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+/* ---------- tiny helpers ---------- */
+const app=document.getElementById('app');
+function el(tag,a,...kids){
+  const e=document.createElement(tag);
+  if(a)for(const n in a){const v=a[n];if(v==null||v===false)continue;
+    if(n==='class')e.className=v;else if(n.slice(0,2)==='on')e.addEventListener(n.slice(2),v);
+    else if(n==='style')e.style.cssText=v;else e.setAttribute(n,v===true?'':v);}
+  const add=c=>{if(c==null||c===false)return;if(Array.isArray(c))c.forEach(add);else e.append(c.nodeType?c:String(c));};
+  kids.forEach(add);return e;
+}
+const rnd=n=>Math.floor(Math.random()*n);
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
+const pick=(a,n)=>shuffle(a).slice(0,n);
+function near(n,min,max){const s=new Set([n]);let guard=0;while(s.size<4&&guard++<200){const v=n+rnd(7)-3;if(v>=min&&v<=max)s.add(v);}let x=min;while(s.size<4)s.add(x++);return shuffle([...s]);}
+const DAY=864e5;
+
+/* ---------- state and saving ---------- */
+const PIDS=['p1','p2','p3','p4'];
+const DEF={p1:{name:'Big kid',kind:'kid',icon:'🦊'},p2:{name:'Little kid',kind:'toddler',icon:'🐣'},p3:{name:'Mama',kind:'adult',icon:'🌷'},p4:{name:'Papa',kind:'adult',icon:'🧭'}};
+function fresh(p){return {name:DEF[p].name,t:0,lang:'en',stars:{},srs:{},mistakes:[],writing:[],extra:[],gram:{done:0,right:0,wrong:[]},traceIdx:0,wx:{1:[],2:[],3:[]}};}
+const st={};PIDS.forEach(p=>st[p]=fresh(p));
+function adopt(p,v){const f=fresh(p);st[p]=Object.assign(f,v);st[p].gram=Object.assign({done:0,right:0,wrong:[]},v.gram||{});st[p].wx=Object.assign({1:[],2:[],3:[]},v.wx||{});}
+try{const j=JSON.parse(localStorage.getItem('fla-v1')||'null');if(j)PIDS.forEach(p=>{if(j[p])adopt(p,j[p]);});}catch(e){}
+let db=null,busy=false,saveTimer=null,syncMsg='';const dirty=new Set();
+function save(p){st[p].t=Date.now();try{localStorage.setItem('fla-v1',JSON.stringify(st));}catch(e){}
+  dirty.add(p);clearTimeout(saveTimer);saveTimer=setTimeout(flush,1500);}
+async function flush(){if(!db||busy)return;busy=true;
+  try{for(const p of [...dirty]){dirty.delete(p);await db.doc('profiles/'+p).set(JSON.parse(JSON.stringify(st[p])));}}
+  catch(e){dirty.clear();syncMsg='Progress is saved on this device only right now.';}
+  busy=false;if(dirty.size){clearTimeout(saveTimer);saveTimer=setTimeout(flush,1500);}}
+function use(n){try{const c=window.claude;return c&&c.use?c.use(n).catch(()=>null):Promise.resolve(null);}catch(e){return Promise.resolve(null);}}
+let ai=null,ctts=null,dict=null,dictTarget=null,dictBtn=null;
+use('sample').then(s=>{ai=s;});
+use('tts').then(t=>{ctts=t;});
+use('dictation').then(d=>{dict=d;if(!d)return;try{
+  d.onFinal(o=>{if(dictTarget)dictTarget.value+=(dictTarget.value?' ':'')+o.text;});
+  d.onState(o=>{if(dictBtn)dictBtn.textContent=o.state==='listening'?'Stop dictating':'Dictate';});}catch(e){}});
+use('db').then(async d=>{if(!d)return;db=d;try{
+  for(const p of PIDS){const s=await d.doc('profiles/'+p).get();
+    if(s.exists){const v=s.data();if(v&&(v.t||0)>(st[p].t||0))adopt(p,JSON.parse(JSON.stringify(v)));else if((st[p].t||0)>(v&&v.t||0))dirty.add(p);}
+    else if(st[p].t)dirty.add(p);}
+  flush();if(!cur)home();}catch(e){syncMsg='Progress is saved on this device only right now.';}});
+
+/* ---------- speech and sound ---------- */
+let voiceMode='auto',deVoice='';try{voiceMode=localStorage.getItem('fla-voice')||'auto';deVoice=localStorage.getItem('fla-devoice')||'';}catch(e){}
+const vtag=x=>String(x.lang||'').replace('_','-').toLowerCase();
+function deviceVoices(pre){try{return (window.speechSynthesis.getVoices()||[]).filter(x=>vtag(x)===pre||vtag(x).indexOf(pre+'-')===0);}catch(e){return [];}}
+function webSay(parts){try{const ss=window.speechSynthesis;if(!ss)return;
+  /* speak() straight after cancel() is dropped by Safari and Chrome, so wait a moment, but only when something was playing (first call must stay inside the tap). */
+  if(ss.speaking||ss.pending){ss.cancel();clearTimeout(sayTimer);sayTimer=setTimeout(()=>webSpeak(ss,parts),120);}else webSpeak(ss,parts);}catch(e){}}
+let sayTimer=null;
+function webSpeak(ss,parts){try{
+  parts.forEach(p=>{const u=new SpeechSynthesisUtterance(p.text),de=p.lang==='de';u.lang=de?'de-DE':'en-GB';u.rate=p.rate||0.85;
+    const vs=deviceVoices(de?'de':'en'),v=(de&&vs.find(x=>x.name===deVoice))||vs.find(x=>vtag(x)===(de?'de-de':'en-gb'))||vs[0];if(v){u.voice=v;u.lang=v.lang.replace('_','-');}ss.speak(u);});}catch(e){}}
+function sayParts(parts){
+  parts=parts.map(p=>p.lang==='de'?Object.assign({},p,{text:String(p.text).replace(/\d+/g,m=>deNum(+m))}):p);
+  if(ctts&&voiceMode!=='device'){try{const one=parts.every(p=>p.lang===parts[0].lang),tag=l=>l==='de'?'de-DE':'en-US';
+    ctts.speak(parts.map(p=>({text:p.text,language:tag(p.lang),rate:p.rate||0.9})),one?{language:tag(parts[0].lang)}:undefined).catch(e=>{if(e&&e.code==='not_granted'){ctts=null;webSay(parts);}});}catch(e){webSay(parts);}}
+  else webSay(parts);}
+const say=(text,lg,rate)=>sayParts([{text:String(text),lang:lg,rate}]);
+const DE1=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun','zehn','elf','zwölf','dreizehn','vierzehn','fünfzehn','sechzehn','siebzehn','achtzehn','neunzehn'],DE10=['','','zwanzig','dreißig','vierzig','fünfzig','sechzig','siebzig','achtzig','neunzig'];
+function deNum(n){if(n<20)return DE1[n];if(n<100){const o=n%10,z=DE10[Math.floor(n/10)];return o?(o===1?'ein':DE1[o])+'und'+z:z;}
+  if(n<1000){const h=Math.floor(n/100),r=n%100;return (h===1?'ein':DE1[h])+'hundert'+(r?deNum(r):'');}return String(n);}
+/* A bare letter or digit carries no language, so voices read it in English. Always speak it inside a German or English phrase. */
+function letterPhrase(l,lg){const L=l[0].toUpperCase();return lg==='de'?L+' wie '+l[1]+'.':(l[1][0].toLowerCase()===l[0]?L+' is for '+l[1]+'.':L+', as in '+l[1]+'.');}
+function charPhrase(ch,lg){const digit=/\d/.test(ch);return lg==='de'?(digit?'Die Zahl '+ch+'.':'Der Buchstabe '+ch.toUpperCase()+'.'):(digit?'The number '+ch+'.':'The letter '+ch.toUpperCase()+'.');}
+try{if(window.speechSynthesis)window.speechSynthesis.getVoices();}catch(e){}
+let actx=null;
+function chime(ok){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const t=actx.currentTime;
+  (ok?[523,784]:[196]).forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;o.type='sine';
+    g.gain.setValueAtTime(0.0001,t+i*0.12);g.gain.exponentialRampToValueAtTime(0.18,t+i*0.12+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+i*0.12+0.25);
+    o.connect(g);g.connect(actx.destination);o.start(t+i*0.12);o.stop(t+i*0.12+0.3);});}catch(e){}}
+
+/* ---------- content packs (add a language by adding a pack) ---------- */
+const PACK={
+ en:{conf:{c:'k',k:'c'},
+  letters:[['a','apple','🍎'],['b','ball','⚽'],['c','cat','🐱'],['d','dog','🐶'],['e','egg','🥚'],['f','fish','🐟'],['g','goat','🐐'],['h','hat','🎩'],['i','iguana','🦎'],['j','juice','🧃'],['k','kite','🪁'],['l','lion','🦁'],['m','moon','🌙'],['n','nose','👃'],['o','octopus','🐙'],['p','pig','🐷'],['q','queen','👑'],['r','rabbit','🐰'],['s','sun','☀️'],['t','tree','🌳'],['u','umbrella','☂️'],['v','van','🚐'],['w','whale','🐋'],['x','box','📦',1],['y','yo-yo','🪀'],['z','zebra','🦓']],
+  words:[['cat','🐱'],['dog','🐶'],['sun','☀️'],['hat','🎩'],['pig','🐷'],['bus','🚌'],['bed','🛏️'],['fox','🦊'],['hen','🐔'],['bat','🦇'],['bug','🐛'],['car','🚗'],['cow','🐮'],['egg','🥚'],['bee','🐝'],['fish','🐟'],['frog','🐸'],['duck','🦆'],['moon','🌙'],['star','⭐'],['tree','🌳'],['book','📖'],['ball','⚽']],
+  sentences:[['The dog is big.','🐶'],['I see the sun.','☀️'],['The fish can swim.','🐟'],['The frog can hop.','🐸'],['The bus is red.','🚌'],['I have a book.','📖'],['The duck is wet.','🦆'],['Look at the moon.','🌙'],['The cat can nap.','🐱'],['The bee is busy.','🐝']]},
+ de:{conf:{c:'k',k:'c',f:'v',v:'f'},
+  letters:[['a','Apfel','🍎'],['b','Ball','⚽'],['c','Clown','🤡'],['d','Delfin','🐬'],['e','Ente','🦆'],['f','Fisch','🐟'],['g','Giraffe','🦒'],['h','Hund','🐶'],['i','Igel','🦔'],['j','Jacke','🧥'],['k','Katze','🐱'],['l','Löwe','🦁'],['m','Maus','🐭'],['n','Nase','👃'],['o','Oma','👵'],['p','Pilz','🍄'],['q','Qualle','🪼',1],['r','Rakete','🚀'],['s','Sonne','☀️'],['t','Tiger','🐯'],['u','Uhr','⏰'],['v','Vogel','🐦'],['w','Wal','🐋'],['x','Xylofon','🎵',1],['y','Yoga','🧘',1],['z','Zug','🚆']],
+  words:[['Hut','🎩'],['Bus','🚌'],['Oma','👵'],['Opa','👴'],['Eis','🍦'],['Zug','🚆'],['Kuh','🐮'],['Uhr','⏰'],['Ei','🥚'],['Maus','🐭'],['Haus','🏠'],['Hund','🐶'],['Ball','⚽'],['Baum','🌳'],['Mond','🌙'],['Fisch','🐟'],['Buch','📖'],['Auto','🚗'],['Ente','🦆'],['Biene','🐝'],['Stern','⭐'],['Frosch','🐸'],['Katze','🐱'],['Sonne','☀️']],
+  sentences:[['Der Hund ist groß.','🐶'],['Ich sehe die Sonne.','☀️'],['Der Fisch schwimmt.','🐟'],['Der Frosch hüpft.','🐸'],['Der Bus ist rot.','🚌'],['Ich habe ein Buch.','📖'],['Die Ente ist nass.','🦆'],['Da ist der Mond.','🌙'],['Die Katze schläft.','🐱'],['Die Maus ist klein.','🐭']]}
+};
+const T={
+ en:{reading:'Reading',numbers:'Numbers',thinking:'Thinking',letters:'Letters',first:'First sound',build:'Build a word',match:'Read and find',sent:'Sentences',trace:'Trace',count:'Count',hear:'Hear the number',add:'Plus and minus',next:'What comes next?',pat:'Patterns',odd:'Odd one out',size:'Big and small',mem:'Memory',well:'Well done!',again:'Play again',menu:'Back to menu',big:'Which one is the biggest?',small:'Which one is the smallest?',many:'How many?',wnext:'What comes next?',wodd:'Which one does not belong?',clear:'Clear',done:'Done',skip:'Skip',look:'Look and listen',where:'Where is it?',nextc:'Next',tracehint:'Trace it with your finger.',plus:'plus',minus:'minus'},
+ de:{reading:'Lesen',numbers:'Zahlen',thinking:'Denken',letters:'Buchstaben',first:'Anlaut',build:'Wort bauen',match:'Lesen und finden',sent:'Sätze',trace:'Nachspuren',count:'Zählen',hear:'Zahl hören',add:'Plus und Minus',next:'Was kommt dann?',pat:'Muster',odd:'Was passt nicht?',size:'Groß und klein',mem:'Memory',well:'Super gemacht!',again:'Noch einmal',menu:'Zurück zum Menü',big:'Was ist am größten?',small:'Was ist am kleinsten?',many:'Wie viele?',wnext:'Was kommt als Nächstes?',wodd:'Was passt nicht dazu?',clear:'Löschen',done:'Fertig',skip:'Weiter',look:'Schauen und hören',where:'Wo ist es?',nextc:'Weiter',tracehint:'Fahre mit dem Finger nach.',plus:'plus',minus:'minus'}
+};
+let lang='en';const t=k=>T[lang][k];
+const SETS={animals:['🐶','🐱','🐮','🐷','🐸','🦁','🐰','🐻'],fruit:['🍎','🍌','🍓','🍇','🍐','🍊','🍒','🍉'],vehicles:['🚗','🚌','🚆','✈️','🚲','🚀','🚜','⛵'],clothes:['👕','👖','🧦','🧥','👗','🧢','👟','🧤']};
+const SHAPES=['🔴','🔵','🟡','🟢','⭐','🔺','🟪','🌙'];
+const TOD={
+ Animals:[['🐶','dog','der Hund',1],['🐱','cat','die Katze',1],['🐮','cow','die Kuh',1],['🐷','pig','das Schwein',1],['🐴','horse','das Pferd',1],['🐑','sheep','das Schaf',1],['🐔','chicken','das Huhn',1],['🦆','duck','die Ente',1],['🐰','rabbit','der Hase',1],['🐻','bear','der Bär',1]],
+ Food:[['🍎','apple','der Apfel',1],['🍌','banana','die Banane',1],['🍞','bread','das Brot',1],['🥛','milk','die Milch',1],['🧀','cheese','der Käse',1],['🥕','carrot','die Karotte',1],['🍓','strawberry','die Erdbeere',1],['🥚','egg','das Ei',1],['💧','water','das Wasser',1]],
+ Colours:[['🔴','red','Rot'],['🔵','blue','Blau'],['🟢','green','Grün'],['🟡','yellow','Gelb'],['🟠','orange','Orange'],['🟣','purple','Lila'],['⚫','black','Schwarz'],['⚪','white','Weiß']],
+ Body:[['👁️','eye','das Auge',1],['👂','ear','das Ohr',1],['👃','nose','die Nase',1],['👄','mouth','der Mund',1],['✋','hand','die Hand',1],['🦶','foot','der Fuß',1],['🦷','tooth','der Zahn',1]],
+ Home:[['🏠','house','das Haus',1],['🛏️','bed','das Bett',1],['🪑','chair','der Stuhl',1],['🚗','car','das Auto',1],['⚽','ball','der Ball',1],['📖','book','das Buch',1],['🧸','teddy','der Teddy',1],['👟','shoe','der Schuh',1],['🌙','moon','der Mond',1],['☀️','sun','die Sonne',1]],
+ Family:[['👩','mummy','Mama'],['👨','daddy','Papa'],['👶','baby','das Baby',1],['👵','grandma','Oma'],['👴','grandpa','Opa']]
+};
+
+/* ---------- shell ---------- */
+let cur=null,last=null,ticker=null,playId=0;
+/* Timers must die when the screen changes, or an old game pulls the child out of the new one. */
+function later(fn,ms){const id=playId;setTimeout(()=>{if(id===playId)fn();},ms);}
+const totalStars=p=>Object.values(st[p].stars).reduce((a,b)=>a+b,0);
+function header(title,back){
+  const kind=cur&&DEF[cur].kind;
+  return el('header',{class:'bar'},
+    back?el('button',{class:'back',type:'button',onclick:back,'aria-label':'Back'},'‹'):el('span',{class:'back ghost'}),
+    el('h1',null,title),
+    el('div',{class:'bar-r'},
+      cur&&kind!=='adult'&&el('div',{class:'seg',role:'group','aria-label':'Language'},['en','de'].map(l=>el('button',{type:'button',class:l===lang?'on':null,'aria-pressed':String(l===lang),onclick:()=>{lang=l;st[cur].lang=l;save(cur);(last.restart||reshow)();}},l.toUpperCase()))),
+      cur&&kind==='kid'&&el('span',{class:'stars'},'★ '+totalStars(cur))));
+}
+function show(title,bodyFn,back,restart){
+  if(ticker){clearInterval(ticker);ticker=null;}
+  playId++;
+  if(dict&&dictTarget){try{dict.stop();}catch(e){}}dictTarget=null;dictBtn=null;
+  last={title,bodyFn,back,restart};
+  app.replaceChildren(header(title,back),el('main',{class:'main'+(cur&&DEF[cur].kind==='adult'?' adult':'')},bodyFn()));
+  window.scrollTo(0,0);
+}
+function reshow(){show(last.title,last.bodyFn,last.back,last.restart);}
+const dots=(i,n)=>el('div',{class:'dots','aria-label':'Round '+i+' of '+n},Array.from({length:n},(_,k)=>el('i',{class:k<i?'d':null})));
+const hearBtn=fn=>el('button',{class:'hear',type:'button',onclick:fn,'aria-label':'Hear it'},'🔊');
+let lastPt=null;document.addEventListener('pointerdown',e=>{lastPt=[e.clientX,e.clientY];},true);
+function addStar(key,n){st[cur].stars[key]=(st[cur].stars[key]||0)+(n||1);save(cur);flyStar();}
+function flyStar(){
+  const tg=document.querySelector('.bar .stars');if(!tg||!lastPt||!window.requestAnimationFrame)return;
+  const r=tg.getBoundingClientRect(),from=lastPt,f=el('span',{class:'fly','aria-hidden':'true',style:'left:'+(from[0]-14)+'px;top:'+(from[1]-20)+'px'},'★');document.body.append(f);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transform='translate('+(r.left+r.width/2-from[0])+'px,'+(r.top+r.height/2-from[1])+'px) scale(.5)';f.style.opacity='.3';}));
+  setTimeout(()=>{f.remove();const t2=document.querySelector('.bar .stars');if(t2&&cur){t2.textContent='★ '+totalStars(cur);t2.classList.add('bump');}},720);
+}
+
+function home(){
+  cur=null;let editing=false;
+  const sub=p=>{const s=st[p],k=DEF[p].kind;
+    if(k==='kid')return '★ '+totalStars(p)+' stars';
+    if(k==='toddler')return 'Pictures, words, sounds';
+    const learned=Object.values(s.srs).filter(x=>x.b>=2).length;
+    return learned+' words learned · '+s.writing.length+' texts written';};
+  const body=()=>el('div',{style:'display:flex;flex-direction:column;gap:18px'},
+    el('p',{class:'note'},'Who is learning?'),
+    el('div',{class:'people'},PIDS.map((p,k)=>el('button',{class:'person',type:'button',style:'--i:'+k,onclick:()=>open(p)},
+      el('span',{class:'face'},DEF[p].icon),el('span',{class:'nm'},st[p].name),el('span',{class:'sub'},sub(p))))),
+    editing?el('div',{class:'panel'},el('h2',null,'Names'),
+      el('div',{class:'names'},PIDS.map(p=>el('label',{for:'nm-'+p},DEF[p].icon+' '+DEF[p].name,el('input',{type:'text',id:'nm-'+p,maxlength:'20',value:st[p].name})))),
+      el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:()=>{PIDS.forEach(p=>{const v=document.getElementById('nm-'+p).value.trim();if(v&&v!==st[p].name){st[p].name=v;save(p);}});editing=false;reshow();}},'Save names')))
+     :el('div',{class:'row'},el('button',{class:'btn alt',type:'button',onclick:progress},'Progress'),el('button',{class:'btn alt',type:'button',onclick:()=>{editing=true;reshow();}},'Change names')),
+    syncMsg&&el('p',{class:'note'},syncMsg),
+    voicePanel(),
+    el('p',{class:'note'},'Turn the iPhone sideways and mirror it to the TV with AirPlay. Children learn best with a parent beside them, in short sessions.'));
+  show('Family Learning App',body,null);
+}
+function voicePanel(){
+  const de=deviceVoices('de'),usingClaude=ctts&&voiceMode!=='device';
+  const info='Version 6 · Now speaking with: '+(usingClaude?'Claude voice':'device voice'+(window.speechSynthesis?(de.length?', '+de.length+' German voice'+(de.length>1?'s':'')+' found':', no German voice found'):', not available in this view'));
+  const set=m=>{voiceMode=m;try{localStorage.setItem('fla-voice',m);}catch(e){}reshow();};
+  const sel=de.length>1?el('select',{id:'de-voice','aria-label':'German device voice',onchange:ev=>{deVoice=ev.target.value;try{localStorage.setItem('fla-devoice',deVoice);}catch(e){}}},de.map(v=>el('option',{value:v.name,selected:v.name===deVoice},v.name+' ('+v.lang+')'))):null;
+  return el('details',{class:'panel'},el('summary',null,'Voice settings'),el('p',{class:'note'},info),
+    el('div',{class:'chips',role:'group','aria-label':'Voice'},[['auto','Automatic'],['claude','Claude voice'],['device','Device voice']].map(([m,lb])=>el('button',{type:'button',class:'chip'+(voiceMode===m?' on':''),'aria-pressed':String(voiceMode===m),disabled:m==='claude'&&!ctts,onclick:()=>set(m)},lb))),
+    sel,
+    el('div',{class:'row'},el('button',{class:'btn alt',type:'button',onclick:()=>say('Der Vogel fliegt. J wie Jacke. Wir haben 21 Äpfel.','de')},'Test German'),el('button',{class:'btn alt',type:'button',onclick:()=>say('The bird can fly. A is for apple.','en')},'Test English')),
+    el('p',{class:'note'},'German is right when you hear "Fogel" and "Yacke". If not, switch the voice above and test again.'));
+}
+function progress(){
+  const keys=['letters','first','build','miss','match','sent','trace','count','hear','more','add','times','share','next','pat','odd','sort','size','mem'];
+  show('Progress',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},PIDS.map(p=>{const s=st[p],k=DEF[p].kind;
+    if(k==='toddler')return null;
+    if(k==='kid')return el('div',{class:'panel'},el('h2',null,DEF[p].icon+' '+s.name+' · ★ '+totalStars(p)),
+      totalStars(p)?el('div',{class:'meta'},keys.filter(x=>s.stars[x]).map(x=>el('span',{class:'pill'},T.en[x]+' ★ '+s.stars[x]+' · level '+Math.min(3,1+Math.floor(s.stars[x]/12))))):el('p',{class:'note'},'No stars yet.'));
+    const all=VOCAB.concat(s.extra),learned=all.filter(c=>s.srs[c.de]&&s.srs[c.de].b>=2).length,ests=s.writing.filter(w=>w.est!=null).slice(-5).map(w=>w.est);
+    return el('div',{class:'panel'},el('h2',null,DEF[p].icon+' '+s.name),el('div',{class:'meta'},
+      el('span',{class:'pill'},learned+' of '+all.length+' words learned'),el('span',{class:'pill'},s.writing.length+' texts corrected'),
+      ests.length?el('span',{class:pillClass(ests[ests.length-1])},'Writing estimates: '+ests.join(', ')):null,
+      s.gram.done?el('span',{class:'pill'},'Grammar '+s.gram.right+' of '+s.gram.done):null,el('span',{class:'pill'},s.mistakes.length+' open mistakes')));
+  })),home,progress);
+}
+function open(p){cur=p;lang=st[p].lang||'en';const k=DEF[p].kind;if(k==='kid')kidHome();else if(k==='toddler')todHome();else adultHome();}
+
+/* ---------- kids: menu and generic quiz ---------- */
+const lvl=key=>Math.min(3,1+Math.floor((st[cur].stars[key]||0)/12));
+function garden(){
+  const total=totalStars(cur),n=Math.min(24,Math.floor(total/4)),stages=['🌱','🌿','🌷','🌻','🌳'];
+  return el('div',{class:'garden','aria-label':'Garden with '+n+' plants'},n?Array.from({length:n},(_,k)=>el('span',{style:'--i:'+k},stages[Math.max(0,Math.min(4,Math.floor((total-k*4)/10)))])):el('span',{class:'gnote'},t('garden0')));
+}
+function kidHome(){
+  let n=0;
+  const g=(title,items)=>el('section',{class:'grp'},el('h2',null,title),el('div',{class:'tiles-grid'},items.map(([ic,key,fn,plain])=>
+    el('button',{class:'tile-card',type:'button',style:'--i:'+(n++),onclick:fn},el('span',{class:'ic'},ic),el('span',{class:'lb'},t(key)),!plain&&el('span',{class:'mini'},'★ '+(st[cur].stars[key]||0)+' · '+t('lvl')+' '+lvl(key))))));
+  show(st[cur].name,()=>{n=0;return el('div',{style:'display:flex;flex-direction:column;gap:18px'},garden(),
+    g(t('reading'),[['🔤','letters',letters],['👂','first',firstSound],['🧩','build',buildWord],['🔎','miss',missing],['📖','match',readMatch],['💬','sent',sentences],['✏️','trace',trace]]),
+    g(t('learn'),[['1️⃣','lcount',()=>lesson('lcount'),1],['➕','lplus',()=>lesson('lplus'),1],['➖','lminus',()=>lesson('lminus'),1],['✖️','ltimes',()=>lesson('ltimes'),1],['➗','ldiv',()=>lesson('ldiv'),1]]),
+    g(t('numbers'),[['🔢','count',countGame],['🎧','hear',hearNumber],['⚖️','more',moreGame],['🧮','add',addGame],['🧺','times',timesGame],['🍽️','share',divGame],['➡️','next',nextNumber]]),
+    g(t('thinking'),[['🔁','pat',patterns],['❓','odd',oddOne],['🗂️','sort',sortGame],['📏','size',sizeGame],['🃏','mem',memory]]));},home,kidHome);
+}
+let played=0;
+function floaties(){
+  const box=el('div',{class:'float','aria-hidden':'true'},Array.from({length:14},(_,k)=>el('i',{style:'left:'+(4+rnd(92))+'%;background:'+['#E9B04C','#2C6F86','#3F9370','#BF5570'][k%4]+';animation-delay:'+(k*90)+'ms;--dx:'+(rnd(120)-60)+'px'})));
+  document.body.append(box);setTimeout(()=>box.remove(),4600);
+}
+function finish(title,got,total,again,back){
+  const kid=cur&&DEF[cur].kind==='kid';if(kid)played++;
+  show(title,()=>el('div',{class:'finish'},el('div',{class:'big'},'🌟'),el('h2',null,t('well')),el('div',{class:'stars'},'★ '+got+' / '+total),
+    kid&&garden(),kid&&played%4===0&&el('p',{class:'warn'},t('pause')),
+    el('div',{class:'row',style:'justify-content:center'},el('button',{class:'btn warm',type:'button',onclick:again},t('again')),el('button',{class:'btn alt',type:'button',onclick:back},t('menu')))),back,again);
+  floaties();say(t('well'),lang);
+}
+function runQuiz(cfg){
+  const rounds=cfg.rounds||6,back=cfg.back||kidHome;let i=0,got=0;
+  const next=()=>{
+    if(i>=rounds)return finish(cfg.title(),got,rounds,()=>runQuiz(cfg),back);
+    const r=cfg.make(i);i++;let locked=false,first=true;
+    const opts=el('div',{class:r.two?'two':'opts'},r.options.map((o,k)=>{
+      const b=el('button',{class:'opt'+(o.big?' big':''),type:'button',style:(o.style||'')+';--i:'+k,'aria-label':o.aria||null,onclick:()=>{
+        if(locked)return;
+        if(o.correct){locked=true;b.classList.add('ok');if(first){got++;if(cfg.key)addStar(cfg.key);}
+          if(r.onRight)r.onRight();else chime(true);later(next,r.delay||1200);}
+        else{first=false;b.classList.add('no');b.disabled=true;chime(false);}
+      }},o.label);return b;}));
+    show(cfg.title(),()=>el('div',{class:'game'},dots(i,rounds),el('div',{class:'prompt'},r.prompt,r.speak&&hearBtn(r.speak)),opts),back,()=>runQuiz(cfg));
+    if(r.speak&&r.auto!==false){r.speak();const hb=document.querySelector('.hear');if(hb)hb.classList.add('say');}
+  };
+  next();
+}
+const emo=(e,n,from)=>Array.from({length:n},(_,k)=>el('span',{class:'it',style:'--i:'+((from||0)+k)},e));
+function wordsFor(key){
+  const L=lvl(key),W=PACK[lang].words.filter(w=>{const n=[...w[0]].length,tier=n<=3?1:n<=4?2:3;return tier<=L&&tier>=L-1;});
+  return W.length>=6?W:PACK[lang].words;
+}
+
+/* ---------- kids: reading ---------- */
+const seen=new Set();
+function addStarOnce(key,id){const k=cur+key+lang+id;if(seen.has(k))return;seen.add(k);if(seen.size%5===0)addStar(key);}
+function letters(){
+  const P=PACK[lang];let sel=null;
+  const grid=(list,pair)=>el('div',{class:'letters'},list.map(l=>el('button',{type:'button',class:l===sel?'on':null,onclick:()=>{
+    sel=l;addStarOnce('letters',l[0]);reshow();sayParts([{text:pair?l[1]:letterPhrase(l,lang),lang,rate:0.5}]);}},pair?l[0]:l[0].toUpperCase()+l[0])));
+  const body=()=>el('div',{class:'game'},
+    el('div',{class:'lcard','aria-live':'polite'},sel?[el('span',{class:'big'},P.pairs.includes(sel)?sel[0]:sel[0].toUpperCase()+' '+sel[0]),el('span',{class:'pic'},sel[2]),el('span',{class:'wd'},sel[1])]:el('span',{class:'ask'},t('tap'))),
+    grid(P.letters,false),el('h2',{style:'align-self:flex-start;color:var(--sky);font-size:1.2rem'},t('pairs')),grid(P.pairs,true));
+  show(t('letters'),body,kidHome,letters);
+}
+function firstSound(){
+  runQuiz({key:'first',title:()=>t('first'),make:()=>{
+    const P=PACK[lang],pool=P.letters.filter(l=>!l[3]),ans=pool[rnd(pool.length)];
+    const others=pick(pool.filter(l=>l!==ans&&P.conf[ans[0]]!==l[0]),3);
+    return {prompt:el('div',{class:'pic'},ans[2]),speak:()=>say(ans[1],lang),
+      options:shuffle([ans,...others]).map(l=>({label:l[0].toUpperCase()+' '+l[0],correct:l===ans}))};}});
+}
+function buildWord(){
+  const R=6,words=pick(wordsFor('build'),R);let i=0,got=0;
+  const round=()=>{
+    if(i>=R)return finish(t('build'),got,R,buildWord,kidHome);
+    const w=words[i][0],e=words[i][1];i++;const chars=[...w];let pos=0,clean=true;
+    const slots=chars.map(()=>el('span',{class:'slot'}));const row=el('div',{class:'slots'},slots);
+    const tiles=shuffle(chars).map((ch,k)=>{const b=el('button',{class:'tile',type:'button',style:'--i:'+k,onclick:()=>{
+      if(ch.toLowerCase()===chars[pos].toLowerCase()){slots[pos].textContent=chars[pos];slots[pos].classList.add('full');b.disabled=true;b.classList.add('used');pos++;
+        if(pos===chars.length){if(clean){got++;addStar('build');}row.classList.add('done');say(w,lang);later(round,1900);}}
+      else{clean=false;b.classList.add('no');setTimeout(()=>b.classList.remove('no'),400);chime(false);}}},ch);return b;});
+    show(t('build'),()=>el('div',{class:'game'},dots(i,R),el('div',{class:'prompt'},el('div',{class:'pic'},e),hearBtn(()=>say(w,lang))),row,el('div',{class:'tiles'},tiles)),kidHome,buildWord);
+    say(w,lang);
+  };round();
+}
+function missing(){
+  runQuiz({key:'miss',title:()=>t('miss'),make:()=>{
+    const W=wordsFor('miss'),w=W[rnd(W.length)],ch=[...w[0]],k=rnd(ch.length),ans=ch[k],up=ans!==ans.toLowerCase();
+    const others=pick([...'abdefghiklmnoprstuw'].filter(c=>c!==ans.toLowerCase()),3).map(c=>up?c.toUpperCase():c);
+    const gap=el('span',{class:'gap'},'_'),view=el('div',{class:'word'},ch.map((c,i)=>i===k?gap:c));
+    return {prompt:[el('div',{class:'pic'},w[1]),view],speak:()=>say(w[0],lang),onRight:()=>{gap.textContent=ans;gap.classList.add('in');say(w[0],lang);},delay:1800,
+      options:shuffle([ans,...others]).map(c=>({label:c,correct:c===ans}))};}});
+}
+function readMatch(){
+  runQuiz({key:'match',title:()=>t('match'),make:()=>{
+    const W=wordsFor('match'),ans=W[rnd(W.length)],others=pick(PACK[lang].words.filter(w=>w[1]!==ans[1]),3);
+    return {prompt:el('div',{class:'word'},ans[0]),speak:()=>say(ans[0],lang),auto:false,onRight:()=>say(ans[0],lang),delay:1600,
+      options:shuffle([ans,...others]).map(w=>({label:w[1],big:true,correct:w===ans}))};}});
+}
+function sentences(){
+  runQuiz({key:'sent',title:()=>t('sent'),make:()=>{
+    const S=PACK[lang].sentences,ans=S[rnd(S.length)];
+    const pool=[...new Set(PACK[lang].words.map(w=>w[1]).concat(S.map(s=>s[1])))].filter(e=>e!==ans[1]);
+    return {prompt:el('div',{class:'sent'},ans[0]),speak:()=>say(ans[0],lang,0.8),auto:false,onRight:()=>say(ans[0],lang,0.8),delay:2800,
+      options:shuffle([ans[1],...pick(pool,3)]).map(e=>({label:e,big:true,correct:e===ans[1]}))};}});
+}
+function trace(){
+  const list=PACK[lang].letters.flatMap(l=>[l[0].toUpperCase(),l[0]]).concat('0123456789'.split(''));
+  let idx=(st[cur].traceIdx||0)%list.length;
+  const draw=()=>{
+    const ch=list[idx];let len=0,down=false,px=0,py=0;
+    const cv=el('canvas',{width:'600',height:'600','aria-label':'Tracing area for '+ch});
+    let ctx=null;try{ctx=cv.getContext('2d');}catch(e){}
+    const guide=()=>{if(!ctx)return;ctx.clearRect(0,0,600,600);ctx.font='700 440px "Baloo 2","Trebuchet MS",sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle='#D9E7E1';ctx.fillText(ch,300,450);len=0;};
+    const xy=ev=>{const r=cv.getBoundingClientRect();return [(ev.clientX-r.left)*600/r.width,(ev.clientY-r.top)*600/r.height];};
+    cv.addEventListener('pointerdown',ev=>{down=true;[px,py]=xy(ev);try{cv.setPointerCapture(ev.pointerId);}catch(e){}ev.preventDefault();});
+    cv.addEventListener('pointermove',ev=>{if(!down||!ctx)return;const [x,y]=xy(ev);ctx.strokeStyle='#2C6F86';ctx.lineWidth=26;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(x,y);ctx.stroke();len+=Math.hypot(x-px,y-py);px=x;py=y;ev.preventDefault();});
+    ['pointerup','pointercancel','pointerleave'].forEach(n=>cv.addEventListener(n,()=>{down=false;}));
+    const go=star=>{if(star&&len>250){addStar('trace');chime(true);}idx=(idx+1)%list.length;st[cur].traceIdx=idx;save(cur);later(draw,star?500:0);};
+    show(t('trace'),()=>el('div',{class:'game'},el('p',{class:'ask'},t('tracehint')),el('div',{class:'pad'},cv),
+      el('div',{class:'row',style:'justify-content:center'},hearBtn(()=>say(charPhrase(ch,lang),lang)),el('button',{class:'btn alt',type:'button',onclick:guide},t('clear')),el('button',{class:'btn warm',type:'button',onclick:()=>go(true)},t('done')+' ✓'),el('button',{class:'btn alt',type:'button',onclick:()=>go(false)},t('skip')))),kidHome,trace);
+    guide();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(len===0)guide();});
+  };draw();
+}
+
+/* ---------- kids: numbers ---------- */
+function countGame(){
+  runQuiz({key:'count',title:()=>t('count'),make:()=>{
+    const max=lvl('count')===1?10:20,n=1+rnd(max),e=SETS.fruit.concat(SETS.animals)[rnd(16)];
+    return {prompt:[el('div',{class:'ask'},t('many')),el('div',{class:'emo-row'},emo(e,n))],speak:()=>say(t('many'),lang),onRight:()=>say(n,lang),
+      options:near(n,1,max).map(v=>({label:String(v),correct:v===n}))};}});
+}
+function hearNumber(){
+  const max=[20,50,100][lvl('hear')-1];
+  runQuiz({key:'hear',title:()=>t('hear'),make:()=>{const n=1+rnd(max);
+    return {prompt:el('div',{class:'pic'},'🎧'),speak:()=>say(n,lang),options:near(n,1,max).map(v=>({label:String(v),correct:v===n}))};}});
+}
+function moreGame(){
+  runQuiz({key:'more',title:()=>t('more'),make:()=>{
+    const L=lvl('more'),wantMore=L===1||rnd(2)===0,max=L===3?100:L===2?15:9;
+    const a=1+rnd(max);let b=1+rnd(max);while(b===a)b=1+rnd(max);
+    const e=SETS.fruit[rnd(8)],q=wantMore?t('wmore'):t('wfewer'),win=wantMore?Math.max(a,b):Math.min(a,b);
+    return {two:true,prompt:el('div',{class:'ask'},q),speak:()=>say(q,lang),onRight:()=>say(win,lang),
+      options:[a,b].map(v=>({label:L===3?String(v):e.repeat(v),aria:String(v),style:L===3?'font-size:4rem':'font-size:1.7rem;line-height:1.35;word-break:break-all;padding:14px',correct:v===win}))};}});
+}
+function addGame(){
+  runQuiz({key:'add',title:()=>t('add'),make:()=>{
+    const max=lvl('add')===1?10:20,e=SETS.fruit[rnd(8)],plus=rnd(2)===0;let a,b,ans,row;
+    if(plus){a=1+rnd(max-1);b=1+rnd(Math.min(max-a,9));ans=a+b;row=el('div',{class:'emo-row'},emo(e,a),' ➕ ',emo(e,b,a));}
+    else{a=2+rnd(max-1);b=1+rnd(Math.min(a-1,9));ans=a-b;row=el('div',{class:'emo-row'},emo(e,a-b),el('span',{class:'gone'},emo(e,b,a-b)));}
+    const txt=a+(plus?' + ':' − ')+b+' = ?';
+    return {prompt:[row,el('div',{class:'word',style:'font-size:2.6rem'},txt)],speak:()=>say(a+' '+(plus?t('plus'):t('minus'))+' '+b,lang),onRight:()=>say(ans,lang),
+      options:near(ans,0,max+2).map(v=>({label:String(v),correct:v===ans}))};}});
+}
+function nextNumber(){
+  runQuiz({key:'next',title:()=>t('next'),make:()=>{
+    const L=lvl('next'),steps=L===1?[1]:L===2?[1,2,10]:[2,5,10],step=steps[rnd(steps.length)];
+    const s=step===10?10*rnd(6):step===5?5*rnd(10):1+rnd(L===1?15:40),ans=s+3*step;
+    return {prompt:[el('div',{class:'ask'},t('wnext')),el('div',{class:'word',style:'font-size:clamp(2rem,8vw,3.6rem)'},[s,s+step,s+2*step].join('  ')+'  ?')],speak:()=>say(t('wnext'),lang),onRight:()=>say(ans,lang),
+      options:near(ans,0,120).map(v=>({label:String(v),correct:v===ans}))};}});
+}
+
+/* ---------- kids: animated maths lessons ---------- */
+
+const PRACTICE={lcount:()=>countGame(),lplus:()=>addGame(),lminus:()=>addGame(),ltimes:()=>timesGame(),ldiv:()=>divGame()};
+function lesson(kind,keep){
+  const e=keep?keep.e:SETS.fruit[rnd(8)];let a,b;
+  if(keep){a=keep.a;b=keep.b;}
+  else if(kind==='lcount'){a=3+rnd(6);b=0;}
+  else if(kind==='lplus'){a=2+rnd(3);b=2+rnd(3);}
+  else if(kind==='lminus'){a=4+rnd(5);b=2+rnd(a-3);}
+  else if(kind==='ltimes'){a=2+rnd(2);b=2+rnd(3);}
+  else{b=2+rnd(2);a=b*(2+rnd(3));}
+  const stage=el('div',{class:'stage'}),cap=el('div',{class:'cap','aria-live':'polite'}),eq=el('div',{class:'word eq'});
+  show(t(kind),()=>el('div',{class:'game'},stage,eq,cap,el('div',{class:'row',style:'justify-content:center'},
+    el('button',{class:'btn alt',type:'button',onclick:()=>lesson(kind,{e,a,b})},t('watch')),
+    el('button',{class:'btn alt',type:'button',onclick:()=>lesson(kind)},t('newex')),
+    el('button',{class:'btn warm',type:'button',onclick:PRACTICE[kind]},t('tryit')+' ›'))),kidHome,()=>lesson(kind,{e,a,b}));
+  const id=++playId;
+  const wait=ms=>new Promise((res,rej)=>setTimeout(()=>id===playId?res():rej(new Error('left')),ms));
+  const tell=async(en,de,ms)=>{const s=lang==='de'?de:en;cap.textContent=s;say(s,lang,0.85);await wait(ms||2700);};
+  const num=async(n,node)=>{if(node){node.classList.add('lit');setTimeout(()=>node.classList.remove('lit'),800);}cap.textContent=String(n);say(n,lang,0.9);await wait(1000);};
+  const obj=()=>el('span',{class:'obj'},e);
+  const box=(n,cls)=>{const items=Array.from({length:n},obj);return {node:el('div',{class:'box'+(cls?' '+cls:'')},items),items};};
+  (async()=>{
+    await wait(400);
+    if(kind==='lcount'){
+      await tell('Let us count.','Wir zählen.',1800);
+      for(let k=1;k<=a;k++){const o=obj();stage.append(o);await num(k,o);}
+      eq.textContent=String(a);await tell('There are '+a+'.','Es sind '+a+'.');
+    }else if(kind==='lplus'){
+      const g1=box(a);stage.append(g1.node);await tell('Here are '+a+'.','Hier sind '+a+'.');
+      const g2=box(b,'slide');stage.append(g2.node);eq.textContent=a+' + '+b;await tell(b+' more come.',b+' kommen dazu.');
+      await tell('Now we count them all.','Jetzt zählen wir alle.',2400);
+      const all=g1.items.concat(g2.items);for(let k=0;k<all.length;k++)await num(k+1,all[k]);
+      eq.textContent=a+' + '+b+' = '+(a+b);await tell(a+' plus '+b+' is '+(a+b)+'.',a+' plus '+b+' ist '+(a+b)+'.',3200);
+    }else if(kind==='lminus'){
+      const g=box(a);stage.append(g.node);await tell('Here are '+a+'.','Hier sind '+a+'.');
+      eq.textContent=a+' − '+b;cap.textContent=lang==='de'?b+' gehen weg.':b+' go away.';say(cap.textContent,lang,0.85);
+      for(let k=0;k<b;k++){await wait(650);g.items[a-1-k].classList.add('away');}
+      await wait(1200);await tell('We count what is left.','Wir zählen, was bleibt.',2400);
+      for(let k=0;k<a-b;k++)await num(k+1,g.items[k]);
+      eq.textContent=a+' − '+b+' = '+(a-b);await tell(a+' minus '+b+' is '+(a-b)+'.',a+' minus '+b+' ist '+(a-b)+'.',3200);
+    }else if(kind==='ltimes'){
+      await tell(a+' groups. Each group has '+b+'.',a+' Gruppen. In jeder Gruppe sind '+b+'.',3600);
+      for(let k=1;k<=a;k++){const g=box(b);stage.append(g.node);await wait(500);await num(k*b,g.node);}
+      eq.textContent=a+' × '+b+' = '+(a*b);await tell(a+' times '+b+' is '+(a*b)+'.',a+' mal '+b+' ist '+(a*b)+'.',3200);
+    }else{
+      const pile=box(a),plates=Array.from({length:b},()=>el('div',{class:'box plate'}));
+      stage.append(pile.node);await tell('Here are '+a+'. We share them between '+b+' plates.','Hier sind '+a+'. Wir teilen sie auf '+b+' Teller auf.',4200);
+      plates.forEach(p=>stage.append(p));await wait(700);
+      for(let k=0;k<a;k++){const o=pile.items[k];o.remove();plates[k%b].append(obj());await wait(600);}
+      pile.node.remove();plates.forEach(p=>p.classList.add('lit'));
+      eq.textContent=a+' ÷ '+b+' = '+(a/b);await tell('Each plate has '+(a/b)+'.','Auf jedem Teller sind '+(a/b)+'.',2800);
+      await tell(a+' shared by '+b+' is '+(a/b)+'.',a+' geteilt durch '+b+' ist '+(a/b)+'.',3200);
+    }
+  })().catch(()=>{});
+}
+function timesGame(){
+  runQuiz({key:'times',title:()=>t('times'),make:()=>{
+    const L=lvl('times'),a=2+rnd(L===1?2:4),b=2+rnd(L===1?3:4),e=SETS.fruit[rnd(8)],ans=a*b;
+    const stage=el('div',{class:'stage small'},Array.from({length:a},(_,k)=>el('div',{class:'box',style:'--i:'+k},e.repeat(b))));
+    return {prompt:[stage,el('div',{class:'word',style:'font-size:2.6rem'},a+' × '+b+' = ?')],speak:()=>say(a+' '+t('timesw')+' '+b,lang),onRight:()=>say(ans,lang),
+      options:near(ans,2,30).map(v=>({label:String(v),correct:v===ans}))};}});
+}
+function divGame(){
+  runQuiz({key:'share',title:()=>t('share'),make:()=>{
+    const L=lvl('share'),k=2+rnd(L===1?2:3),q=2+rnd(L===1?3:4),n=k*q,e=SETS.fruit[rnd(8)];
+    const stage=el('div',{class:'stage small'},el('div',{class:'emo-row'},emo(e,n)),Array.from({length:k},()=>el('div',{class:'box plate'},'🍽️')));
+    return {prompt:[stage,el('div',{class:'word',style:'font-size:2.6rem'},n+' ÷ '+k+' = ?')],speak:()=>say(n+' '+t('sharew')+' '+k,lang),onRight:()=>say(q,lang),
+      options:near(q,1,10).map(v=>({label:String(v),correct:v===q}))};}});
+}
+
+/* ---------- kids: thinking ---------- */
+function patterns(){
+  runQuiz({key:'pat',title:()=>t('pat'),make:()=>{
+    const units=[[0,1],[0,0,1],[0,1,1],[0,1,2]],unit=units[rnd(lvl('pat')===1?2:4)],em=pick(SHAPES,4),len=unit.length===2?6:unit.length*2+rnd(2);
+    const seq=Array.from({length:len},(_,k)=>em[unit[k%unit.length]]),ans=em[unit[len%unit.length]];
+    const used=[...new Set(unit)].map(k=>em[k]),opts=used.length<3?used.concat(em.filter(x=>!used.includes(x)).slice(0,3-used.length)):used;
+    return {prompt:[el('div',{class:'ask'},t('wnext')),el('div',{class:'emo-row'},seq.map((x,k)=>el('span',{class:'it',style:'--i:'+k},x+' ')),'❔')],speak:()=>say(t('wnext'),lang),
+      options:shuffle(opts).map(x=>({label:x,big:true,correct:x===ans}))};}});
+}
+function oddOne(){
+  runQuiz({key:'odd',title:()=>t('odd'),make:()=>{
+    const [A,B]=pick(Object.keys(SETS),2),odd=SETS[B][rnd(8)];
+    return {prompt:el('div',{class:'ask'},t('wodd')),speak:()=>say(t('wodd'),lang),
+      options:shuffle([...pick(SETS[A],3),odd]).map(x=>({label:x,big:true,correct:x===odd}))};}});
+}
+function sortGame(){
+  const [A,B]=pick(Object.keys(SETS),2),ea=shuffle(SETS[A]),eb=shuffle(SETS[B]),flip=rnd(2)===0;
+  runQuiz({key:'sort',title:()=>t('sort'),rounds:8,make:()=>{
+    const inA=rnd(2)===0,item=(inA?ea:eb)[2+rnd(6)];
+    const bins=[{label:ea[0]+' '+ea[1]+' …',aria:A,correct:inA,style:'font-size:2.6rem'},{label:eb[0]+' '+eb[1]+' …',aria:B,correct:!inA,style:'font-size:2.6rem'}];
+    return {two:true,prompt:[el('div',{class:'ask'},t('wsort')),el('div',{class:'pic'},item)],speak:()=>say(t('wsort'),lang),options:flip?bins.reverse():bins};}});
+}
+function sizeGame(){
+  runQuiz({key:'size',title:()=>t('size'),make:()=>{
+    const e=SETS.animals.concat(SETS.vehicles)[rnd(16)],big=rnd(2)===0,sizes=shuffle([2.2,3.8,5.8]),want=big?5.8:2.2;
+    return {prompt:el('div',{class:'ask'},big?t('big'):t('small')),speak:()=>say(big?t('big'):t('small'),lang),
+      options:sizes.map(s=>({label:e,style:'font-size:'+s+'rem;min-height:150px',aria:s===5.8?'big':s===2.2?'small':'medium',correct:s===want}))};}});
+}
+function memory(){
+  const pairs=lvl('mem')===1?6:8,em=pick(SETS.animals.concat(SETS.fruit),pairs),cards=shuffle(em.concat(em));let open=[],matched=0,lock=false;
+  const btns=cards.map((e,k)=>{const b=el('button',{type:'button','aria-label':'Card '+(k+1),onclick:()=>{
+    if(lock||b.classList.contains('up')||b.classList.contains('ok'))return;
+    b.classList.add('up');open.push(b);
+    if(open.length===2){const [x,y]=open;open=[];
+      if(x.textContent===y.textContent){x.classList.add('ok');y.classList.add('ok');matched++;chime(true);
+        if(matched===pairs){addStar('mem',3);later(()=>finish(t('mem'),3,3,memory,kidHome),900);}}
+      else{lock=true;setTimeout(()=>{x.classList.remove('up');y.classList.remove('up');lock=false;},1000);}}
+  }},e);return b;});
+  show(t('mem'),()=>el('div',{class:'game'},el('div',{class:'mem'},btns)),kidHome,memory);
+}
+
+/* ---------- toddler ---------- */
+let todCat='Animals';
+function todHome(){
+  show(st[cur].name,()=>el('div',{style:'display:flex;flex-direction:column;gap:18px'},
+    el('div',{class:'chips',role:'group','aria-label':'Topic'},Object.keys(TOD).map(c=>el('button',{type:'button',class:'chip'+(c===todCat?' on':''),'aria-pressed':String(c===todCat),onclick:()=>{todCat=c;reshow();}},TOD[c][0][0]+' '+c))),
+    el('div',{class:'tiles-grid'},
+      el('button',{class:'tile-card',type:'button',onclick:todLook},el('span',{class:'ic'},'👀'),el('span',{class:'lb'},t('look'))),
+      el('button',{class:'tile-card',type:'button',onclick:todWhere},el('span',{class:'ic'},'👉'),el('span',{class:'lb'},t('where')))),
+    el('p',{class:'note'},'Each word is spoken in English, then German. No scores and no timers. Sit together and keep it under five minutes.')),home,todHome);
+}
+function todLook(){
+  const items=TOD[todCat];let i=0;
+  const speak=()=>sayParts([{text:items[i][1],lang:'en',rate:0.8},{text:items[i][2],lang:'de',rate:0.8}]);
+  const draw=()=>{show(t('look'),()=>el('div',{class:'tod'},
+    el('button',{class:'opt',type:'button',style:'border:0;background:none;min-height:0','aria-label':'Hear '+items[i][1],onclick:speak},el('span',{class:'pic'},items[i][0])),
+    el('div',{class:'w'},items[i][1],el('small',null,items[i][2])),
+    el('div',{class:'row',style:'justify-content:center'},hearBtn(speak),el('button',{class:'btn warm',type:'button',style:'font-size:1.3rem;padding:14px 30px',onclick:()=>{i=(i+1)%items.length;draw();speak();}},t('nextc')+' ›'))),todHome,todLook);};
+  draw();
+}
+function todWhere(){
+  runQuiz({title:()=>t('where'),rounds:5,back:todHome,make:()=>{
+    const [a,b]=pick(TOD[todCat],2);
+    const q=()=>lang==='de'?say('Wo ist '+a[2]+'?','de',0.8):say('Where is '+(a[3]?'the ':'')+a[1]+'?','en',0.8);
+    return {two:true,prompt:el('div',{class:'ask'},lang==='de'?'Wo ist '+a[2]+'?':'Where is '+(a[3]?'the ':'')+a[1]+'?'),speak:q,
+      onRight:()=>sayParts([{text:a[1],lang:'en',rate:0.8},{text:a[2],lang:'de',rate:0.8}]),delay:2200,
+      options:shuffle([a,b]).map(x=>({label:x[0],aria:x[1],correct:x===a}))};}});
+}
+
+/* ---------- adults: data ---------- */
+const WRITE={
+ 1:{name:'Teil 1 · Informal email',words:80,mins:20,tasks:[
+  {s:'Sie haben am Wochenende Ihren Geburtstag gefeiert. Ihre Freundin Lena konnte nicht kommen, weil sie krank war. Schreiben Sie ihr eine E-Mail.',p:['Beschreiben Sie: Wie war die Feier?','Begründen Sie: Welches Geschenk hat Ihnen am besten gefallen und warum?','Machen Sie einen Vorschlag für ein Treffen.']},
+  {s:'Sie sind vor kurzem umgezogen. Ihr Freund Tobias konnte Ihnen beim Umzug nicht helfen. Schreiben Sie ihm eine E-Mail.',p:['Beschreiben Sie: Wie ist die neue Wohnung?','Begründen Sie: Warum sind Sie umgezogen?','Laden Sie Tobias zu sich ein.']},
+  {s:'Sie haben letzte Woche einen Ausflug gemacht. Ihre Freundin Maria wollte mitkommen, hatte aber keine Zeit. Schreiben Sie ihr eine E-Mail.',p:['Beschreiben Sie: Was haben Sie gemacht?','Begründen Sie: Was hat Ihnen besonders gefallen und warum?','Schlagen Sie einen neuen Ausflug vor.']},
+  {s:'Sie haben einen neuen Deutschkurs begonnen. Schreiben Sie Ihrem Freund Jonas eine E-Mail.',p:['Beschreiben Sie: Wie ist der Kurs?','Begründen Sie: Warum lernen Sie Deutsch?','Schlagen Sie vor, gemeinsam zu üben.']}]},
+ 2:{name:'Teil 2 · Opinion post',words:80,mins:25,tasks:[
+  {s:'Sie haben im Fernsehen eine Diskussion zum Thema „Kinder und Smartphones“ gesehen. Im Online-Gästebuch lesen Sie diese Meinung: „Meine Tochter ist acht und möchte ein Smartphone. Ich finde das viel zu früh.“ Schreiben Sie Ihre Meinung.',p:[]},
+  {s:'Sie haben einen Artikel zum Thema „Arbeiten von zu Hause“ gelesen. In den Kommentaren steht: „Ich arbeite lieber zu Hause. Im Büro verliere ich nur Zeit.“ Schreiben Sie Ihre Meinung.',p:[]},
+  {s:'Im Radio ging es um das Thema „Einkaufen im Internet“. Im Forum der Sendung lesen Sie: „Ich kaufe alles online. Geschäfte brauche ich nicht mehr.“ Schreiben Sie Ihre Meinung.',p:[]},
+  {s:'In einer Zeitung lesen Sie einen Beitrag zum Thema „Auto in der Stadt“. Ein Leser schreibt: „In der Stadt braucht niemand ein eigenes Auto.“ Schreiben Sie Ihre Meinung.',p:[]}]},
+ 3:{name:'Teil 3 · Formal message',words:40,mins:15,tasks:[
+  {s:'Ihre Kursleiterin, Frau Wagner, hat Sie zu einem Gespräch über Ihre Lernfortschritte eingeladen. Zu dem Termin können Sie nicht kommen. Schreiben Sie an Frau Wagner.',p:['Entschuldigen Sie sich höflich.','Berichten Sie, warum Sie nicht kommen können.']},
+  {s:'Sie haben am Dienstag einen Termin bei Ihrem Zahnarzt, Herrn Dr. Keller. Sie können aber nicht kommen. Schreiben Sie an Herrn Dr. Keller.',p:['Entschuldigen Sie sich höflich.','Nennen Sie den Grund und bitten Sie um einen neuen Termin.']},
+  {s:'Ihr Vermieter, Herr Schulz, möchte am Freitag die Heizung in Ihrer Wohnung kontrollieren lassen. Sie sind an dem Tag nicht zu Hause. Schreiben Sie an Herrn Schulz.',p:['Entschuldigen Sie sich höflich.','Nennen Sie den Grund und schlagen Sie einen anderen Tag vor.']},
+  {s:'Ihre Chefin, Frau Becker, hat Sie zum Firmenfest eingeladen. Sie können leider nicht teilnehmen. Schreiben Sie an Frau Becker.',p:['Bedanken und entschuldigen Sie sich höflich.','Berichten Sie, warum Sie nicht kommen können.']}]}
+};
+const PHR_W={
+ 1:[['Liebe Lena, / Lieber Tobias,','Dear … (informal)'],['vielen Dank für deine Nachricht.','thanks for your message.'],['Schade, dass du nicht dabei sein konntest.','A pity you could not be there.'],['Am besten hat mir … gefallen, weil …','I liked … best because …'],['Hast du Lust, nächste Woche … ?','Do you feel like … next week?'],['Ich schlage vor, dass wir uns am Samstag treffen.','I suggest we meet on Saturday.'],['Viele Grüße / Liebe Grüße','Best wishes']],
+ 2:[['Meiner Meinung nach …','In my opinion …'],['Ich bin der Meinung, dass …','I am of the opinion that …'],['Einerseits …, andererseits …','On the one hand …, on the other …'],['Ein Vorteil ist, dass …','One advantage is that …'],['Ein Nachteil ist, dass …','One disadvantage is that …'],['Aus meiner Erfahrung kann ich sagen, dass …','From my experience I can say that …'],['Deshalb finde ich, dass …','That is why I think that …']],
+ 3:[['Sehr geehrte Frau Wagner, / Sehr geehrter Herr Schulz,','Dear Ms … / Dear Mr … (formal)'],['vielen Dank für Ihre Einladung.','thank you for your invitation.'],['Leider kann ich an dem Termin nicht kommen, weil …','Unfortunately I cannot come because …'],['Wäre es möglich, den Termin zu verschieben?','Would it be possible to move the appointment?'],['Ich bitte um Ihr Verständnis.','I ask for your understanding.'],['Mit freundlichen Grüßen','Yours sincerely']]
+};
+const SPEAK={
+ 1:{name:'Teil 1 · Plan together',mins:3,tasks:[
+  {s:'Ein Kollege geht in Rente. Planen Sie gemeinsam eine Abschiedsfeier.',p:['Wann und wo feiern?','Essen und Getränke?','Welches Geschenk?','Wer macht was?']},
+  {s:'Eine Freundin liegt im Krankenhaus. Planen Sie gemeinsam einen Besuch.',p:['Wann besuchen?','Was mitbringen?','Wie hinkommen?','Wie lange bleiben?']},
+  {s:'Sie möchten mit Ihrem Deutschkurs einen Ausflug machen. Planen Sie ihn gemeinsam.',p:['Wohin?','Wann?','Welches Verkehrsmittel?','Was kostet es?']},
+  {s:'Neue Nachbarn sind eingezogen. Planen Sie gemeinsam ein Willkommensfest im Haus.',p:['Wann und wo?','Wer wird eingeladen?','Wer bringt was mit?','Musik und Programm?']}]},
+ 2:{name:'Teil 2 · Present a topic',mins:3,tasks:[
+  {s:'Brauchen Kinder ein eigenes Handy?'},{s:'Soll man im Urlaub ins Ausland fahren?'},{s:'Ist Fernsehen gut für Kinder?'},{s:'Bio-Lebensmittel: Lohnt sich das?'},{s:'Sport im Verein oder allein?'},{s:'Einkaufen im Internet oder im Geschäft?'}]},
+ 3:{name:'Teil 3 · React to a presentation',mins:2,tasks:[
+  {s:'Ihr Partner hat über „Brauchen Kinder ein eigenes Handy?“ gesprochen. Geben Sie eine Rückmeldung und stellen Sie eine Frage.'},
+  {s:'Ihre Partnerin hat über „Einkaufen im Internet“ gesprochen. Geben Sie eine Rückmeldung und stellen Sie eine Frage.'},
+  {s:'Ihr Partner hat über „Sport im Verein oder allein?“ gesprochen. Geben Sie eine Rückmeldung und stellen Sie eine Frage.'}]}
+};
+const SLIDES=['Thema nennen und Aufbau erklären','Meine persönlichen Erfahrungen','Die Situation in meinem Heimatland','Vor- und Nachteile, meine Meinung','Abschluss und Dank'];
+const PHR_S={
+ 1:[['Ich schlage vor, dass wir …','I suggest that we …'],['Wie wäre es, wenn wir … ?','How about we … ?'],['Das ist eine gute Idee.','That is a good idea.'],['Ich bin nicht ganz sicher. Vielleicht sollten wir lieber …','I am not quite sure. Maybe we should rather …'],['Was meinst du dazu?','What do you think?'],['Einverstanden. Dann machen wir das so.','Agreed. Then we do it that way.'],['Wer kümmert sich um … ?','Who takes care of … ?']],
+ 2:[['Ich möchte heute über das Thema … sprechen.','Today I would like to talk about …'],['Zuerst spreche ich über …, dann über … und zum Schluss …','First I talk about …, then … and finally …'],['Ich persönlich habe die Erfahrung gemacht, dass …','Personally I have found that …'],['In meinem Heimatland ist es so, dass …','In my home country it is like this: …'],['Ein großer Vorteil ist …, ein Nachteil ist aber …','A big advantage is …, but a disadvantage is …'],['Ich bin der Meinung, dass …','I am of the opinion that …'],['Vielen Dank für Ihre Aufmerksamkeit. Haben Sie Fragen?','Thank you for your attention. Do you have questions?']],
+ 3:[['Vielen Dank für die interessante Präsentation.','Thank you for the interesting presentation.'],['Besonders gut hat mir gefallen, dass …','I especially liked that …'],['Ich habe noch eine Frage: …','I have one more question: …'],['Könnten Sie noch etwas mehr über … sagen?','Could you say a little more about … ?'],['Wie ist das bei Ihnen persönlich?','How is that for you personally?'],['Das sehe ich genauso. / Das sehe ich etwas anders.','I see it the same way. / I see it a bit differently.']]
+};
+const parseV=txt=>txt.split('\n').map(l=>{const [lv,tp,de,en,ex]=l.split('|');return {lv,tp,de,en,ex};});
+const VOCAB=parseV(`B1|Arbeit|die Bewerbung|application|Ich schreibe eine Bewerbung für die Stelle.
+B1|Arbeit|der Arbeitgeber|employer|Mein Arbeitgeber bietet flexible Arbeitszeiten.
+B1|Arbeit|die Erfahrung|experience|Sie hat viel Erfahrung im Verkauf.
+B1|Arbeit|kündigen|to quit, to give notice|Er hat letzte Woche gekündigt.
+B1|Arbeit|das Gehalt|salary|Das Gehalt kommt am Monatsende.
+B1|Arbeit|die Überstunde|hour of overtime|Diese Woche mache ich viele Überstunden.
+B1|Arbeit|die Besprechung|meeting|Die Besprechung beginnt um zehn Uhr.
+B1|Arbeit|sich bewerben|to apply|Ich bewerbe mich um eine neue Stelle.
+B1|Arbeit|die Ausbildung|vocational training|Sie macht eine Ausbildung zur Erzieherin.
+B1|Arbeit|selbstständig|self-employed, independent|Mein Bruder ist seit zwei Jahren selbstständig.
+B1|Arbeit|der Vertrag|contract|Ich habe den Vertrag gestern unterschrieben.
+B1|Arbeit|die Abteilung|department|Sie arbeitet in der Abteilung für Marketing.
+B1|Wohnen|die Miete|rent|Die Miete ist in dieser Stadt sehr hoch.
+B1|Wohnen|der Vermieter|landlord|Der Vermieter repariert die Heizung.
+B1|Wohnen|umziehen|to move house|Wir ziehen im Mai nach Köln um.
+B1|Wohnen|die Nebenkosten|utility costs|Die Nebenkosten sind in der Miete enthalten.
+B1|Wohnen|der Nachbar|neighbour|Unser Nachbar ist sehr hilfsbereit.
+B1|Wohnen|die Heizung|heating|Im Winter läuft die Heizung den ganzen Tag.
+B1|Wohnen|renovieren|to renovate|Wir renovieren gerade das Badezimmer.
+B1|Wohnen|die Kaution|deposit|Die Kaution beträgt zwei Monatsmieten.
+B1|Wohnen|gemütlich|cosy|Das Wohnzimmer ist klein, aber gemütlich.
+B1|Wohnen|der Stadtrand|edge of town|Wir wohnen am Stadtrand im Grünen.
+B1|Wohnen|einrichten|to furnish|Sie hat die Wohnung modern eingerichtet.
+B1|Wohnen|der Mietvertrag|rental contract|Lesen Sie den Mietvertrag genau durch.
+B1|Gesundheit|die Erkältung|cold|Ich habe seit Montag eine Erkältung.
+B1|Gesundheit|der Termin|appointment|Ich brauche einen Termin beim Arzt.
+B1|Gesundheit|das Rezept|prescription; recipe|Der Arzt schreibt mir ein Rezept.
+B1|Gesundheit|die Versicherung|insurance|Die Versicherung bezahlt die Behandlung.
+B1|Gesundheit|die Untersuchung|examination|Die Untersuchung dauert nur zehn Minuten.
+B1|Gesundheit|sich erholen|to recover, to rest|Im Urlaub kann ich mich gut erholen.
+B1|Gesundheit|die Schmerzen|pain|Ich habe starke Schmerzen im Rücken.
+B1|Gesundheit|die Apotheke|pharmacy|Die Apotheke ist auch am Samstag geöffnet.
+B1|Gesundheit|die Krankmeldung|sick note|Ich schicke die Krankmeldung an meine Chefin.
+B1|Gesundheit|die Ernährung|diet, nutrition|Eine gesunde Ernährung ist wichtig.
+B1|Gesundheit|sich verletzen|to injure oneself|Er hat sich beim Fußball verletzt.
+B1|Gesundheit|die Bewegung|exercise, movement|Bewegung an der frischen Luft tut gut.
+B1|Freizeit|der Ausflug|trip, outing|Am Sonntag machen wir einen Ausflug an den See.
+B1|Freizeit|die Unterkunft|accommodation|Wir suchen eine günstige Unterkunft.
+B1|Freizeit|buchen|to book|Ich habe den Flug schon gebucht.
+B1|Freizeit|die Verspätung|delay|Der Zug hat zwanzig Minuten Verspätung.
+B1|Freizeit|das Gepäck|luggage|Wir reisen mit wenig Gepäck.
+B1|Freizeit|die Sehenswürdigkeit|sight, attraction|Die Stadt hat viele Sehenswürdigkeiten.
+B1|Freizeit|sich entspannen|to relax|Am Wochenende möchte ich mich entspannen.
+B1|Freizeit|der Verein|club, association|Meine Tochter spielt im Verein Handball.
+B1|Freizeit|die Veranstaltung|event|Die Veranstaltung findet im Rathaus statt.
+B1|Freizeit|umsteigen|to change (trains)|In Frankfurt müssen wir umsteigen.
+B1|Freizeit|unterwegs|on the way, out and about|Ich bin den ganzen Tag unterwegs.
+B1|Freizeit|die Erholung|rest, relaxation|Nach der Arbeit brauche ich Erholung.
+B1|Meinung|der Vorteil|advantage|Ein Vorteil ist die kurze Fahrzeit.
+B1|Meinung|der Nachteil|disadvantage|Der Nachteil ist der hohe Preis.
+B1|Meinung|die Meinung|opinion|Meiner Meinung nach ist das richtig.
+B1|Meinung|überzeugen|to convince|Das Argument überzeugt mich nicht.
+B1|Meinung|zustimmen|to agree|Ich stimme dir völlig zu.
+B1|Meinung|widersprechen|to contradict|Da muss ich leider widersprechen.
+B1|Meinung|der Vorschlag|suggestion|Ich habe einen Vorschlag für das Wochenende.
+B1|Meinung|der Grund|reason|Aus diesem Grund bleibe ich zu Hause.
+B1|Meinung|vergleichen|to compare|Man kann die beiden Städte nicht vergleichen.
+B1|Meinung|die Lösung|solution|Wir suchen gemeinsam eine Lösung.
+B1|Meinung|sich entscheiden|to decide|Ich kann mich nicht entscheiden.
+B1|Meinung|behaupten|to claim|Er behauptet, dass er keine Zeit hat.
+B1|Behörden|das Formular|form|Bitte füllen Sie das Formular aus.
+B1|Behörden|die Anmeldung|registration|Die Anmeldung ist bis Freitag möglich.
+B1|Behörden|der Ausweis|ID card|Bitte zeigen Sie Ihren Ausweis.
+B1|Behörden|beantragen|to apply for|Ich möchte Kindergeld beantragen.
+B1|Behörden|die Gebühr|fee|Die Gebühr beträgt dreißig Euro.
+B1|Behörden|die Frist|deadline|Die Frist endet am 31. März.
+B1|Behörden|die Unterlagen|documents|Bringen Sie bitte alle Unterlagen mit.
+B1|Behörden|die Bestätigung|confirmation|Sie bekommen eine Bestätigung per E-Mail.
+B1|Behörden|zuständig|responsible, in charge|Wer ist für diesen Antrag zuständig?
+B1|Behörden|die Auskunft|information|Können Sie mir eine Auskunft geben?
+B1|Behörden|verlängern|to extend, to renew|Ich muss meinen Pass verlängern.
+B1|Behörden|die Bescheinigung|certificate|Ich brauche eine Bescheinigung vom Arbeitgeber.
+B2|Gesellschaft|die Herausforderung|challenge|Der Umzug war eine große Herausforderung.
+B2|Gesellschaft|die Voraussetzung|prerequisite|Gute Sprachkenntnisse sind eine Voraussetzung.
+B2|Gesellschaft|berücksichtigen|to take into account|Wir müssen auch die Kosten berücksichtigen.
+B2|Gesellschaft|die Auswirkung|effect, impact|Die Entscheidung hat große Auswirkungen.
+B2|Gesellschaft|nachhaltig|sustainable|Die Firma produziert nachhaltig.
+B2|Gesellschaft|die Maßnahme|measure|Die Stadt plant neue Maßnahmen gegen Lärm.
+B2|Gesellschaft|sich auseinandersetzen mit|to deal with in depth|Sie setzt sich mit dem Thema auseinander.
+B2|Gesellschaft|der Zusammenhang|connection, context|In diesem Zusammenhang ist das wichtig.
+B2|Gesellschaft|erheblich|considerable|Die Preise sind erheblich gestiegen.
+B2|Gesellschaft|die Einschränkung|restriction|Es gibt Einschränkungen im Verkehr.
+B2|Gesellschaft|fördern|to promote, to support|Die Schule fördert begabte Kinder.
+B2|Gesellschaft|die Entwicklung|development|Die technische Entwicklung geht schnell.
+B2|Gesellschaft|verzichten auf|to do without|Ich verzichte auf Zucker im Kaffee.
+B2|Gesellschaft|zunehmend|increasingly|Das Problem wird zunehmend größer.
+B2|Gesellschaft|der Anspruch|claim, entitlement|Sie haben Anspruch auf Urlaub.
+B2|Gesellschaft|beurteilen|to assess|Das kann ich nicht beurteilen.
+C1|Argumentation|die Gegebenheit|circumstance|Man muss die örtlichen Gegebenheiten kennen.
+C1|Argumentation|unerlässlich|indispensable|Erfahrung ist für diese Stelle unerlässlich.
+C1|Argumentation|in Frage stellen|to call into question|Niemand stellt das Ergebnis in Frage.
+C1|Argumentation|der Stellenwert|importance, standing|Bildung hat einen hohen Stellenwert.
+C1|Argumentation|hinterfragen|to scrutinise|Man sollte Quellen kritisch hinterfragen.
+C1|Argumentation|die Diskrepanz|discrepancy|Es gibt eine Diskrepanz zwischen Plan und Wirklichkeit.
+C1|Argumentation|ausschlaggebend|decisive|Der Preis war ausschlaggebend.
+C1|Argumentation|in Betracht ziehen|to consider|Wir ziehen einen Umzug in Betracht.
+C1|Argumentation|die Tragweite|scope, significance|Die Tragweite der Entscheidung war unklar.
+C1|Argumentation|einräumen|to concede|Er räumte ein, dass er sich geirrt hatte.
+C1|Argumentation|vorantreiben|to push forward|Sie treibt das Projekt voran.
+C1|Argumentation|unumstritten|undisputed|Sein Erfolg ist unumstritten.`);
+const GRAM=[
+ ['Ich bleibe zu Hause, weil ___.',['ich bin krank','ich krank bin','bin ich krank'],1,'In a weil-clause the verb goes to the end.'],
+ ['Morgen ___ nach Berlin.',['ich fahre','fahre ich','ich fahren'],1,'The verb stays in position two, so the subject follows it.'],
+ ['Ich weiß nicht, ob ___.',['er kommt heute','er heute kommt','kommt er heute'],1,'After ob the verb goes to the end.'],
+ ['Ich bin müde, deshalb ___.',['ich gehe ins Bett','gehe ich ins Bett','ich ins Bett gehe'],1,'Deshalb takes position one, so the verb comes next.'],
+ ['Obwohl es regnet, ___.',['wir gehen spazieren','gehen wir spazieren','wir spazieren gehen'],1,'A subordinate clause in first place is followed by the verb.'],
+ ['Ich fahre mit ___ Bus.',['dem','den','der'],0,'Mit always takes the dative.'],
+ ['Das Geschenk ist für ___ Bruder.',['meinem','meinen','mein'],1,'Für always takes the accusative.'],
+ ['Ich gehe in ___ Schule. (wohin?)',['die','der','dem'],0,'Direction with in takes the accusative.'],
+ ['Ich bin in ___ Schule. (wo?)',['die','der','den'],1,'Location with in takes the dative.'],
+ ['Wegen ___ Wetters bleiben wir zu Hause.',['dem','des','das'],1,'Wegen takes the genitive in written German.'],
+ ['Ich helfe ___ Freund.',['meinen','meinem','mein'],1,'Helfen takes the dative.'],
+ ['Seit ___ Jahr wohne ich hier.',['einem','ein','einen'],0,'Seit always takes the dative.'],
+ ['Ich warte auf ___ Bus.',['dem','den','der'],1,'Warten auf takes the accusative.'],
+ ['Ich gehe einkaufen, ___ ich Hunger habe.',['weil','denn','deshalb'],0,'The verb is at the end, so the connector must be weil.'],
+ ['Ich esse etwas, ___ ich habe Hunger.',['weil','denn','deshalb'],1,'Denn keeps normal word order.'],
+ ['___ ich Zeit habe, besuche ich dich.',['Wenn','Als','Ob'],0,'Wenn is used for conditions and repeated events.'],
+ ['___ ich ein Kind war, wohnte ich in Indien.',['Wenn','Als','Wann'],1,'Als is used for a single period or event in the past.'],
+ ['Er lernt viel, ___ die Prüfung zu bestehen.',['um','damit','dass'],0,'Same subject in both parts: um … zu.'],
+ ['Ich spare Geld, ___ meine Kinder studieren können.',['um','damit','weil'],1,'Different subjects: damit.'],
+ ['Sie ist nicht nur klug, ___ auch fleißig.',['aber','sondern','oder'],1,'Nicht nur … sondern auch is a fixed pair.'],
+ ['Wir ___ gestern ins Kino gegangen.',['haben','sind','waren'],1,'Verbs of movement form the Perfekt with sein.'],
+ ['Ich ___ den Brief schon geschrieben.',['habe','bin','war'],0,'Schreiben forms the Perfekt with haben.'],
+ ['Er ___ jeden Tag um sieben Uhr auf.',['steht','aufsteht','stehen'],0,'Aufstehen is separable: the prefix goes to the end.'],
+ ['Ich interessiere mich ___ Musik.',['für','an','über'],0,'Sich interessieren für is a fixed combination.'],
+ ['Wenn ich mehr Zeit ___, würde ich mehr lesen.',['habe','hätte','hatte'],1,'Unreal conditions use Konjunktiv II.'],
+ ['Das Auto ___ gestern repariert.',['wurde','wird','hat'],0,'Passive in the past: wurde + Partizip II.'],
+ ['Ich habe einen ___ Hund.',['kleinen','kleiner','kleine'],0,'Masculine accusative after einen: ending -en.'],
+ ['Das ist ein ___ Buch.',['gutes','guter','gute'],0,'Neuter nominative after ein: ending -es.'],
+ ['Ich fahre mit der ___ Jacke.',['neuen','neue','neuer'],0,'Dative after an article: ending -en.'],
+ ['Ich freue mich ___ das Wochenende.',['auf','über','für'],0,'Sich freuen auf looks forward to something in the future.']
+];
+
+/* ---------- more content (packs grow here) ---------- */
+Object.assign(T.en,{miss:'Missing letter',more:'More or fewer',sort:'Sort it',wmore:'Which side has more?',wfewer:'Which side has fewer?',wsort:'Where does it belong?',pairs:'Sound pairs',tap:'Tap a letter.',garden0:'Earn stars and your garden grows.',pause:'Good time for a break. Go and play!',lvl:'Level',learn:'How it works',lcount:'Counting',lplus:'Adding',lminus:'Taking away',ltimes:'Times',ldiv:'Sharing',times:'Times practice',share:'Sharing practice',watch:'Watch again',newex:'New example',tryit:'Now you try',timesw:'times',sharew:'shared by'});
+Object.assign(T.de,{miss:'Fehlender Buchstabe',more:'Mehr oder weniger',sort:'Sortieren',wmore:'Wo sind mehr?',wfewer:'Wo sind weniger?',wsort:'Wohin gehört das?',pairs:'Lautpaare',tap:'Tippe auf einen Buchstaben.',garden0:'Sammle Sterne, dann wächst dein Garten.',pause:'Zeit für eine Pause. Geh spielen!',lvl:'Stufe',learn:'So geht das',lcount:'Zählen',lplus:'Plus',lminus:'Minus',ltimes:'Mal',ldiv:'Teilen',times:'Mal üben',share:'Teilen üben',watch:'Noch mal ansehen',newex:'Neues Beispiel',tryit:'Jetzt du',timesw:'mal',sharew:'geteilt durch'});
+PACK.en.pairs=[['sh','ship','🚢'],['ch','cheese','🧀'],['th','three','3️⃣'],['oo','moon','🌙'],['ee','bee','🐝'],['ai','rain','🌧️'],['oa','boat','⛵'],['ar','car','🚗']];
+PACK.de.pairs=[['ä','Bär','🐻'],['ö','Löwe','🦁'],['ü','Tür','🚪'],['ß','Fuß','🦶'],['sch','Schuh','👟'],['ch','Buch','📖'],['ei','Ei','🥚'],['au','Auto','🚗'],['eu','Eule','🦉'],['ie','Biene','🐝']];
+PACK.en.words.push(['cake','🍰'],['bird','🐦'],['lion','🦁'],['shoe','👟'],['milk','🥛'],['rain','🌧️'],['boat','⛵'],['bear','🐻'],['apple','🍎'],['horse','🐴'],['snake','🐍'],['train','🚆'],['house','🏠'],['bread','🍞'],['chair','🪑'],['mouse','🐭'],['sheep','🐑'],['plane','✈️'],['banana','🍌'],['rabbit','🐰'],['flower','🌸'],['rocket','🚀'],['pencil','✏️'],['monkey','🐵']);
+PACK.de.words.push(['Bär','🐻'],['Brot','🍞'],['Boot','⛵'],['Hase','🐰'],['Affe','🐵'],['Käse','🧀'],['Apfel','🍎'],['Pferd','🐴'],['Blume','🌸'],['Stuhl','🪑'],['Schaf','🐑'],['Vogel','🐦'],['Löwe','🦁'],['Schuh','👟'],['Milch','🥛'],['Regen','🌧️'],['Wolke','☁️'],['Banane','🍌'],['Rakete','🚀'],['Kuchen','🍰'],['Schlange','🐍'],['Flugzeug','✈️']);
+PACK.en.sentences.push(['The snake is long.','🐍'],['The bird can sing.','🐦'],['My shoe is blue.','👟'],['The bear is asleep.','🐻'],['The rocket is fast.','🚀'],['The monkey is funny.','🐵'],['I like to eat cake.','🍰'],['The horse runs fast.','🐴']);
+PACK.de.sentences.push(['Die Schlange ist lang.','🐍'],['Der Vogel singt.','🐦'],['Mein Schuh ist blau.','👟'],['Der Bär schläft tief.','🐻'],['Die Rakete ist schnell.','🚀'],['Der Affe ist lustig.','🐵'],['Ich esse gern Kuchen.','🍰'],['Das Pferd läuft schnell.','🐴']);
+
+WRITE[1].tasks.push(
+ {s:'Sie waren am Samstag auf der Hochzeit Ihrer Cousine. Ihr Freund Paul konnte nicht mitkommen. Schreiben Sie ihm eine E-Mail.',p:['Beschreiben Sie: Wie war die Hochzeit?','Begründen Sie: Was hat Ihnen am besten gefallen und warum?','Schlagen Sie vor, Paul die Fotos zu zeigen.']},
+ {s:'Sie haben eine neue Arbeitsstelle angefangen. Ihre Freundin Sara möchte wissen, wie es Ihnen geht. Schreiben Sie ihr eine E-Mail.',p:['Beschreiben Sie: Wie ist die neue Arbeit?','Begründen Sie: Warum haben Sie die Stelle gewechselt?','Machen Sie einen Vorschlag für ein Treffen.']});
+WRITE[2].tasks.push(
+ {s:'Sie haben eine Sendung zum Thema „Fernsehen für Kinder“ gesehen. Im Online-Gästebuch lesen Sie: „Meine Kinder dürfen jeden Tag zwei Stunden fernsehen. Das schadet ihnen nicht.“ Schreiben Sie Ihre Meinung.',p:[]},
+ {s:'Sie haben einen Artikel zum Thema „Fremdsprachen lernen“ gelesen. Ein Leser schreibt: „Mit Apps lernt man eine Sprache besser als im Kurs.“ Schreiben Sie Ihre Meinung.',p:[]});
+WRITE[3].tasks.push(
+ {s:'Sie haben sich für einen Schwimmkurs angemeldet. Der Kursleiter, Herr Lange, erwartet Sie am Montag. Sie können aber erst eine Woche später anfangen. Schreiben Sie an Herrn Lange.',p:['Entschuldigen Sie sich höflich.','Nennen Sie den Grund und fragen Sie, ob ein späterer Beginn möglich ist.']},
+ {s:'Die Lehrerin Ihrer Tochter, Frau Krause, lädt Sie zum Elternabend ein. Sie können nicht kommen. Schreiben Sie an Frau Krause.',p:['Entschuldigen Sie sich höflich.','Berichten Sie, warum Sie nicht kommen können, und bitten Sie um die Informationen.']});
+SPEAK[1].tasks.push(
+ {s:'Ihr Kind hat bald Geburtstag. Planen Sie gemeinsam eine Kinderparty.',p:['Wann und wo?','Wie viele Kinder?','Essen und Spiele?','Wer kauft ein?']},
+ {s:'Sie möchten zusammen für die B1-Prüfung lernen. Planen Sie Ihre Lernwoche.',p:['Wann und wie oft?','Wo lernen?','Welche Themen zuerst?','Welche Materialien?']});
+SPEAK[2].tasks.push({s:'Soll man Kinder zweisprachig erziehen?'},{s:'Leben in der Stadt oder auf dem Land?'});
+SPEAK[3].tasks.push({s:'Ihre Partnerin hat über „Leben in der Stadt oder auf dem Land?“ gesprochen. Geben Sie eine Rückmeldung und stellen Sie eine Frage.'});
+
+VOCAB.push(...parseV(`B1|Familie|die Erziehung|upbringing|Die Erziehung der Kinder ist nicht immer leicht.
+B1|Familie|die Betreuung|childcare, care|Wir suchen eine Betreuung für den Nachmittag.
+B1|Familie|der Kindergarten|kindergarten|Unsere Tochter geht gern in den Kindergarten.
+B1|Familie|sich kümmern um|to take care of|Er kümmert sich um die Kinder.
+B1|Familie|die Verwandten|relatives|Unsere Verwandten wohnen weit weg.
+B1|Familie|aufwachsen|to grow up|Die Kinder wachsen zweisprachig auf.
+B1|Familie|verheiratet|married|Wir sind seit acht Jahren verheiratet.
+B1|Familie|die Geschwister|siblings|Ich habe zwei Geschwister.
+B1|Familie|streiten|to argue|Die Kinder streiten manchmal um Spielzeug.
+B1|Familie|erlauben|to allow|Wir erlauben eine Stunde Fernsehen.
+B1|Familie|die Gewohnheit|habit|Lesen vor dem Schlafen ist eine gute Gewohnheit.
+B1|Familie|sich verabreden|to arrange to meet|Wir haben uns für Samstag verabredet.
+B1|Einkaufen|das Angebot|offer|Diese Woche gibt es ein gutes Angebot.
+B1|Einkaufen|der Kassenzettel|receipt|Bewahren Sie den Kassenzettel auf.
+B1|Einkaufen|umtauschen|to exchange|Kann ich die Hose umtauschen?
+B1|Einkaufen|die Rechnung|bill, invoice|Die Rechnung kommt per Post.
+B1|Einkaufen|bar|in cash|Ich zahle lieber bar.
+B1|Einkaufen|die Lieferung|delivery|Die Lieferung dauert drei Tage.
+B1|Einkaufen|bestellen|to order|Ich habe das Buch online bestellt.
+B1|Einkaufen|der Rabatt|discount|Studenten bekommen zehn Prozent Rabatt.
+B1|Einkaufen|die Qualität|quality|Die Qualität ist wichtiger als der Preis.
+B1|Einkaufen|günstig|cheap, good value|Der Supermarkt ist sehr günstig.
+B1|Einkaufen|die Garantie|guarantee|Das Gerät hat zwei Jahre Garantie.
+B1|Einkaufen|sich beschweren|to complain|Ich möchte mich über den Service beschweren.
+B1|Verkehr|die Haltestelle|stop|Die Haltestelle ist direkt vor dem Haus.
+B1|Verkehr|der Stau|traffic jam|Wegen eines Staus komme ich später.
+B1|Verkehr|die Fahrkarte|ticket|Ich kaufe die Fahrkarte am Automaten.
+B1|Verkehr|der Führerschein|driving licence|Sie macht gerade den Führerschein.
+B1|Verkehr|abbiegen|to turn|An der Ampel müssen Sie links abbiegen.
+B1|Verkehr|die Kreuzung|junction|An der Kreuzung ist ein Unfall passiert.
+B1|Verkehr|verpassen|to miss|Ich habe den Bus verpasst.
+B1|Verkehr|die Strecke|route|Die Strecke ist wegen Bauarbeiten gesperrt.
+B1|Verkehr|pünktlich|on time|Der Zug kommt heute pünktlich an.
+B1|Verkehr|der Fußgänger|pedestrian|Fußgänger müssen hier warten.
+B1|Verkehr|die Baustelle|construction site|Vor der Schule gibt es eine Baustelle.
+B1|Verkehr|tanken|to fill up|Ich muss vor der Fahrt noch tanken.
+B1|Medien|die Nachricht|news, message|Ich habe deine Nachricht gelesen.
+B1|Medien|der Bildschirm|screen|Der Bildschirm ist zu hell.
+B1|Medien|herunterladen|to download|Ich lade die App herunter.
+B1|Medien|das Netzwerk|network|Das Netzwerk funktioniert heute nicht.
+B1|Medien|die Werbung|advertising|Im Fernsehen läuft zu viel Werbung.
+B1|Medien|die Sendung|programme|Die Sendung beginnt um acht Uhr.
+B1|Medien|speichern|to save|Bitte speichern Sie die Datei.
+B1|Medien|der Zugang|access|Ich habe keinen Zugang zum Internet.
+B1|Medien|die Zeitschrift|magazine|Sie liest eine Zeitschrift über Gesundheit.
+B1|Medien|veröffentlichen|to publish|Er veröffentlicht jede Woche einen Artikel.
+B1|Medien|das Passwort|password|Ich habe mein Passwort vergessen.
+B1|Medien|ausschalten|to switch off|Bitte schalten Sie das Handy aus.
+B2|Arbeitswelt|die Erkenntnis|insight, finding|Die Studie bringt neue Erkenntnisse.
+B2|Arbeitswelt|bewältigen|to cope with|Sie bewältigt ihre Aufgaben sehr gut.
+B2|Arbeitswelt|die Grundlage|basis|Vertrauen ist die Grundlage der Zusammenarbeit.
+B2|Arbeitswelt|vermeiden|to avoid|Wir wollen Fehler vermeiden.
+B2|Arbeitswelt|die Verantwortung|responsibility|Er trägt die Verantwortung für das Projekt.
+B2|Arbeitswelt|ermöglichen|to make possible|Das Stipendium ermöglicht ihr das Studium.
+B2|Arbeitswelt|der Aufwand|effort, expense|Der Aufwand hat sich gelohnt.
+B2|Arbeitswelt|sich auswirken auf|to affect|Stress wirkt sich auf die Gesundheit aus.
+B2|Arbeitswelt|angemessen|appropriate|Die Bezahlung ist angemessen.
+B2|Arbeitswelt|die Bedingung|condition|Die Bedingungen im Vertrag sind klar.
+B2|Arbeitswelt|beitragen zu|to contribute to|Jeder trägt zum Erfolg bei.
+B2|Arbeitswelt|der Umgang|handling, dealings|Der Umgang mit Kunden macht ihr Spaß.
+B2|Arbeitswelt|vorwiegend|predominantly|Sie arbeitet vorwiegend von zu Hause.
+B2|Arbeitswelt|die Umstellung|changeover, adjustment|Die Umstellung auf das neue System dauert.
+C1|Diskurs|die Prämisse|premise|Die Prämisse der Studie ist umstritten.
+C1|Diskurs|bewerkstelligen|to manage, to accomplish|Wie hat sie das nur bewerkstelligt?
+C1|Diskurs|maßgeblich|decisively, significantly|Er war maßgeblich am Erfolg beteiligt.
+C1|Diskurs|die Ambivalenz|ambivalence|Der Text zeigt die Ambivalenz des Fortschritts.
+C1|Diskurs|zwangsläufig|inevitably|Das führt zwangsläufig zu Konflikten.
+C1|Diskurs|anfechten|to contest|Sie will das Urteil anfechten.
+C1|Diskurs|der Sachverhalt|facts of the matter|Der Sachverhalt ist komplizierter als gedacht.
+C1|Diskurs|plausibel|plausible|Seine Erklärung klingt plausibel.`));
+
+GRAM.push(
+ ['Er sagt, ___ er morgen kommt.',['dass','ob','weil'],0,'Reported statements use dass.'],
+ ['Kannst du mir sagen, ___ der Zug abfährt?',['wann','wenn','als'],0,'Indirect questions about time use wann.'],
+ ['Das ist der Mann, ___ ich gestern getroffen habe.',['der','den','dem'],1,'The relative pronoun is the accusative object of treffen.'],
+ ['Das ist die Frau, ___ ich geholfen habe.',['die','der','den'],1,'Helfen takes the dative, so the pronoun is der.'],
+ ['Ich habe vergessen, die Tür ___.',['abschließen','abzuschließen','zu abschließen'],1,'With separable verbs zu goes between prefix and verb.'],
+ ['Er ist ___ als sein Bruder.',['groß','größer','am größten'],1,'Comparisons with als use the comparative.'],
+ ['Das ist der ___ Film des Jahres.',['beste','besser','gut'],0,'The superlative before a noun takes an adjective ending.'],
+ ['Ich ___ gestern keine Zeit.',['habe','hatte','hätte'],1,'Haben uses Präteritum for the past: hatte.'],
+ ['Als Kind ___ ich nicht schwimmen.',['kann','konnte','könnte'],1,'Modal verbs use Präteritum for the past: konnte.'],
+ ['Ich lasse mein Auto ___.',['reparieren','repariert','zu reparieren'],0,'Lassen is followed by the infinitive without zu.'],
+ ['Sie hat sich ___ die Stelle beworben.',['um','für','an'],0,'Sich bewerben um is a fixed combination.'],
+ ['Ich denke oft ___ meine Familie.',['an','über','von'],0,'Denken an takes the accusative.'],
+ ['Wir sprechen ___ das Wetter.',['über','von','an'],0,'Sprechen über takes the accusative.'],
+ ['Er hat Angst ___ der Prüfung.',['vor','für','von'],0,'Angst haben vor takes the dative.'],
+ ['___ des Regens gehen wir spazieren.',['Trotz','Wegen','Während'],0,'Trotz expresses a contrast: despite the rain.'],
+ ['Ich weiß nicht, ___ ich das machen soll.',['wie','was für','dass'],0,'An indirect question keeps its question word: wie.'],
+ ['Je mehr ich lerne, ___ besser spreche ich.',['desto','als','so'],0,'Je … desto is a fixed pair.'],
+ ['Der Brief muss heute noch ___ werden.',['geschrieben','schreiben','geschreibt'],0,'Passive with a modal: Partizip II + werden.'],
+ ['Könnten Sie mir bitte ___?',['helfen','hilft','geholfen'],0,'After a modal verb comes the infinitive.'],
+ ['Ich freue mich ___ dein Geschenk von gestern.',['auf','über','für'],1,'Sich freuen über is about something already there.']
+);
+
+/* ---------- adults: AI helpers ---------- */
+const noAI='AI help is not available in this view. Open the app in Claude on a signed-in device to use it.';
+async function askJSON(prompt){
+  let v;if(typeof ai.json==='function')v=await ai.json(prompt);else v=(await ai(prompt)).text;
+  if(v&&typeof v==='object'&&typeof v.text==='string'&&Object.keys(v).length<=2)v=v.text;
+  if(typeof v==='string'){const m=v.match(/[\[{][\s\S]*[\]}]/);v=JSON.parse(m?m[0]:v);}return v;}
+const errMsg=e=>e&&e.code==='rate_limited'?'Too many requests right now. Wait a minute and try again.':e&&e.code==='not_granted'?'AI help is switched off for this page.':'That did not work. Check the connection and try again.';
+const pillClass=n=>n>=70?'pill good':n>=60?'pill mid':'pill low';
+function phrases(list){return el('ul',{class:'phr'},list.map(([de,en])=>el('li',null,el('button',{class:'sp',type:'button','aria-label':'Hear phrase',onclick:()=>say(de.replace(/…/g,''),'de',0.9)},'🔊'),el('div',null,el('span',{class:'de'},de),el('small',null,en)))));}
+function timerPill(mins){
+  let left=mins*60,running=false;const out=el('span',{class:'pill'},'');const fmt=()=>{out.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');out.className=left===0?'pill low':'pill';};fmt();
+  const btn=el('button',{class:'btn alt',type:'button',onclick:()=>{running=!running;btn.textContent=running?'Pause timer':'Start timer';if(ticker){clearInterval(ticker);ticker=null;}
+    if(running)ticker=setInterval(()=>{if(left>0)left--;fmt();if(left===0){clearInterval(ticker);ticker=null;chime(false);}},1000);}},'Start timer');
+  return [out,btn];
+}
+
+function adultHome(){
+  const s=st[cur],now=Date.now();
+  const all=VOCAB.concat(s.extra),due=all.filter(c=>!s.srs[c.de]||s.srs[c.de].due<=now).length;
+  const lastW=s.writing[s.writing.length-1];
+  const tile=(lb,mini,fn)=>el('button',{class:'tile-card',type:'button',onclick:fn},el('span',{class:'lb'},lb),el('span',{class:'mini'},mini));
+  show(s.name,()=>el('div',{class:'tiles-grid'},
+    tile('Schreiben','Goethe B1 writing, timed and corrected, with mock exam'+(lastW&&lastW.est!=null?' · last estimate '+lastW.est+'/100':''),writeMenu),
+    tile('Sprechen','Goethe B1 speaking, three parts, AI partner',speakMenu),
+    tile('Vocabulary',due+' cards due · review, spelling, dictation',vocabHome),
+    tile('Grammar',s.gram.done?s.gram.right+' of '+s.gram.done+' correct so far':'Fifty typical B1 weak spots, plus fresh AI questions',grammar),
+    tile('My mistakes',s.mistakes.length+' saved from corrections',mistakes)),home,adultHome);
+}
+
+/* ---------- Schreiben ---------- */
+const wTasks=n=>WRITE[n].tasks.concat((st[cur].wx&&st[cur].wx[n])||[]);
+const wText=(n,task)=>'Teil '+n+' ('+WRITE[n].name+'). Situation: '+task.s+(task.p&&task.p.length?' Content points: '+task.p.join(' | '):'')+' Expected length: about '+WRITE[n].words+' words.';
+const wordCount=s=>(s.trim().match(/\S+/g)||[]).length;
+async function gradeWriting(n,task,text){
+  const r=await askJSON('You are an experienced examiner for the Goethe-Zertifikat B1, module Schreiben. Task: '+wText(n,task)+'\n\nThe learner wrote:\n<<<\n'+text.slice(0,3000)+'\n>>>\n\nAssess the text against the B1 criteria Erfüllung, Kohärenz, Wortschatz and Strukturen. Be honest and specific. Reply with JSON only, in this shape: {"estimate": number from 0 to 100 (rough, 60 is the pass mark), "criteria":[{"name":"Erfüllung","comment":"one short English sentence"},{"name":"Kohärenz","comment":"..."},{"name":"Wortschatz","comment":"..."},{"name":"Strukturen","comment":"..."}], "missing":["content points not covered, in English"], "corrected":"the learner text corrected in German, keeping their ideas and level", "mistakes":[up to 8 items {"wrong":"exact words from the text","right":"corrected German","rule":"short English explanation"}], "tip":"one English sentence on what to practise next"}');
+  const est=Math.max(0,Math.min(100,Math.round(Number(r.estimate))||0));
+  const ms=Array.isArray(r.mistakes)?r.mistakes.slice(0,8).filter(m=>m&&m.wrong&&m.right):[];
+  const s=st[cur];s.writing.push({t:Date.now(),teil:n,words:wordCount(text),est});if(s.writing.length>40)s.writing=s.writing.slice(-40);
+  ms.forEach(m=>{if(!s.mistakes.some(x=>x.wrong===m.wrong))s.mistakes.push({wrong:String(m.wrong).slice(0,200),right:String(m.right).slice(0,200),rule:String(m.rule||'').slice(0,240)});});
+  if(s.mistakes.length>120)s.mistakes=s.mistakes.slice(-120);save(cur);
+  return {est,node:el('div',{class:'panel'},el('h2',null,'Result · Teil '+n),
+    el('div',{class:'meta'},el('span',{class:pillClass(est)},'Estimate '+est+'/100'),el('span',{class:'note'},'Pass mark is 60. A rough guide, not an official score.')),
+    (Array.isArray(r.criteria)?r.criteria:[]).map(c=>el('p',{style:'margin:0'},el('b',null,String(c.name)+': '),String(c.comment))),
+    Array.isArray(r.missing)&&r.missing.length?el('div',null,el('h3',null,'Missing content'),el('ul',{style:'margin:4px 0;padding-left:20px'},r.missing.map(m=>el('li',null,String(m))))):null,
+    ms.length?el('div',{style:'display:flex;flex-direction:column;gap:8px'},el('h3',null,'Mistakes (saved to My mistakes)'),ms.map(m=>el('div',{class:'fix'},el('s',null,String(m.wrong)),' → ',el('b',null,String(m.right)),el('small',null,String(m.rule||''))))):null,
+    el('h3',null,'Corrected text'),el('p',{class:'pre',lang:'de',style:'margin:0'},String(r.corrected||'')),
+    r.tip&&el('p',{class:'warn',style:'margin:0'},'Next: '+String(r.tip)))};
+}
+const selfCheck=n=>el('div',{class:'panel'},el('h2',null,'Check it yourself'),el('ul',{style:'margin:0;padding-left:20px'},['Every content point is covered.','Greeting and closing fit the reader (du or Sie).','Verbs sit in position two; in weil, dass and ob clauses at the end.','Nouns have capital letters.','The length is close to '+WRITE[n].words+' words.'].map(x=>el('li',null,x))));
+function writeMenu(){
+  const msg=el('p',{class:'note','aria-live':'polite'});
+  const fresh=async(n,btn)=>{
+    if(!ai){msg.textContent=noAI;return;}btn.disabled=true;msg.textContent='Writing a new task …';
+    const spec={1:'an informal email to a named friend with exactly three content points: one starting "Beschreiben Sie:", one starting "Begründen Sie:", and one suggestion or invitation',2:'an opinion post: name an everyday topic, quote one short opinion from an online forum in German quotation marks, and end with "Schreiben Sie Ihre Meinung."; the list p stays empty',3:'a short formal message to a named person addressed as Frau or Herr, with exactly two content points'}[n];
+    try{const r=await askJSON('Create one new practice task in German for the Goethe-Zertifikat B1 module Schreiben, Teil '+n+': '+spec+'. Use an everyday situation different from these: '+wTasks(n).map(x=>x.s.slice(0,60)).join(' / ')+'. Reply with JSON only: {"s":"situation and instruction in German","p":["content points in German"]}');
+      if(!r||!r.s)throw 0;const s=st[cur];s.wx[n]=(s.wx[n]||[]).concat({s:String(r.s).slice(0,600),p:(Array.isArray(r.p)?r.p:[]).slice(0,4).map(x=>String(x).slice(0,200))}).slice(-8);save(cur);writeTask(n,wTasks(n).length-1);
+    }catch(e){msg.textContent=errMsg(e);btn.disabled=false;}};
+  show('Schreiben',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
+    el('p',{class:'note'},'The exam has three tasks in 60 minutes. Practise one at a time, then sit a full mock exam.'),
+    el('div',{class:'panel'},el('h2',null,'Mock exam'),el('p',{class:'note'},'Three tasks, one 60-minute clock, all corrected at the end.'),el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:writeMock},'Start mock exam'))),
+    [1,2,3].map(n=>el('div',{class:'panel'},el('h2',null,WRITE[n].name),el('p',{class:'note'},'About '+WRITE[n].words+' words · '+WRITE[n].mins+' minutes'),
+      el('div',{class:'row'},wTasks(n).map((_,k)=>el('button',{class:'btn alt',type:'button',onclick:()=>writeTask(n,k)},'Task '+(k+1))),el('button',{class:'btn warm',type:'button',onclick:ev=>fresh(n,ev.currentTarget)},'New task')))),
+    msg,
+    st[cur].writing.length?el('div',{class:'panel'},el('h2',null,'History'),st[cur].writing.slice(-6).reverse().map(w=>el('div',{class:'meta'},el('span',{class:'pill'},new Date(w.t).toLocaleDateString()),el('span',null,'Teil '+w.teil+' · '+w.words+' words'),w.est!=null&&el('span',{class:pillClass(w.est)},w.est+'/100')))):null),adultHome,writeMenu);
+}
+function writeBox(id,n,key){
+  let draft='';try{draft=localStorage.getItem(key)||'';}catch(e){}
+  const W=WRITE[n],count=el('span',{class:'pill'},'0 words'),ta=el('textarea',{id,lang:'de',spellcheck:'false',placeholder:'Schreiben Sie hier …'});ta.value=draft;
+  const upd=()=>{const c=wordCount(ta.value);count.textContent=c+' words';count.className=c>=W.words*0.8?'pill good':'pill';try{localStorage.setItem(key,ta.value);}catch(e){}};
+  ta.addEventListener('input',upd);upd();return {ta,count};
+}
+function writeTask(n,k){
+  const W=WRITE[n],task=wTasks(n)[k];if(!task)return writeMenu();
+  const {ta,count}=writeBox('w-text',n,'fla-draft-'+cur+'-'+n+'-'+k);
+  const out=el('div',{'aria-live':'polite',style:'display:flex;flex-direction:column;gap:12px'});
+  const fixBtn=el('button',{class:'btn',type:'button',onclick:async()=>{
+    if(wordCount(ta.value)<8){out.replaceChildren(el('p',{class:'warn'},'Write a few sentences first.'));return;}
+    if(!ai){out.replaceChildren(el('p',{class:'warn'},noAI),selfCheck(n));return;}
+    fixBtn.disabled=true;out.replaceChildren(el('p',{class:'note'},'Reading your text …'));
+    try{out.replaceChildren((await gradeWriting(n,task,ta.value)).node);}catch(e){out.replaceChildren(el('p',{class:'warn'},errMsg(e)));}
+    fixBtn.disabled=false;}},'Correct my text');
+  const modelBtn=el('button',{class:'btn alt',type:'button',onclick:async()=>{
+    if(!ai){out.replaceChildren(el('p',{class:'warn'},noAI));return;}
+    modelBtn.disabled=true;const p=el('p',{class:'pre',lang:'de',style:'margin:0'},'Writing …');
+    out.replaceChildren(el('div',{class:'panel'},el('h2',null,'Model answer'),p,el('div',{class:'row'},el('button',{class:'btn alt',type:'button',onclick:()=>say(p.textContent.slice(0,1900),'de',0.9)},'Listen'))));
+    try{const r=await ai('Write a model answer in German for this Goethe-Zertifikat B1 Schreiben task, at solid B1 level, covering every content point, with a suitable greeting and closing. Give only the German text. Task: '+wText(n,task),{onText:o=>{p.textContent=o.text;}});p.textContent=r.text;}
+    catch(e){p.textContent=errMsg(e);}
+    modelBtn.disabled=false;}},'Show a model answer');
+  show(W.name,()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
+    el('div',{class:'panel'},el('div',{class:'task',lang:'de'},task.s,task.p.length?el('ul',null,task.p.map(x=>el('li',null,x))):null),
+      el('div',{class:'meta'},timerPill(W.mins),count,el('span',{class:'note'},'Target: about '+W.words+' words')),
+      el('label',{for:'w-text',class:'note'},'Your text'),ta,
+      el('div',{class:'row'},fixBtn,modelBtn),
+      el('details',null,el('summary',null,'Useful phrases (Redemittel)'),phrases(PHR_W[n]))),
+    out),writeMenu,()=>writeTask(n,k));
+}
+function writeMock(){
+  const picks=[1,2,3].map(n=>{const l=wTasks(n);return l[rnd(l.length)];});
+  const boxes=[1,2,3].map(n=>writeBox('m-text-'+n,n,'fla-mock-'+cur+'-'+n));
+  const out=el('div',{'aria-live':'polite',style:'display:flex;flex-direction:column;gap:12px'});
+  const done=el('button',{class:'btn',type:'button',onclick:async()=>{
+    if(!ai){out.replaceChildren(el('p',{class:'warn'},noAI),selfCheck(1));return;}
+    done.disabled=true;out.replaceChildren();const ests=[];
+    for(let n=1;n<=3;n++){const text=boxes[n-1].ta.value;
+      if(wordCount(text)<8){out.append(el('p',{class:'warn'},'Teil '+n+': no text to correct.'));ests.push(0);continue;}
+      const wait=el('p',{class:'note'},'Correcting Teil '+n+' …');out.append(wait);
+      try{const g=await gradeWriting(n,picks[n-1],text);ests.push(g.est);wait.replaceWith(g.node);}catch(e){wait.replaceWith(el('p',{class:'warn'},'Teil '+n+': '+errMsg(e)));}}
+    if(ests.length===3){const avg=Math.round((ests[0]*40+ests[1]*40+ests[2]*20)/100);out.prepend(el('div',{class:'panel'},el('h2',null,'Mock exam result'),el('div',{class:'meta'},el('span',{class:pillClass(avg)},'Overall estimate '+avg+'/100'),el('span',{class:'note'},'Weighted 40 / 40 / 20 across the three tasks. Pass mark is 60.'))));}
+    done.disabled=false;}},'Finish and correct all');
+  show('Mock exam · Schreiben',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
+    el('div',{class:'meta'},timerPill(60),el('span',{class:'note'},'Work through all three tasks without help.')),
+    [1,2,3].map(n=>el('div',{class:'panel'},el('h2',null,WRITE[n].name),el('div',{class:'task',lang:'de'},picks[n-1].s,picks[n-1].p.length?el('ul',null,picks[n-1].p.map(x=>el('li',null,x))):null),
+      el('div',{class:'meta'},boxes[n-1].count,el('span',{class:'note'},'About '+WRITE[n].words+' words')),el('label',{for:'m-text-'+n,class:'note'},'Your text for Teil '+n),boxes[n-1].ta)),
+    el('div',{class:'row'},done),out),writeMenu,writeMock);
+}
+
+/* ---------- Sprechen ---------- */
+function speakMenu(){
+  show('Sprechen',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
+    el('p',{class:'note'},'The exam is a pair exam of about 15 minutes. Practise with each other using the cue cards, or with the AI partner in Teil 1.'),
+    [1,2,3].map(n=>el('div',{class:'panel'},el('h2',null,SPEAK[n].name),
+      el('div',{class:'row'},SPEAK[n].tasks.map((_,k)=>el('button',{class:'btn alt',type:'button',onclick:()=>speakTask(n,k)},'Task '+(k+1))))))),adultHome,speakMenu);
+}
+function partnerChat(taskText){
+  const msgs=[],log=el('div',{class:'chat','aria-live':'polite'}),inp=el('input',{type:'text',id:'pc-in',lang:'de',autocomplete:'off',placeholder:'Ihr Satz, zum Beispiel: Ich schlage vor, dass wir …'});
+  const sys='Du bist der Prüfungspartner in der Goethe-B1-Prüfung, Sprechen Teil 1 (gemeinsam etwas planen). '+taskText+' Antworte nur auf Deutsch auf B1-Niveau, höchstens zwei kurze Sätze. Reagiere auf den Vorschlag, mache einen eigenen Vorschlag und stelle eine Frage. Wenn alle Punkte geklärt sind, fasse die Entscheidung in einem Satz zusammen.';
+  let busy2=false;
+  const send=async()=>{const v=inp.value.trim();if(!v||busy2)return;
+    if(!ai){log.append(el('p',{class:'warn'},noAI));return;}
+    busy2=true;inp.value='';log.append(el('div',{class:'me',lang:'de'},v));
+    msgs.push({role:'user',content:msgs.length?v:sys+'\n\nDer Lernende beginnt: '+v});
+    const b=el('div',{class:'them',lang:'de'},'…');log.append(b);
+    try{const r=await ai(msgs,{cache:false,modelTier:'quick'});b.textContent=r.text;msgs.push({role:'assistant',content:r.text});say(String(r.text).slice(0,600),'de',0.9);}
+    catch(e){b.textContent=errMsg(e);msgs.pop();}
+    busy2=false;inp.focus();};
+  inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();send();}});
+  return el('div',{class:'panel'},el('h2',null,'Talk it through with an AI partner'),el('p',{class:'note'},'Say your sentence aloud, then type it. The partner answers in German and reads the answer out.'),log,
+    el('label',{for:'pc-in',class:'note'},'Your turn'),inp,el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:send},'Send')));
+}
+function speakTask(n,k){
+  const S=SPEAK[n],task=S.tasks[k];
+  const ta=el('textarea',{id:'s-text',lang:'de',style:'min-height:130px',placeholder:'Type the key sentences you said, or dictate them.'});
+  const out=el('div',{'aria-live':'polite',style:'display:flex;flex-direction:column;gap:12px'});
+  const taskText='Aufgabe: '+task.s+(task.p?' Punkte: '+task.p.join(' | '):'')+(n===2?' Aufbau: '+SLIDES.join(' | '):'');
+  const dBtn=dict?el('button',{class:'btn alt',type:'button',onclick:()=>{
+    if(dBtn.textContent==='Stop dictating'){try{dict.stop();}catch(e){}return;}
+    dictTarget=ta;dictBtn=dBtn;try{dict.start().catch(e=>{dBtn.textContent='Dictate';if(e&&e.code==='not_granted')dBtn.disabled=true;});}catch(e){}}},'Dictate'):null;
+  const fbBtn=el('button',{class:'btn',type:'button',onclick:async()=>{
+    if(ta.value.trim().length<20){out.replaceChildren(el('p',{class:'warn'},'Speak your answer aloud first, then type or dictate the key sentences.'));return;}
+    if(!ai){out.replaceChildren(el('p',{class:'warn'},noAI));return;}
+    fbBtn.disabled=true;out.replaceChildren(el('p',{class:'note'},'Going through what you said …'));
+    try{const r=await askJSON('You are an examiner for the Goethe-Zertifikat B1, module Sprechen, '+S.name+'. '+taskText+'\n\nThe learner said (typed or transcribed, so ignore spelling and punctuation):\n<<<\n'+ta.value.slice(0,3000)+'\n>>>\n\nReply with JSON only: {"estimate": number 0 to 100 (rough, 60 is the pass mark), "good":["up to 3 short English points on what worked"], "improve":[up to 6 items {"said":"words from the learner","better":"better German","why":"short English reason"}], "phrases":["3 German Redemittel the learner could add"], "tip":"one English sentence"}');
+      const est=Math.max(0,Math.min(100,Math.round(Number(r.estimate))||0));
+      out.replaceChildren(el('div',{class:'panel'},el('h2',null,'Feedback'),el('div',{class:'meta'},el('span',{class:pillClass(est)},'Estimate '+est+'/100'),el('span',{class:'note'},'Rough guide only. Pronunciation is not judged here.')),
+        Array.isArray(r.good)&&r.good.length?el('ul',{style:'margin:0;padding-left:20px'},r.good.map(g=>el('li',null,String(g)))):null,
+        (Array.isArray(r.improve)?r.improve:[]).map(m=>el('div',{class:'fix'},el('s',null,String(m.said)),' → ',el('b',null,String(m.better)),el('small',null,String(m.why||'')))),
+        Array.isArray(r.phrases)&&r.phrases.length?el('div',null,el('h3',null,'Add these phrases'),phrases(r.phrases.map(p=>[String(p),'']))):null,
+        r.tip&&el('p',{class:'warn',style:'margin:0'},'Next: '+String(r.tip))));
+    }catch(e){out.replaceChildren(el('p',{class:'warn'},errMsg(e)));}
+    fbBtn.disabled=false;}},'Get feedback');
+  const modelBtn=el('button',{class:'btn alt',type:'button',onclick:async()=>{
+    if(!ai){out.replaceChildren(el('p',{class:'warn'},noAI));return;}
+    modelBtn.disabled=true;const p=el('p',{class:'pre',lang:'de',style:'margin:0'},'Writing …');
+    out.replaceChildren(el('div',{class:'panel'},el('h2',null,'Model answer'),p,el('div',{class:'row'},el('button',{class:'btn alt',type:'button',onclick:()=>say(p.textContent.slice(0,1900),'de',0.9)},'Listen'))));
+    try{const r=await ai('Write a spoken model answer in German at solid B1 level for the Goethe-Zertifikat B1, Sprechen, '+S.name+'. '+(n===1?'Write it as a short dialogue between A and B that covers every point and ends with a decision.':n===2?'Follow the five-part structure, about 150 words.':'Give short feedback and one question, about 50 words.')+' Give only the German text. '+taskText,{onText:o=>{p.textContent=o.text;}});p.textContent=r.text;}
+    catch(e){p.textContent=errMsg(e);}
+    modelBtn.disabled=false;}},'Show a model answer');
+  show(S.name,()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
+    el('div',{class:'panel'},el('div',{class:'task',lang:'de'},el('b',null,task.s),task.p?el('ul',null,task.p.map(x=>el('li',null,x))):null,n===2?el('ol',{class:'slides'},SLIDES.map(x=>el('li',null,x))):null),
+      el('div',{class:'meta'},timerPill(S.mins),el('span',{class:'note'},'Speak aloud for '+S.mins+' minutes.')),
+      el('details',{open:true},el('summary',null,'Useful phrases (tap to hear)'),phrases(PHR_S[n]))),
+    n===1?partnerChat(taskText):null,
+    el('div',{class:'panel'},el('h2',null,'Check your answer'),el('label',{for:'s-text',class:'note'},'What you said'),ta,el('div',{class:'row'},dBtn,fbBtn,modelBtn)),
+    out),speakMenu,()=>speakTask(n,k));
+}
+
+/* ---------- Vocabulary (spaced repetition) ---------- */
+let vLevel='B1';const STEPS=[1,3,7,14,30,60];
+function vocabHome(){
+  const s=st[cur],now=Date.now(),cards=VOCAB.concat(s.extra).filter(c=>c.lv===vLevel);
+  const due=cards.filter(c=>!s.srs[c.de]||s.srs[c.de].due<=now),learned=cards.filter(c=>s.srs[c.de]&&s.srs[c.de].b>=2).length;
+  const msg=el('p',{class:'note','aria-live':'polite'});
+  const topic=el('input',{type:'text',id:'v-topic',maxlength:'40',placeholder:'Topic, for example Schule or Bank'});
+  const addBtn=el('button',{class:'btn alt',type:'button',onclick:async()=>{
+    if(!ai){msg.textContent=noAI;return;}addBtn.disabled=true;msg.textContent='Finding new words …';
+    try{const r=await askJSON('Give 10 useful German vocabulary items at CEFR level '+vLevel+(topic.value.trim()?' on the topic "'+topic.value.trim().slice(0,40)+'"':'')+' for an adult learner living in Germany. Nouns with article. Do not use any of these: '+cards.map(c=>c.de).join(', ')+'. Reply with JSON only: an array of {"de":"German word","en":"English meaning","ex":"one short German example sentence at that level"}.');
+      const arr=(Array.isArray(r)?r:r.items||r.words||[]).filter(x=>x&&x.de&&x.en).slice(0,10);
+      arr.forEach(x=>{const de=String(x.de).slice(0,60);if(!VOCAB.concat(s.extra).some(c=>c.de===de))s.extra.push({lv:vLevel,tp:topic.value.trim()||'Extra',de,en:String(x.en).slice(0,80),ex:String(x.ex||'').slice(0,160)});});
+      if(s.extra.length>400)s.extra=s.extra.slice(-400);save(cur);vocabHome();
+    }catch(e){msg.textContent=errMsg(e);addBtn.disabled=false;}}},'Add 10 new words');
+  const topics=[...new Set(cards.map(c=>c.tp))];
+  show('Vocabulary',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
+    el('div',{class:'chips',role:'group','aria-label':'Level'},['B1','B2','C1'].map(l=>el('button',{type:'button',class:'chip'+(l===vLevel?' on':''),'aria-pressed':String(l===vLevel),onclick:()=>{vLevel=l;vocabHome();}},l))),
+    el('div',{class:'panel'},el('div',{class:'meta'},el('span',{class:'pill'},cards.length+' cards'),el('span',{class:due.length?'pill mid':'pill good'},due.length+' due'),el('span',{class:'pill good'},learned+' learned')),
+      el('div',{class:'row'},
+        el('button',{class:'btn',type:'button',disabled:!due.length,onclick:()=>review(pick(due,15),false)},due.length?'Review '+Math.min(15,due.length)+' cards':'Nothing due today'),
+        el('button',{class:'btn alt',type:'button',onclick:()=>review(pick(due.length>=8?due:cards,10),true)},'Write the words'),
+        el('button',{class:'btn alt',type:'button',onclick:diktat},'Dictation')),
+      el('p',{class:'note'},'Review trains recall. Write the words trains spelling. Dictation trains listening and writing together.')),
+    el('div',{class:'panel'},el('h2',null,'Grow this deck'),el('label',{for:'v-topic',class:'note'},'Optional topic'),topic,el('div',{class:'row'},addBtn),msg),
+    topics.map(tp=>el('details',null,el('summary',null,tp+' · '+cards.filter(c=>c.tp===tp).length+' words'),el('div',{class:'vlist'},cards.filter(c=>c.tp===tp).map(c=>el('div',{lang:'de'},el('b',null,c.de),' · '+c.en,el('small',null,c.ex))))))),adultHome,vocabHome);
+}
+function review(queue,typed){
+  let done=0;const total=queue.length;
+  const rate=(c,g)=>{const s=st[cur],r=s.srs[c.de]||{b:0,due:0};
+    if(g===0){r.b=0;r.due=Date.now()+6e5;queue.push(c);}else{r.b=Math.min(5,r.b+(g===2?2:1));r.due=Date.now()+STEPS[r.b]*DAY;done++;}
+    s.srs[c.de]=r;save(cur);};
+  const step=()=>{
+    if(!queue.length){show('Vocabulary',()=>el('div',{class:'finish'},el('h2',null,'Session finished'),el('p',{class:'note'},done+' cards done. The next ones come back when they are due.'),el('button',{class:'btn',type:'button',onclick:vocabHome},'Back to deck')),vocabHome);return;}
+    const c=queue.shift();let shown=false;
+    if(typed){
+      const inp=el('input',{type:'text',id:'v-in',lang:'de',autocomplete:'off',autocapitalize:'off',spellcheck:'false',placeholder:'Auf Deutsch, mit Artikel'}),res=el('div',{'aria-live':'polite',style:'display:flex;flex-direction:column;gap:8px;align-items:center'});
+      const check=()=>{if(shown)return;shown=true;const ok=inp.value.trim()===c.de;inp.disabled=true;
+        res.replaceChildren(el('span',{class:ok?'pill good':'pill low'},ok?'Correct':'Not yet'),el('div',{class:'fw',lang:'de',style:'font-size:1.6rem'},c.de),el('div',{class:'ex',lang:'de'},c.ex),
+          el('button',{class:'btn',type:'button',onclick:()=>{rate(c,ok?1:0);step();}},'Next'));say(c.de,'de');};
+      inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();check();}});
+      show('Write the words',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},el('p',{class:'note'},(total-queue.length)+' of '+total+' · '+c.tp),
+        el('div',{class:'card'},el('div',{class:'en'},c.en),el('label',{for:'v-in',class:'note'},'Write it in German. Nouns need the article and a capital letter.'),inp,el('button',{class:'btn alt',type:'button',onclick:check},'Check'),res)),vocabHome);
+      inp.focus();return;
+    }
+    const body=()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
+      el('p',{class:'note'},(total-queue.length)+' of '+total+' · '+c.tp),
+      el('div',{class:'card'},el('div',{class:'fw',lang:'de'},c.de),el('button',{class:'hear',type:'button','aria-label':'Hear the word',onclick:()=>sayParts([{text:c.de,lang:'de'},{text:c.ex,lang:'de'}])},'🔊'),
+        shown?[el('div',{class:'en'},c.en),el('div',{class:'ex',lang:'de'},c.ex)]:el('div',{class:'ex'},'Say the meaning, then check.')),
+      shown?el('div',{class:'row',style:'justify-content:center'},el('button',{class:'btn alt',type:'button',onclick:()=>{rate(c,0);step();}},'Again'),el('button',{class:'btn',type:'button',onclick:()=>{rate(c,1);step();}},'Good'),el('button',{class:'btn warm',type:'button',onclick:()=>{rate(c,2);step();}},'Easy'))
+           :el('div',{class:'row',style:'justify-content:center'},el('button',{class:'btn',type:'button',onclick:()=>{shown=true;reshow();}},'Show meaning')));
+    show('Vocabulary',body,vocabHome);
+  };step();
+}
+function diktat(){
+  const cards=pick(VOCAB.concat(st[cur].extra).filter(c=>c.lv===vLevel&&c.ex),8);let i=0,score=0;
+  const norm=s=>s.replace(/[.,!?;:„“"]/g,'').trim().split(/\s+/).filter(Boolean);
+  const step=()=>{
+    if(i>=cards.length){show('Dictation',()=>el('div',{class:'finish'},el('h2',null,score+' of '+cards.length+' sentences correct'),el('div',{class:'row',style:'justify-content:center'},el('button',{class:'btn',type:'button',onclick:diktat},'Another round'),el('button',{class:'btn alt',type:'button',onclick:vocabHome},'Back to deck'))),vocabHome);return;}
+    const c=cards[i];i++;const play=()=>say(c.ex,'de',0.8);
+    const inp=el('input',{type:'text',id:'dk-in',lang:'de',autocomplete:'off',autocapitalize:'off',spellcheck:'false',placeholder:'Schreiben Sie den Satz …'}),res=el('div',{'aria-live':'polite',style:'display:flex;flex-direction:column;gap:8px'});
+    const checkBtn=el('button',{class:'btn',type:'button',onclick:()=>{
+      const want=norm(c.ex),got=norm(inp.value),ok=want.length===got.length&&want.every((w,k)=>w===got[k]);if(ok)score++;checkBtn.disabled=true;inp.disabled=true;
+      res.replaceChildren(el('span',{class:ok?'pill good':'pill low',style:'align-self:flex-start'},ok?'Correct':'Compare with the sentence'),
+        el('p',{class:'q',lang:'de',style:'margin:0'},want.map((w,k)=>[el('span',{style:got[k]===w?null:'color:var(--berry);text-decoration:underline'},w),' '])),
+        el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:step},'Next sentence')));}},'Check');
+    inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&!checkBtn.disabled){ev.preventDefault();checkBtn.click();}});
+    show('Dictation',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px;max-width:640px'},el('p',{class:'note'},i+' of '+cards.length+' · Listen, then write the whole sentence.'),
+      el('div',{class:'row'},el('button',{class:'hear',type:'button','aria-label':'Play the sentence',onclick:play},'🔊'),el('span',{class:'note'},'Tap to hear it again.')),
+      el('label',{for:'dk-in',class:'note'},'Your sentence'),inp,el('div',{class:'row'},checkBtn),res),vocabHome);
+    play();inp.focus();
+  };step();
+}
+
+/* ---------- Grammar ---------- */
+function grammar(){
+  const s=st[cur],msg=el('p',{class:'note','aria-live':'polite'});
+  const start=()=>{const wrong=(s.gram.wrong||[]).filter(i=>GRAM[i]);
+    runGram([...new Set(wrong.concat(shuffle(GRAM.map((_,i)=>i))))].slice(0,10).map(gi=>({g:GRAM[gi],gi})));};
+  const aiBtn=el('button',{class:'btn alt',type:'button',onclick:async()=>{
+    if(!ai){msg.textContent=noAI;return;}aiBtn.disabled=true;msg.textContent='Writing ten new questions …';
+    try{const r=await askJSON('Write 10 multiple-choice German grammar questions for a learner preparing for the Goethe-Zertifikat B1: word order, cases after prepositions, connectors, Perfekt and Präteritum, adjective endings, verbs with prepositions. Each has one German sentence with exactly one gap written as ___, three options, exactly one correct. Reply with JSON only: an array of {"q":"sentence with ___","opts":["a","b","c"],"a":index of the correct option (0, 1 or 2),"why":"one short English sentence with the rule"}.');
+      const list=(Array.isArray(r)?r:r.items||[]).filter(x=>x&&typeof x.q==='string'&&x.q.includes('___')&&Array.isArray(x.opts)&&x.opts.length===3&&[0,1,2].includes(x.a)).slice(0,10).map(x=>({g:[x.q.slice(0,200),x.opts.map(o=>String(o).slice(0,80)),x.a,String(x.why||'').slice(0,240)],gi:-1}));
+      if(!list.length)throw 0;runGram(list);
+    }catch(e){msg.textContent=errMsg(e);aiBtn.disabled=false;}}},'Ten new questions with AI');
+  show('Grammar',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px'},
+    el('div',{class:'panel'},el('h2',null,'B1 weak spots'),el('div',{class:'meta'},el('span',{class:'pill'},GRAM.length+' questions'),s.gram.done?el('span',{class:'pill good'},s.gram.right+' of '+s.gram.done+' correct'):null,(s.gram.wrong||[]).length?el('span',{class:'pill mid'},s.gram.wrong.length+' to repeat'):null),
+      el('p',{class:'note'},'Word order, cases, connectors, past tenses, adjective endings, verbs with prepositions. Wrong answers come back first.'),
+      el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:start},'Start ten questions'),aiBtn),msg)),adultHome,grammar);
+}
+function runGram(list){
+  const s=st[cur];let i=0,right=0;
+  const step=()=>{
+    if(i>=list.length){show('Grammar',()=>el('div',{class:'finish'},el('h2',null,right+' of '+list.length+' correct'),el('div',{class:'row',style:'justify-content:center'},el('button',{class:'btn',type:'button',onclick:grammar},'More grammar'),el('button',{class:'btn alt',type:'button',onclick:adultHome},'Back'))),grammar);return;}
+    const {g,gi}=list[i];i++;let answered=false;const why=el('p',{class:'warn','aria-live':'polite',style:'margin:0;display:none'});
+    const nextBtn=el('button',{class:'btn',type:'button',style:'display:none',onclick:step},'Next');
+    const opts=shuffle(g[1].map((o,k)=>({o,k}))).map(x=>{const b=el('button',{type:'button',lang:'de',onclick:()=>{
+      if(answered)return;answered=true;const ok=x.k===g[2];b.classList.add(ok?'ok':'no');
+      if(!ok)[...b.parentNode.children].forEach(c=>{if(c.dataset.ok)c.classList.add('ok');});
+      s.gram.done++;if(ok){right++;s.gram.right++;}
+      if(gi>=0){const w=(s.gram.wrong||[]).filter(v=>v!==gi);if(!ok)w.push(gi);s.gram.wrong=w;}
+      save(cur);why.textContent=g[3]+' Full sentence: '+g[0].replace('___',g[1][g[2]]);why.style.display='';nextBtn.style.display='';nextBtn.focus();}},x.o);
+      if(x.k===g[2])b.dataset.ok='1';return b;});
+    show('Grammar',()=>el('div',{style:'display:flex;flex-direction:column;gap:14px;max-width:640px'},el('p',{class:'note'},i+' of '+list.length),el('p',{class:'q',lang:'de',style:'margin:0'},g[0]),el('div',{class:'gopts'},opts),why,el('div',{class:'row'},nextBtn)),grammar);
+  };step();
+}
+
+/* ---------- Mistakes ---------- */
+function mistakes(){
+  const s=st[cur];
+  show('My mistakes',()=>el('div',{style:'display:flex;flex-direction:column;gap:12px'},
+    s.mistakes.length?el('p',{class:'note'},'Cover the green part, say the correction aloud, then check. Remove a card once it is automatic.'):el('p',{class:'note'},'Nothing here yet. Mistakes from your corrected texts are collected on this page.'),
+    s.mistakes.slice().reverse().map(m=>el('div',{class:'panel'},el('div',{class:'fix',lang:'de'},el('s',null,m.wrong),' → ',el('b',null,m.right),el('small',{lang:'en'},m.rule)),
+      el('div',{class:'row'},el('button',{class:'btn alt',type:'button',onclick:()=>say(m.right,'de',0.9)},'Listen'),el('button',{class:'btn alt',type:'button',onclick:()=>{s.mistakes=s.mistakes.filter(x=>x!==m);save(cur);mistakes();}},'I know this now'))))),adultHome,mistakes);
+}
+
+home();
+})();
+</script>
+</body>
+</html>
